@@ -27,22 +27,12 @@ export function NumberInput({ onSubmit, disabled }: NumberInputProps) {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           className="text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-          placeholder="Your answer"
+          placeholder="answer here, enter to submit"
           disabled={disabled}
           min={0}
           max={400}
           autoFocus
         />
-        <motion.div whileTap={{ scale: 0.95 }}>
-          <Button
-            type="submit"
-            size="lg"
-            disabled={disabled || !value}
-            className="px-8 text-lg"
-          >
-            Check
-          </Button>
-        </motion.div>
       </div>
     </form>
   );
