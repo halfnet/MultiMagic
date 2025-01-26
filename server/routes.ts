@@ -6,6 +6,24 @@ import { eq } from 'drizzle-orm';
 import { sql } from 'drizzle-orm';
 
 export function registerRoutes(app: Express): Server {
+  // Get all users for the dropdown
+  app.get('/api/users', async (req, res) => {
+    try {
+      const allUsers = await db
+        .select({
+          id: users.id,
+          username: users.username,
+        })
+        .from(users)
+        .orderBy(users.username);
+
+      res.json(allUsers);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      res.status(500).json({ error: 'Failed to fetch users' });
+    }
+  });
+
   // Simple login route that creates user if doesn't exist
   app.post('/api/login', async (req, res) => {
     try {

@@ -105,13 +105,12 @@ export default function Game() {
           endTime
         };
 
-        // Save game results with user ID
         try {
           await fetch('/api/game-results', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              userId: user.id, // Add user ID to the request
+              userId: user.id,
               difficulty: gameState.difficulty,
               mode: gameState.mode,
               practiceDigit: gameState.practiceDigit,
@@ -200,11 +199,26 @@ export default function Game() {
     });
   };
 
+  const handleLogout = () => {
+    document.cookie = 'math_game_username=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    window.location.reload();
+  };
+
   if (!gameState) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex flex-col items-center justify-center p-4">
         <Card className="p-8 max-w-md w-full text-center space-y-6">
-          <h1 className="text-4xl font-bold text-primary mb-8">Math Challenge!</h1>
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-4xl font-bold text-primary">Math Challenge!</h1>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLogout}
+              className="text-muted-foreground"
+            >
+              Switch User
+            </Button>
+          </div>
 
           <div className="mb-6 space-y-4">
             <Label htmlFor="color-picker" className="flex items-center gap-2">
