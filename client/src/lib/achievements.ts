@@ -23,7 +23,29 @@ export const ACHIEVEMENTS: Achievement[] = [
     condition: (gameState: GameState) => {
       if (!gameState.endTime) return false;
       const timeInSeconds = (gameState.endTime - gameState.startTime) / 1000;
-      return timeInSeconds < 120; // Changed back to 120 seconds (2 minutes)
+      return timeInSeconds < 120;
+    }
+  },
+  {
+    id: 'speed-hero',
+    name: 'Speed Hero',
+    description: 'Complete the game in under 1 minute',
+    icon: 'Clock',
+    condition: (gameState: GameState) => {
+      if (!gameState.endTime) return false;
+      const timeInSeconds = (gameState.endTime - gameState.startTime) / 1000;
+      return timeInSeconds < 60;
+    }
+  },
+  {
+    id: 'speed-legend',
+    name: 'Speed Legend',
+    description: 'Complete the game in under 30 seconds',
+    icon: 'Clock',
+    condition: (gameState: GameState) => {
+      if (!gameState.endTime) return false;
+      const timeInSeconds = (gameState.endTime - gameState.startTime) / 1000;
+      return timeInSeconds < 30;
     }
   },
   {
@@ -32,7 +54,6 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: 'Complete the game without any mistakes',
     icon: 'Star',
     condition: (gameState: GameState) => {
-      // Check if the game is complete and score equals total questions
       return gameState.endTime !== undefined && gameState.score === gameState.questions.length;
     }
   },
