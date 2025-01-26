@@ -15,6 +15,7 @@ import { X, Palette, Brain } from "lucide-react";
 import { Achievement, ACHIEVEMENTS, checkAchievements } from "@/lib/achievements";
 import { AchievementBadge } from "@/components/game/AchievementBadge";
 import { Timer } from "@/components/game/Timer";
+import { DancingCat } from "@/components/game/DancingCat";
 
 export default function Game() {
   const [gameState, setGameState] = useState<GameState | null>(null);
@@ -292,6 +293,7 @@ export default function Game() {
             show={true}
           />
           <NumberInput onSubmit={handleAnswer} />
+          {gameState.score === gameState.questions.length && <DancingCat />}
         </>
       ) : (
         <div className="space-y-8 text-center">
@@ -336,6 +338,7 @@ export default function Game() {
                   Change Mode
                 </Button>
               </div>
+              {gameState.score === gameState.questions.length && <DancingCat />}
             </>
           ) : (
             <div className="animate-bounce text-4xl font-bold text-primary">
