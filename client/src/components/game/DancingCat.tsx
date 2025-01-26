@@ -14,28 +14,28 @@ export function DancingCat() {
     >
       <motion.div
         animate={{
-          x: [-10, 10, -10],
-          rotate: [-5, 5, -5],
+          x: [-20, 20, -20],
         }}
         transition={{
-          duration: 1,
+          duration: 1.2,
           repeat: Infinity,
           repeatType: "mirror",
           ease: "easeInOut"
         }}
       >
         <svg
-          width="120"
-          height="120"
-          viewBox="0 0 120 120"
+          width="200"
+          height="200"
+          viewBox="0 0 200 200"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           className="drop-shadow-lg"
         >
           <defs>
-            <radialGradient id="catFur" cx="0.5" cy="0.5" r="0.5">
-              <stop offset="0%" stopColor="#D4D4D4"/>
-              <stop offset="100%" stopColor="#A0A0A0"/>
+            <radialGradient id="fur" cx="0.5" cy="0.5" r="0.6">
+              <stop offset="0%" stopColor="#F4F4F4"/>
+              <stop offset="70%" stopColor="#E0E0E0"/>
+              <stop offset="100%" stopColor="#D0D0D0"/>
             </radialGradient>
             <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
               <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
@@ -50,62 +50,98 @@ export function DancingCat() {
             </filter>
           </defs>
 
+          {/* Body */}
           <motion.g
             animate={{
-              x: [-5, 5, -5],
-              rotate: [-10, 10, -10]
+              rotate: [-5, 5, -5],
+              y: [-5, 5, -5]
             }}
             transition={{
-              duration: 0.5,
+              duration: 1.2,
               repeat: Infinity,
               repeatType: "mirror"
             }}
           >
+            {/* Main body */}
+            <ellipse cx="100" cy="110" rx="45" ry="40" fill="url(#fur)" filter="url(#shadow)"/>
+
+            {/* Head */}
+            <circle cx="100" cy="75" r="35" fill="url(#fur)"/>
+
+            {/* Ears */}
+            <path d="M75 45L85 65L95 45" fill="#E0E0E0" stroke="#D0D0D0"/>
+            <path d="M125 45L115 65L105 45" fill="#E0E0E0" stroke="#D0D0D0"/>
+            <path d="M78 47L85 62L92 47" fill="#FFE5E5"/>
+            <path d="M122 47L115 62L108 47" fill="#FFE5E5"/>
+
+            {/* Face features */}
+            <ellipse cx="90" cy="75" rx="5" ry="6" fill="#000000"/>
+            <ellipse cx="110" cy="75" rx="5" ry="6" fill="#000000"/>
+            <circle cx="88" cy="73" r="2" fill="#FFFFFF"/>
+            <circle cx="108" cy="73" r="2" fill="#FFFFFF"/>
+            <path d="M97 82L100 85L103 82" fill="#FFB6C1"/>
+
+            {/* Whiskers */}
+            <g stroke="#888888" strokeWidth="1.5">
+              <line x1="75" y1="85" x2="60" y2="80"/>
+              <line x1="75" y1="88" x2="60" y2="88"/>
+              <line x1="75" y1="91" x2="60" y2="96"/>
+              <line x1="125" y1="85" x2="140" y2="80"/>
+              <line x1="125" y1="88" x2="140" y2="88"/>
+              <line x1="125" y1="91" x2="140" y2="96"/>
+            </g>
+          </motion.g>
+
+          {/* Arms doing floss movement */}
+          <motion.g
+            animate={{
+              x: [-30, 30, -30],
+              rotate: [-20, 20, -20]
+            }}
+            transition={{
+              duration: 1.2,
+              repeat: Infinity,
+              repeatType: "mirror",
+              ease: "easeInOut"
+            }}
+          >
+            {/* Left arm */}
             <path
-              d="M30 60 Q25 70 20 80"
-              stroke="#A0A0A0"
-              strokeWidth="6"
+              d="M70 110 Q65 120 60 130"
+              stroke="#D0D0D0"
+              strokeWidth="12"
               strokeLinecap="round"
+              fill="none"
             />
+            {/* Right arm */}
             <path
-              d="M90 60 Q95 70 100 80"
-              stroke="#A0A0A0"
-              strokeWidth="6"
+              d="M130 110 Q135 120 140 130"
+              stroke="#D0D0D0"
+              strokeWidth="12"
               strokeLinecap="round"
+              fill="none"
             />
           </motion.g>
 
-          <ellipse cx="60" cy="65" rx="35" ry="30" fill="url(#catFur)" filter="url(#shadow)"/>
-          <circle cx="60" cy="45" r="25" fill="url(#catFur)"/>
-          <path d="M40 25L50 40L60 25" fill="#A0A0A0" stroke="#909090"/>
-          <path d="M80 25L70 40L60 25" fill="#A0A0A0" stroke="#909090"/>
-          <path d="M43 27L50 38L57 27" fill="#FFE5E5"/>
-          <path d="M77 27L70 38L63 27" fill="#FFE5E5"/>
-          <ellipse cx="50" cy="45" rx="4" ry="5" fill="#000000"/> 
-          <ellipse cx="70" cy="45" rx="4" ry="5" fill="#000000"/> 
-          <circle cx="48" cy="43" r="1.5" fill="#FFFFFF"/> 
-          <circle cx="68" cy="43" r="1.5" fill="#FFFFFF"/> 
-          <path d="M57 50L60 53L63 50Z" fill="#FFB6C1"/>
-          <g stroke="#666666" strokeWidth="1.2">
-            <line x1="40" y1="52" x2="25" y2="50"/>
-            <line x1="40" y1="55" x2="25" y2="55"/>
-            <line x1="40" y1="58" x2="25" y2="60"/>
-            <line x1="80" y1="52" x2="95" y2="50"/>
-            <line x1="80" y1="55" x2="95" y2="55"/>
-            <line x1="80" y1="58" x2="95" y2="60"/>
-          </g>
-          <path
-            d="M55 55Q60 58 65 55"
-            stroke="#000000"
-            strokeWidth="1.5"
+          {/* Tail */}
+          <motion.path
+            d="M100 140 Q120 160 110 180"
+            stroke="#D0D0D0"
+            strokeWidth="12"
+            strokeLinecap="round"
             fill="none"
-          />
-          <path
-            d="M45 65Q60 70 75 65"
-            stroke="#909090"
-            strokeWidth="1"
-            fill="none"
-            opacity="0.5"
+            animate={{
+              d: [
+                "M100 140 Q120 160 110 180",
+                "M100 140 Q80 160 90 180",
+                "M100 140 Q120 160 110 180"
+              ]
+            }}
+            transition={{
+              duration: 1.2,
+              repeat: Infinity,
+              repeatType: "mirror"
+            }}
           />
         </svg>
       </motion.div>
