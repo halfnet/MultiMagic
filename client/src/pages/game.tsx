@@ -100,8 +100,7 @@ export default function Game() {
 
         newGameState = {
           ...newGameState,
-          endTime,
-          score: newScore
+          endTime
         };
 
         setShowResults(false);
