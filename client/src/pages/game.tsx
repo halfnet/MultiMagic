@@ -21,6 +21,7 @@ export default function Game() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [themeColor, setThemeColor] = useState("#7c3aed");
   const [practiceDigit, setPracticeDigit] = useState<number>(5);
+  const [practiceQuestionCount, setPracticeQuestionCount] = useState<number>(10);
   const [showResults, setShowResults] = useState(false);
   const { toast } = useToast();
 
@@ -61,7 +62,7 @@ export default function Game() {
   const startGame = (difficulty: Difficulty, mode: GameMode = 'regular') => {
     setGameState({
       currentQuestion: 0,
-      questions: generateQuestions(difficulty, 10, mode === 'practice' ? practiceDigit : undefined),
+      questions: generateQuestions(difficulty, mode === 'practice' ? practiceQuestionCount : 10, mode === 'practice' ? practiceDigit : undefined),
       startTime: Date.now(),
       difficulty,
       streak: 0,
@@ -223,20 +224,37 @@ export default function Game() {
             </div>
 
             <div className="space-y-4 pt-4">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="practice-digit" className="flex items-center gap-2">
-                  <Brain className="w-4 h-4" />
-                  Choose a number to practice:
-                </Label>
-                <Input
-                  id="practice-digit"
-                  type="number"
-                  min={1}
-                  max={20}
-                  value={practiceDigit}
-                  onChange={(e) => setPracticeDigit(Math.min(20, Math.max(1, parseInt(e.target.value) || 1)))}
-                  className="w-20 text-center"
-                />
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="practice-digit" className="flex items-center gap-2">
+                    <Brain className="w-4 h-4" />
+                    Choose a number to practice:
+                  </Label>
+                  <Input
+                    id="practice-digit"
+                    type="number"
+                    min={1}
+                    max={20}
+                    value={practiceDigit}
+                    onChange={(e) => setPracticeDigit(Math.min(20, Math.max(1, parseInt(e.target.value) || 1)))}
+                    className="w-20 text-center"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="question-count" className="flex items-center gap-2">
+                    <Brain className="w-4 h-4" />
+                    Number of questions:
+                  </Label>
+                  <Input
+                    id="question-count"
+                    type="number"
+                    min={1}
+                    max={50}
+                    value={practiceQuestionCount}
+                    onChange={(e) => setPracticeQuestionCount(Math.min(50, Math.max(1, parseInt(e.target.value) || 1)))}
+                    className="w-20 text-center"
+                  />
+                </div>
               </div>
               <Button
                 size="lg"

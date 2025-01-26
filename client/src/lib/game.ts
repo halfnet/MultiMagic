@@ -18,6 +18,7 @@ export interface GameState {
   themeColor: string;
   mode: GameMode;
   practiceDigit?: number;
+  practiceQuestionCount?: number;
   achievementsEarned: string[];
   lastEarnedAchievement?: Achievement;
   incorrectAttempts: number;
