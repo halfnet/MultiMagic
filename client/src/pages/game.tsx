@@ -210,16 +210,20 @@ export default function Game() {
         <Card className="p-8 max-w-md w-full text-center space-y-6">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-4xl font-bold text-primary">Math Challenge!</h1>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleLogout}
-              className="text-muted-foreground"
-            >
-              Switch User
-            </Button>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">
+                Playing as {user?.username}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLogout}
+                className="text-muted-foreground"
+              >
+                Switch User
+              </Button>
+            </div>
           </div>
-
           <div className="mb-6 space-y-4">
             <Label htmlFor="color-picker" className="flex items-center gap-2">
               <Palette className="w-4 h-4" />
@@ -233,7 +237,6 @@ export default function Game() {
               className="w-full h-12 cursor-pointer"
             />
           </div>
-
           <div className="space-y-4">
             <Button
               size="lg"
@@ -316,19 +319,26 @@ export default function Game() {
         <>
           <div className="w-full max-w-md">
             <div className="flex justify-between items-center mb-4">
-              <ProgressBar
-                current={gameState.currentQuestion + 1}
-                total={gameState.questions.length}
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleQuit}
-                className="ml-4"
-                title="Quit game"
-              >
-                <X className="h-5 w-5" />
-              </Button>
+              <div className="flex-1">
+                <ProgressBar
+                  current={gameState.currentQuestion + 1}
+                  total={gameState.questions.length}
+                />
+              </div>
+              <div className="flex items-center gap-2 ml-4">
+                <span className="text-sm text-muted-foreground">
+                  {user?.username}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleQuit}
+                  className="ml-2"
+                  title="Quit game"
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
             </div>
             <div className="flex justify-between items-center mb-4">
               {gameState.mode === 'practice' && (
