@@ -66,6 +66,7 @@ export default function Game() {
       score: 0,
       difficulty,
       streak: 0,
+      bestStreak: 0,
       themeColor,
       mode,
       practiceDigit: mode === 'practice' ? practiceDigit : undefined,
@@ -88,11 +89,13 @@ export default function Game() {
       const newScore = gameState.score + 1;
       const isLastQuestion = gameState.currentQuestion === gameState.questions.length - 1;
 
+      const newStreak = gameState.streak + 1;
       let newGameState = {
         ...gameState,
         currentQuestion: gameState.currentQuestion + 1,
         score: newScore,
-        streak: gameState.streak + 1
+        streak: newStreak,
+        bestStreak: Math.max(newStreak, gameState.bestStreak)
       };
 
       if (isLastQuestion) {

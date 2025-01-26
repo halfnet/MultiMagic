@@ -15,6 +15,7 @@ export interface GameState {
   score: number;
   difficulty: Difficulty;
   streak: number;
+  bestStreak: number;
   themeColor: string;
   mode: GameMode;
   practiceDigit?: number;

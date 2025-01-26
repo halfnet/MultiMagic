@@ -30,7 +30,7 @@ export function Achievements({ score, streak, time }: AchievementsProps) {
       >
         <Card className="p-4 flex flex-col items-center">
           <Star className="w-8 h-8 text-purple-500 mb-2" />
-          <div className="text-2xl font-bold">{streak}</div>
+          <div className="text-2xl font-bold">{Math.max(streak, gameState?.bestStreak || 0)}</div>
           <div className="text-sm text-gray-600">Best Streak</div>
         </Card>
       </motion.div>
