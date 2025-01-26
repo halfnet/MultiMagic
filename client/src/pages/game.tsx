@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { GameState, Question, Difficulty, generateQuestions, checkAnswer, formatTime, calculateScore } from "@/lib/game";
 import { triggerConfetti, triggerCelebration } from "@/lib/confetti";
+import { X } from "lucide-react";
 
 export default function Game() {
   const [gameState, setGameState] = useState<GameState | null>(null);
@@ -37,7 +38,7 @@ export default function Game() {
         description: "Great job! Keep going!",
         variant: "default",
       });
-      
+
       if (gameState.currentQuestion === gameState.questions.length - 1) {
         const endTime = Date.now();
         setGameState({
@@ -67,6 +68,15 @@ export default function Game() {
         streak: 0
       });
     }
+  };
+
+  const handleQuit = () => {
+    setGameState(null);
+    toast({
+      title: "Game ended",
+      description: "You can start a new game anytime!",
+      variant: "default",
+    });
   };
 
   if (!gameState) {
@@ -102,10 +112,21 @@ export default function Game() {
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex flex-col items-center justify-center p-4 space-y-8">
       {!isGameComplete ? (
         <>
-          <ProgressBar
-            current={gameState.currentQuestion + 1}
-            total={gameState.questions.length}
-          />
+          <div className="w-full max-w-md flex justify-between items-center">
+            <ProgressBar
+              current={gameState.currentQuestion + 1}
+              total={gameState.questions.length}
+            />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleQuit}
+              className="ml-4"
+              title="Quit game"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
           <FlashCard
             num1={currentQuestion.num1}
             num2={currentQuestion.num2}
@@ -121,13 +142,23 @@ export default function Game() {
             streak={gameState.streak}
             time={formatTime(gameState.endTime! - gameState.startTime)}
           />
-          <Button
-            size="lg"
-            onClick={() => startGame(gameState.difficulty)}
-            className="text-lg"
-          >
-            Play Again
-          </Button>
+          <div className="space-x-4">
+            <Button
+              size="lg"
+              onClick={() => startGame(gameState.difficulty)}
+              className="text-lg"
+            >
+              Play Again
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={handleQuit}
+              className="text-lg"
+            >
+              Change Difficulty
+            </Button>
+          </div>
         </div>
       )}
     </div>
