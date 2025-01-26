@@ -26,11 +26,12 @@ export function NumberInput({ onSubmit, disabled }: NumberInputProps) {
           type="number"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          className="text-2xl font-bold text-center"
+          className="text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           placeholder="Your answer"
           disabled={disabled}
           min={0}
           max={400}
+          autoFocus
         />
         <motion.div whileTap={{ scale: 0.95 }}>
           <Button
