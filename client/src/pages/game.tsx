@@ -14,6 +14,7 @@ import { playCorrectSound, playIncorrectSound, playCompleteSound } from "@/lib/a
 import { X, Palette, Brain } from "lucide-react";
 import { Achievement, ACHIEVEMENTS, checkAchievements } from "@/lib/achievements";
 import { AchievementBadge } from "@/components/game/AchievementBadge";
+import { Timer } from "@/components/game/Timer";
 
 export default function Game() {
   const [gameState, setGameState] = useState<GameState | null>(null);
@@ -69,7 +70,7 @@ export default function Game() {
       practiceDigit: mode === 'practice' ? practiceDigit : undefined,
       achievementsEarned: [],
       lastEarnedAchievement: undefined,
-      incorrectAttempts: 0 // Add this to track incorrect attempts
+      incorrectAttempts: 0
     });
   };
 
@@ -100,13 +101,11 @@ export default function Game() {
         newGameState = {
           ...newGameState,
           endTime,
-          score: newScore // Keep the actual correct answers for achievement checking
+          score: newScore
         };
 
-        // Reset showResults
         setShowResults(false);
 
-        // Check achievements after game completion
         const earnedAchievements = [];
         for (const achievement of ACHIEVEMENTS) {
           if (!gameState.achievementsEarned.includes(achievement.id) && achievement.condition(newGameState)) {
@@ -114,7 +113,6 @@ export default function Game() {
           }
         }
 
-        // Update achievements earned
         if (earnedAchievements.length > 0) {
           const lastEarned = earnedAchievements[earnedAchievements.length - 1];
           newGameState = {
@@ -126,7 +124,6 @@ export default function Game() {
             lastEarnedAchievement: lastEarned
           };
 
-          // Show achievement notifications
           earnedAchievements.forEach(achievement => {
             toast({
               title: "Achievement Unlocked! 🏆",
@@ -136,13 +133,11 @@ export default function Game() {
           });
         }
 
-        // Trigger celebration and show results after a delay
         triggerCelebration();
         setTimeout(() => {
           setShowResults(true);
         }, 2500);
       } else {
-        // Check for mid-game achievements (like practice streak)
         const newAchievement = checkAchievements(newGameState, gameState.achievementsEarned);
         if (newAchievement) {
           newGameState = {
@@ -282,11 +277,14 @@ export default function Game() {
                 <X className="h-5 w-5" />
               </Button>
             </div>
-            {gameState.mode === 'practice' && (
-              <div className="text-center text-sm text-muted-foreground mb-4">
-                Practicing multiplications with {gameState.practiceDigit}
-              </div>
-            )}
+            <div className="flex justify-between items-center mb-4">
+              {gameState.mode === 'practice' && (
+                <div className="text-sm text-muted-foreground">
+                  Practicing multiplications with {gameState.practiceDigit}
+                </div>
+              )}
+              <Timer startTime={gameState.startTime} />
+            </div>
           </div>
           <FlashCard
             num1={currentQuestion.num1}
