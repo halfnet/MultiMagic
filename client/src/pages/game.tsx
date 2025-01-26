@@ -18,7 +18,7 @@ import { AchievementBadge } from "@/components/game/AchievementBadge";
 export default function Game() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [themeColor, setThemeColor] = useState("#7c3aed"); // Default purple color
-  const [practiceDigit, setPracticeDigit] = useState<number>(1);
+  const [practiceDigit, setPracticeDigit] = useState<number>(5); // Changed default to 5
   const { toast } = useToast();
 
   const updateThemeColor = (color: string) => {
@@ -194,9 +194,9 @@ export default function Game() {
                   id="practice-digit"
                   type="number"
                   min={1}
-                  max={9}
+                  max={20}  // Changed max from 9 to 20
                   value={practiceDigit}
-                  onChange={(e) => setPracticeDigit(Math.min(9, Math.max(1, parseInt(e.target.value) || 1)))}
+                  onChange={(e) => setPracticeDigit(Math.min(20, Math.max(1, parseInt(e.target.value) || 1)))}
                   className="w-20 text-center"
                 />
               </div>
