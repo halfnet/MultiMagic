@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useCookieAuth } from "@/hooks/use-cookie-auth";
 import { GameState, Question, Difficulty, GameMode, generateQuestions, checkAnswer, formatTime, calculateScore } from "@/lib/game";
 import { triggerConfetti, triggerCelebration } from "@/lib/confetti";
 import { playCorrectSound, playIncorrectSound, playCompleteSound } from "@/lib/audio";
@@ -16,7 +17,6 @@ import { Achievement, ACHIEVEMENTS, checkAchievements } from "@/lib/achievements
 import { AchievementBadge } from "@/components/game/AchievementBadge";
 import { Timer } from "@/components/game/Timer";
 
-
 export default function Game() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [themeColor, setThemeColor] = useState("#7c3aed");
@@ -24,6 +24,7 @@ export default function Game() {
   const [practiceQuestionCount, setPracticeQuestionCount] = useState<number>(5);
   const [showResults, setShowResults] = useState(false);
   const { toast } = useToast();
+  const { user } = useCookieAuth();
 
   const updateThemeColor = (color: string) => {
     setThemeColor(color);
@@ -77,7 +78,7 @@ export default function Game() {
   };
 
   const handleAnswer = async (answer: number) => {
-    if (!gameState) return;
+    if (!gameState || !user) return;
 
     const currentQuestion = gameState.questions[gameState.currentQuestion];
     const correct = checkAnswer(currentQuestion, answer);
@@ -104,17 +105,18 @@ export default function Game() {
           endTime
         };
 
-        // Save game results
+        // Save game results with user ID
         try {
           await fetch('/api/game-results', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+              userId: user.id, // Add user ID to the request
               difficulty: gameState.difficulty,
               mode: gameState.mode,
               practiceDigit: gameState.practiceDigit,
               questionsCount: gameState.questions.length,
-              correctAnswers: gameState.currentQuestion,
+              correctAnswers: gameState.currentQuestion + 1,
               timeTakenInMs: endTime - gameState.startTime,
               bestStreak: newGameState.bestStreak,
               incorrectAttempts: gameState.incorrectAttempts,
