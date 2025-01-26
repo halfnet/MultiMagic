@@ -32,7 +32,9 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: 'Complete the game without any mistakes',
     icon: 'Star',
     condition: (gameState: GameState) => {
-      return gameState.endTime !== undefined && gameState.score === gameState.questions.length;
+      return gameState.endTime !== undefined && 
+             gameState.score === gameState.questions.length && 
+             gameState.incorrectAttempts === 0;
     }
   },
   {
