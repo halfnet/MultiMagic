@@ -34,27 +34,27 @@ export function DancingCat() {
           {/* Cat body */}
           <circle cx="50" cy="50" r="40" fill="#B0B0B0" />
 
-          {/* Cat ears - made more prominent and triangular */}
+          {/* Cat ears - moved higher up */}
           <path 
-            d="M30 25L40 40L50 25" 
+            d="M35 15L45 35L55 15" 
             fill="#B0B0B0" 
             stroke="#B0B0B0" 
             strokeWidth="2"
           />
           <path 
-            d="M70 25L60 40L50 25" 
+            d="M65 15L55 35L45 15" 
             fill="#B0B0B0" 
             stroke="#B0B0B0" 
             strokeWidth="2"
           />
 
-          {/* Inner ears */}
+          {/* Inner ears - adjusted to match new ear positions */}
           <path 
-            d="M33 27L40 37L47 27" 
+            d="M38 17L45 32L52 17" 
             fill="#FFE5E5"
           />
           <path 
-            d="M67 27L60 37L53 27" 
+            d="M62 17L55 32L48 17" 
             fill="#FFE5E5"
           />
 
