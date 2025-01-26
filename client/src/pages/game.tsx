@@ -104,6 +104,26 @@ export default function Game() {
           endTime
         };
 
+        // Save game results
+        try {
+          await fetch('/api/game-results', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              difficulty: gameState.difficulty,
+              mode: gameState.mode,
+              practiceDigit: gameState.practiceDigit,
+              questionsCount: gameState.questions.length,
+              correctAnswers: gameState.currentQuestion,
+              timeTaken: endTime - gameState.startTime,
+              bestStreak: newGameState.bestStreak,
+              incorrectAttempts: gameState.incorrectAttempts,
+            }),
+          });
+        } catch (error) {
+          console.error('Failed to save game results:', error);
+        }
+
         setShowResults(false);
 
         const earnedAchievements = [];
