@@ -33,7 +33,7 @@ export default function Game() {
     const correct = checkAnswer(currentQuestion, answer);
 
     if (correct) {
-      playCorrectSound();
+      await playCorrectSound();
       triggerConfetti();
       toast({
         title: "Correct!",
@@ -43,7 +43,7 @@ export default function Game() {
 
       if (gameState.currentQuestion === gameState.questions.length - 1) {
         const endTime = Date.now();
-        playCompleteSound();
+        await playCompleteSound();
         setGameState({
           ...gameState,
           endTime,
@@ -61,7 +61,7 @@ export default function Game() {
         });
       }
     } else {
-      playIncorrectSound();
+      await playIncorrectSound();
       toast({
         title: "Try again!",
         description: "Keep practicing!",
