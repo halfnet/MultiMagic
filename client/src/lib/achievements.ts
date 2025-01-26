@@ -1,3 +1,6 @@
+import { Trophy, Star, Clock, Brain } from 'lucide-react';
+import { GameState } from './game';
+
 export interface Achievement {
   id: string;
   name: string;
@@ -11,19 +14,16 @@ export interface PlayerAchievements {
   lastEarned?: Achievement;
 }
 
-import { Trophy, Star, Clock, Brain } from 'lucide-react';
-import { GameState } from './game';
-
 export const ACHIEVEMENTS: Achievement[] = [
   {
     id: 'speed-master',
     name: 'Speed Master',
-    description: 'Complete the game in under 2 minutes',
+    description: 'Complete the game in under 30 seconds',
     icon: 'Clock',
     condition: (gameState: GameState) => {
       if (!gameState.endTime) return false;
       const timeInSeconds = (gameState.endTime - gameState.startTime) / 1000;
-      return timeInSeconds < 120; // 2 minutes
+      return timeInSeconds < 30; // Changed from 120 to 30 seconds
     }
   },
   {
