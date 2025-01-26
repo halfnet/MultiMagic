@@ -68,7 +68,8 @@ export default function Game() {
       mode,
       practiceDigit: mode === 'practice' ? practiceDigit : undefined,
       achievementsEarned: [],
-      lastEarnedAchievement: undefined
+      lastEarnedAchievement: undefined,
+      incorrectAttempts: 0 // Add this to track incorrect attempts
     });
   };
 
@@ -82,44 +83,79 @@ export default function Game() {
       await playCorrectSound();
       triggerConfetti();
 
+      const newScore = gameState.score + 1;
+      const isLastQuestion = gameState.currentQuestion === gameState.questions.length - 1;
+
       let newGameState = {
         ...gameState,
         currentQuestion: gameState.currentQuestion + 1,
-        score: gameState.score + 1,
+        score: newScore,
         streak: gameState.streak + 1
       };
 
-      if (gameState.currentQuestion === gameState.questions.length - 1) {
+      if (isLastQuestion) {
         const endTime = Date.now();
         await playCompleteSound();
+
         newGameState = {
           ...newGameState,
           endTime,
-          score: calculateScore(newGameState.score, endTime - gameState.startTime)
+          score: newScore // Keep the actual correct answers for achievement checking
         };
 
         // Reset showResults
         setShowResults(false);
 
+        // Check achievements after game completion
+        const earnedAchievements = [];
+        for (const achievement of ACHIEVEMENTS) {
+          if (!gameState.achievementsEarned.includes(achievement.id) && achievement.condition(newGameState)) {
+            earnedAchievements.push(achievement);
+          }
+        }
+
+        // Update achievements earned
+        if (earnedAchievements.length > 0) {
+          const lastEarned = earnedAchievements[earnedAchievements.length - 1];
+          newGameState = {
+            ...newGameState,
+            achievementsEarned: [
+              ...gameState.achievementsEarned,
+              ...earnedAchievements.map(a => a.id)
+            ],
+            lastEarnedAchievement: lastEarned
+          };
+
+          // Show achievement notifications
+          earnedAchievements.forEach(achievement => {
+            toast({
+              title: "Achievement Unlocked! 🏆",
+              description: `${achievement.name} - ${achievement.description}`,
+              variant: "default",
+            });
+          });
+        }
+
         // Trigger celebration and show results after a delay
         triggerCelebration();
         setTimeout(() => {
           setShowResults(true);
-        }, 2500); // Wait for 2.5 seconds to show results
-      }
-
-      const newAchievement = checkAchievements(newGameState, gameState.achievementsEarned);
-      if (newAchievement) {
-        newGameState = {
-          ...newGameState,
-          achievementsEarned: [...gameState.achievementsEarned, newAchievement.id],
-          lastEarnedAchievement: newAchievement
-        };
-        toast({
-          title: "Achievement Unlocked! 🏆",
-          description: `${newAchievement.name} - ${newAchievement.description}`,
-          variant: "default",
-        });
+        }, 2500);
+      } else {
+        // Check for mid-game achievements (like practice streak)
+        const newAchievement = checkAchievements(newGameState, gameState.achievementsEarned);
+        if (newAchievement) {
+          newGameState = {
+            ...newGameState,
+            achievementsEarned: [...gameState.achievementsEarned, newAchievement.id],
+            lastEarnedAchievement: newAchievement
+          };
+          toast({
+            title: "Achievement Unlocked! 🏆",
+            description: `${newAchievement.name} - ${newAchievement.description}`,
+            variant: "default",
+          });
+        }
       }
 
       setGameState(newGameState);
@@ -127,7 +163,8 @@ export default function Game() {
       await playIncorrectSound();
       setGameState({
         ...gameState,
-        streak: 0
+        streak: 0,
+        incorrectAttempts: gameState.incorrectAttempts + 1
       });
       toast({
         title: "Try again!",

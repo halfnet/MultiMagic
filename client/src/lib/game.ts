@@ -20,6 +20,7 @@ export interface GameState {
   practiceDigit?: number;
   achievementsEarned: string[];
   lastEarnedAchievement?: Achievement;
+  incorrectAttempts: number;
 }
 
 // Remove duplicate Achievement interface and import from achievements.ts
