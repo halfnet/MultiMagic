@@ -59,7 +59,7 @@ export default function Game() {
     } else {
       toast({
         title: "Try again!",
-        description: `The correct answer was ${currentQuestion.answer}`,
+        description: "Keep practicing!",
         variant: "destructive",
       });
       setGameState({
