@@ -17,13 +17,13 @@ import { AchievementBadge } from "@/components/game/AchievementBadge";
 
 export default function Game() {
   const [gameState, setGameState] = useState<GameState | null>(null);
-  const [themeColor, setThemeColor] = useState("#7c3aed"); // Default purple color
-  const [practiceDigit, setPracticeDigit] = useState<number>(5); // Changed default to 5
+  const [themeColor, setThemeColor] = useState("#7c3aed");
+  const [practiceDigit, setPracticeDigit] = useState<number>(5);
+  const [showResults, setShowResults] = useState(false);
   const { toast } = useToast();
 
   const updateThemeColor = (color: string) => {
     setThemeColor(color);
-    // Convert hex to HSL
     const r = parseInt(color.slice(1, 3), 16) / 255;
     const g = parseInt(color.slice(3, 5), 16) / 255;
     const b = parseInt(color.slice(5, 7), 16) / 255;
@@ -97,10 +97,17 @@ export default function Game() {
           endTime,
           score: calculateScore(newGameState.score, endTime - gameState.startTime)
         };
+
+        // Reset showResults
+        setShowResults(false);
+
+        // Trigger celebration and show results after a delay
         triggerCelebration();
+        setTimeout(() => {
+          setShowResults(true);
+        }, 2500); // Wait for 2.5 seconds to show results
       }
 
-      // Check for achievements
       const newAchievement = checkAchievements(newGameState, gameState.achievementsEarned);
       if (newAchievement) {
         newGameState = {
@@ -194,7 +201,7 @@ export default function Game() {
                   id="practice-digit"
                   type="number"
                   min={1}
-                  max={20}  // Changed max from 9 to 20
+                  max={20}
                   value={practiceDigit}
                   onChange={(e) => setPracticeDigit(Math.min(20, Math.max(1, parseInt(e.target.value) || 1)))}
                   className="w-20 text-center"
@@ -253,46 +260,53 @@ export default function Game() {
         </>
       ) : (
         <div className="space-y-8 text-center">
-          <h2 className="text-4xl font-bold text-primary">Amazing Job! 🎉</h2>
-          <Achievements
-            score={gameState.score}
-            streak={gameState.streak}
-            time={formatTime(gameState.endTime! - gameState.startTime)}
-          />
+          {showResults ? (
+            <>
+              <h2 className="text-4xl font-bold text-primary">Amazing Job! 🎉</h2>
+              <Achievements
+                score={gameState.score}
+                streak={gameState.streak}
+                time={formatTime(gameState.endTime! - gameState.startTime)}
+              />
 
-          {/* Display earned achievements */}
-          {gameState.achievementsEarned.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-2xl font-bold">Achievements Earned</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {ACHIEVEMENTS.filter(a => gameState.achievementsEarned.includes(a.id)).map(achievement => (
-                  <AchievementBadge
-                    key={achievement.id}
-                    achievement={achievement}
-                    animate={achievement.id === gameState.lastEarnedAchievement?.id}
-                  />
-                ))}
+              {gameState.achievementsEarned.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-bold">Achievements Earned</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {ACHIEVEMENTS.filter(a => gameState.achievementsEarned.includes(a.id)).map(achievement => (
+                      <AchievementBadge
+                        key={achievement.id}
+                        achievement={achievement}
+                        animate={achievement.id === gameState.lastEarnedAchievement?.id}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="space-x-4">
+                <Button
+                  size="lg"
+                  onClick={() => startGame(gameState.difficulty, gameState.mode)}
+                  className="text-lg"
+                >
+                  Play Again
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={handleQuit}
+                  className="text-lg"
+                >
+                  Change Mode
+                </Button>
               </div>
+            </>
+          ) : (
+            <div className="animate-bounce text-4xl font-bold text-primary">
+              🎉 Fantastic! 🎉
             </div>
           )}
-
-          <div className="space-x-4">
-            <Button
-              size="lg"
-              onClick={() => startGame(gameState.difficulty, gameState.mode)}
-              className="text-lg"
-            >
-              Play Again
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={handleQuit}
-              className="text-lg"
-            >
-              Change Mode
-            </Button>
-          </div>
         </div>
       )}
     </div>
