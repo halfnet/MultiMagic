@@ -3,7 +3,6 @@ import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 
 interface AchievementsProps {
-  score: number;
   streak: number;
   time: string;
 }

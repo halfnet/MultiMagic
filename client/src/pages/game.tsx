@@ -63,7 +63,6 @@ export default function Game() {
       currentQuestion: 0,
       questions: generateQuestions(difficulty, 10, mode === 'practice' ? practiceDigit : undefined),
       startTime: Date.now(),
-      score: 0,
       difficulty,
       streak: 0,
       bestStreak: 0,
@@ -86,14 +85,11 @@ export default function Game() {
       await playCorrectSound();
       triggerConfetti();
 
-      const newScore = gameState.score + 1;
       const isLastQuestion = gameState.currentQuestion === gameState.questions.length - 1;
-
       const newStreak = gameState.streak + 1;
       let newGameState = {
         ...gameState,
         currentQuestion: gameState.currentQuestion + 1,
-        score: newScore,
         streak: newStreak,
         bestStreak: Math.max(newStreak, gameState.bestStreak)
       };

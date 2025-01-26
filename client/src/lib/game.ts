@@ -12,7 +12,6 @@ export interface GameState {
   questions: Question[];
   startTime: number;
   endTime?: number;
-  score: number;
   difficulty: Difficulty;
   streak: number;
   bestStreak: number;
