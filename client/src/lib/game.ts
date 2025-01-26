@@ -58,7 +58,7 @@ export const generateQuestion = (difficulty: Difficulty, practiceDigit?: number)
   };
 };
 
-export const generateQuestions = (difficulty: Difficulty, count: number = 20, practiceDigit?: number): Question[] => {
+export const generateQuestions = (difficulty: Difficulty, count: number = 10, practiceDigit?: number): Question[] => {
   return Array.from({ length: count }, () => generateQuestion(difficulty, practiceDigit));
 };
 

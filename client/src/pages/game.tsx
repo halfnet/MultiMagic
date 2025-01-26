@@ -59,7 +59,7 @@ export default function Game() {
   const startGame = (difficulty: Difficulty, mode: GameMode = 'regular') => {
     setGameState({
       currentQuestion: 0,
-      questions: generateQuestions(difficulty, 20, mode === 'practice' ? practiceDigit : undefined),
+      questions: generateQuestions(difficulty, 10, mode === 'practice' ? practiceDigit : undefined),
       startTime: Date.now(),
       score: 0,
       difficulty,
