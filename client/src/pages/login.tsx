@@ -27,8 +27,7 @@ export default function Login() {
     queryKey: ['/api/users'],
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async (username: string) => {
     if (!username.trim()) return;
 
     try {
@@ -41,6 +40,11 @@ export default function Login() {
         variant: 'destructive',
       });
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await handleLogin(username);
   };
 
   return (
@@ -60,10 +64,7 @@ export default function Login() {
                 <Label>Select Existing User</Label>
                 <Select
                   disabled={isLoadingUsers}
-                  onValueChange={(value) => {
-                    setUsername(value);
-                    handleSubmit({ preventDefault: () => {} } as React.FormEvent);
-                  }}
+                  onValueChange={handleLogin}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select a user" />
