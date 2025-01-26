@@ -22,13 +22,8 @@ export interface GameState {
   lastEarnedAchievement?: Achievement;
 }
 
-export interface Achievement {
-  id: string;
-  name: string;
-  description: string;
-  criteria: string; //Example: "Score 1000 points"
-}
-
+// Remove duplicate Achievement interface and import from achievements.ts
+import { Achievement } from './achievements';
 
 export const generateQuestion = (difficulty: Difficulty, practiceDigit?: number): Question => {
   const max = difficulty === 'easy' ? 9 : 20;

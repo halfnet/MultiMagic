@@ -32,7 +32,8 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: 'Complete the game without any mistakes',
     icon: 'Star',
     condition: (gameState: GameState) => {
-      return gameState.streak === gameState.questions.length;
+      // Check if the game is complete and score equals total questions
+      return gameState.endTime !== undefined && gameState.score === gameState.questions.length;
     }
   },
   {
