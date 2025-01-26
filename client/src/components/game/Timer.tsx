@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { formatTime } from "@/lib/game";
 
 interface TimerProps {
@@ -5,9 +6,9 @@ interface TimerProps {
 }
 
 export function Timer({ startTime }: TimerProps) {
-  const [elapsedTime, setElapsedTime] = React.useState("0:00");
+  const [elapsedTime, setElapsedTime] = useState("0:00");
 
-  React.useEffect(() => {
+  useEffect(() => {
     const interval = setInterval(() => {
       const elapsed = Date.now() - startTime;
       setElapsedTime(formatTime(elapsed));
