@@ -14,6 +14,7 @@ export interface GameState {
   score: number;
   difficulty: Difficulty;
   streak: number;
+  themeColor: string;
 }
 
 export const generateQuestion = (difficulty: Difficulty): Question => {
