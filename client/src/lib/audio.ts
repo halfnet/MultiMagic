@@ -1,0 +1,33 @@
+// Audio helper functions for game sounds
+let audioContext: AudioContext | null = null;
+
+// Short beep sounds for different events
+const CORRECT_SOUND = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiDNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2JQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTfjMGHm7A7+WSRA0PVqzn77BdGAg+ltryxnMpBSl+zPLaizsIGGS57OihUBELTKXh8bllHgU2jdXzzn0vBSF1xe/glEILElyx6OyrWBUIQ5zd8sFuJAUuhM/z1YE2Bhxqvu7olEYODlOq5O+zYBoIO5PY88p2KwUme8rx3I4+CRZiturqpVITC0mi4PK8aB8GM4nU8tGAMQYfcsLu45ZFDBFYr+ftrVoXCECY3PLEcSYELIHO8diDOQcZaLvt559NEAxPqOPwtmMcBjiP1/PMeS0GI3fH8N2IQAoUXrTp66hVFApGnt/yvmwhBTCG0fPTfjQGHW/A7eSRRA0PVqzm77BeGQc+ltrzxnUoBSh+zPDaizsIGGS56+mjTxELTKXh8bllHgU1jdT0z3wvBSJ0xe/glEILElyx6OyrWRUIRJve8sFuJAUug8/z1YE2Bhxqvu7olEYODlOq5O+zYRoHO5PY88p3KwUme8rx3I4+CRVht+rqpVMSC0mi4PG9aB8GMojU8tGAMQYfccPu45ZFDBFYr+ftrVwWCECY3PLEcSYGK4DN8tiDOQcZZ7vs559NEAxPqOPxtmQcBjiP1/PMeywGI3fH8N+IQAoUXrTp66hWEwlGnt/yv2wiBDCG0fPTfjQHHG/A7eSRRQ0PVqzm77BeGQc9ltvyxnUoBSh9y/HajDsIF2W56+mjUREKTKPh8blnHgU1jdTy0HwvBSF0xPDglEILElux6eyrWRUJQ5vd88FwJAQug8/z1YE3Bhxqvu7olUYODlKp5e+zYRoHO5LZ88p3KwUmecnx3Y4/CBVhtuvqpVMSC0mh4fG9aiAFM4jU8tGAMQYfccLv45ZGCxFYr+ftrVwXB0CY3PLEcycFKoDN8tiEOQcZZ7vs559OEAxPp+PxtmQdBTiP1/PMey0FI3bH8d+IQQkUXbPq66hWEwlGnt/yv2wiBDCG0PPTgDQHHG3A7eSRRQ0PVKzn77BeGQc9ltrzxnUoBSh9y/HajDwIF2S56+mjUREKTKPh8blnHwU1jdTy0H4vBSF0xPDglEILElux6eyrWRUJQ5vd88FwJAUtg8/z1YI3Bhxqvu7olUYODlKp5e+zYhoGOpPX88p3LAUlecnx3Y8+CBZhtuvqpVMSC0mh4PK+aiAFMofU89GAMgUfccLv45ZGDRBYr+ftrVwXB0CY3PLEcycFKoDN8tiEOQcZZ7vs559OEAxPp+PxtmQdBTeP1/PMey0FI3bH8d+IQQsTXbPq66hWEwlGnt/yv2wiBDCF0fPTgDQHHG3A7eSRRQ0PVKzn77BeGQc9ltrzyHQpBSh9y/HajDwIF2S56+mjUREKTKPh8blnHwU1jdTy0H4vBSF0xPDglEILElux6eyrWRUJQ5vd88FwJAUtg8/z1YI3Bhxqvu7olUYODlKp5e+zYhoGOpPX88p3LAUlecnx3Y8+CBZhtuvqpVMSC0mh4PK+aiAFMofU89GAMgUfccLv45ZGDRBYr+ftrVwXB0CY3PLEcycFKoDN8tiEOQcZZ7vs559OEAxPp+PxtmQdBTeP1/PMey0FI3bH8d+IQQsT';
+
+const INCORRECT_SOUND = 'data:audio/wav;base64,UklGRj4GAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YRoGAACAgICAgICAgICAgICAgICAgICAgICAgICAf39/gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgH9/f39/f39/f39/f39/f39/f4CAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB/f39/f39/f39/f39/f39/f39/f39/f39/gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIB/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/gICAgICAgICAgICAgICAgICAgICAgICAgH9/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f4CAgICAgICAgICAgICAgH9/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f4CAgICAgICAgICAgH9/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f4CAgH9/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/f39/fw==';
+
+const COMPLETE_SOUND = 'data:audio/wav;base64,UklGRj4AAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YRoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+
+// Function to play a sound from a data URL
+const playSound = async (dataUrl: string) => {
+  if (!audioContext) {
+    audioContext = new AudioContext();
+  }
+
+  try {
+    const response = await fetch(dataUrl);
+    const arrayBuffer = await response.arrayBuffer();
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+    const source = audioContext.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(audioContext.destination);
+    source.start(0);
+  } catch (error) {
+    console.error('Failed to play sound:', error);
+  }
+};
+
+// Sound effect functions
+export const playCorrectSound = () => playSound(CORRECT_SOUND);
+export const playIncorrectSound = () => playSound(INCORRECT_SOUND);
+export const playCompleteSound = () => playSound(COMPLETE_SOUND);

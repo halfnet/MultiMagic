@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { GameState, Question, Difficulty, generateQuestions, checkAnswer, formatTime, calculateScore } from "@/lib/game";
 import { triggerConfetti, triggerCelebration } from "@/lib/confetti";
+import { playCorrectSound, playIncorrectSound, playCompleteSound } from "@/lib/audio";
 import { X, Palette } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -71,6 +72,7 @@ export default function Game() {
     const correct = checkAnswer(currentQuestion, answer);
 
     if (correct) {
+      await playCorrectSound();
       triggerConfetti();
       toast({
         title: "Correct!",
@@ -80,6 +82,7 @@ export default function Game() {
 
       if (gameState.currentQuestion === gameState.questions.length - 1) {
         const endTime = Date.now();
+        await playCompleteSound();
         setGameState({
           ...gameState,
           endTime,
@@ -97,6 +100,7 @@ export default function Game() {
         });
       }
     } else {
+      await playIncorrectSound();
       toast({
         title: "Try again!",
         description: "Keep practicing!",
