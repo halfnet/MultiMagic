@@ -1,4 +1,5 @@
-import { pgTable, text, serial, integer, boolean, sql as dbsql } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 export const users = pgTable("users", {
@@ -18,7 +19,7 @@ export const gameResults = pgTable("game_results", {
   timeTaken: integer("time_taken").notNull(),
   bestStreak: integer("best_streak").notNull(),
   incorrectAttempts: integer("incorrect_attempts").notNull(),
-  createdAt: text("created_at").default(dbsql`CURRENT_TIMESTAMP`).notNull(),
+  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
 export const insertUserSchema = createInsertSchema(users);
