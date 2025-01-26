@@ -7,21 +7,9 @@ interface AchievementsProps {
   time: string;
 }
 
-export function Achievements({ score, streak, time }: AchievementsProps) {
+export function Achievements({ streak, time }: AchievementsProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-3xl">
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.2 }}
-      >
-        <Card className="p-4 flex flex-col items-center">
-          <Trophy className="w-8 h-8 text-yellow-500 mb-2" />
-          <div className="text-2xl font-bold">{score}</div>
-          <div className="text-sm text-gray-600">Total Score</div>
-        </Card>
-      </motion.div>
-
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
