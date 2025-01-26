@@ -1,11 +1,11 @@
-import { pgTable, text, serial, integer, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").unique().notNull(),
-  password: text("password").notNull(),
+  lastLoginAt: text("last_login_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
 export const gameResults = pgTable("game_results", {
