@@ -14,76 +14,98 @@ export function DancingCat() {
     >
       <motion.div
         animate={{
-          y: [0, -10, 0],
-          rotate: [0, -5, 5, -5, 0]
+          x: [-10, 10, -10],
+          rotate: [-5, 5, -5],
         }}
         transition={{
-          duration: 2,
+          duration: 1,
           repeat: Infinity,
-          repeatType: "reverse"
+          repeatType: "mirror",
+          ease: "easeInOut"
         }}
       >
         <svg
-          width="100"
-          height="100"
-          viewBox="0 0 100 100"
+          width="120"
+          height="120"
+          viewBox="0 0 120 120"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           className="drop-shadow-lg"
         >
-          {/* Cat body */}
-          <circle cx="50" cy="50" r="40" fill="#B0B0B0" />
+          <defs>
+            <radialGradient id="catFur" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0%" stopColor="#D4D4D4"/>
+              <stop offset="100%" stopColor="#A0A0A0"/>
+            </radialGradient>
+            <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+              <feOffset dx="2" dy="2"/>
+              <feComponentTransfer>
+                <feFuncA type="linear" slope="0.3"/>
+              </feComponentTransfer>
+              <feMerge>
+                <feMergeNode/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
 
-          {/* Cat ears - moved higher up */}
-          <path 
-            d="M35 15L45 35L55 15" 
-            fill="#B0B0B0" 
-            stroke="#B0B0B0" 
-            strokeWidth="2"
-          />
-          <path 
-            d="M65 15L55 35L45 15" 
-            fill="#B0B0B0" 
-            stroke="#B0B0B0" 
-            strokeWidth="2"
-          />
+          <motion.g
+            animate={{
+              x: [-5, 5, -5],
+              rotate: [-10, 10, -10]
+            }}
+            transition={{
+              duration: 0.5,
+              repeat: Infinity,
+              repeatType: "mirror"
+            }}
+          >
+            <path
+              d="M30 60 Q25 70 20 80"
+              stroke="#A0A0A0"
+              strokeWidth="6"
+              strokeLinecap="round"
+            />
+            <path
+              d="M90 60 Q95 70 100 80"
+              stroke="#A0A0A0"
+              strokeWidth="6"
+              strokeLinecap="round"
+            />
+          </motion.g>
 
-          {/* Inner ears - adjusted to match new ear positions */}
-          <path 
-            d="M38 17L45 32L52 17" 
-            fill="#FFE5E5"
-          />
-          <path 
-            d="M62 17L55 32L48 17" 
-            fill="#FFE5E5"
-          />
-
-          {/* Eyes */}
-          <circle cx="35" cy="45" r="5" fill="#000" />
-          <circle cx="65" cy="45" r="5" fill="#000" />
-
-          {/* White eye highlights */}
-          <circle cx="33" cy="43" r="2" fill="#FFF" />
-          <circle cx="63" cy="43" r="2" fill="#FFF" />
-
-          {/* Smile */}
+          <ellipse cx="60" cy="65" rx="35" ry="30" fill="url(#catFur)" filter="url(#shadow)"/>
+          <circle cx="60" cy="45" r="25" fill="url(#catFur)"/>
+          <path d="M40 25L50 40L60 25" fill="#A0A0A0" stroke="#909090"/>
+          <path d="M80 25L70 40L60 25" fill="#A0A0A0" stroke="#909090"/>
+          <path d="M43 27L50 38L57 27" fill="#FFE5E5"/>
+          <path d="M77 27L70 38L63 27" fill="#FFE5E5"/>
+          <ellipse cx="50" cy="45" rx="4" ry="5" fill="#000000"/> 
+          <ellipse cx="70" cy="45" rx="4" ry="5" fill="#000000"/> 
+          <circle cx="48" cy="43" r="1.5" fill="#FFFFFF"/> 
+          <circle cx="68" cy="43" r="1.5" fill="#FFFFFF"/> 
+          <path d="M57 50L60 53L63 50Z" fill="#FFB6C1"/>
+          <g stroke="#666666" strokeWidth="1.2">
+            <line x1="40" y1="52" x2="25" y2="50"/>
+            <line x1="40" y1="55" x2="25" y2="55"/>
+            <line x1="40" y1="58" x2="25" y2="60"/>
+            <line x1="80" y1="52" x2="95" y2="50"/>
+            <line x1="80" y1="55" x2="95" y2="55"/>
+            <line x1="80" y1="58" x2="95" y2="60"/>
+          </g>
           <path
-            d="M40 60Q50 70 60 60"
-            stroke="#000"
-            strokeWidth="2"
+            d="M55 55Q60 58 65 55"
+            stroke="#000000"
+            strokeWidth="1.5"
             fill="none"
           />
-
-          {/* Whiskers */}
-          <line x1="25" y1="55" x2="35" y2="55" stroke="#666" strokeWidth="1.5" />
-          <line x1="25" y1="60" x2="35" y2="60" stroke="#666" strokeWidth="1.5" />
-          <line x1="65" y1="55" x2="75" y2="55" stroke="#666" strokeWidth="1.5" />
-          <line x1="65" y1="60" x2="75" y2="60" stroke="#666" strokeWidth="1.5" />
-
-          {/* Nose */}
           <path
-            d="M47 55L50 58L53 55Z"
-            fill="#FFB6C1"
+            d="M45 65Q60 70 75 65"
+            stroke="#909090"
+            strokeWidth="1"
+            fill="none"
+            opacity="0.5"
           />
         </svg>
       </motion.div>
