@@ -21,7 +21,7 @@ export default function Game() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [themeColor, setThemeColor] = useState("#7c3aed");
   const [practiceDigit, setPracticeDigit] = useState<number>(5);
-  const [practiceQuestionCount, setPracticeQuestionCount] = useState<number>(10);
+  const [practiceQuestionCount, setPracticeQuestionCount] = useState<number>(5);
   const [showResults, setShowResults] = useState(false);
   const { toast } = useToast();
 
