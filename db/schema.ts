@@ -16,7 +16,7 @@ export const gameResults = pgTable("game_results", {
   practiceDigit: integer("practice_digit"),
   questionsCount: integer("questions_count").notNull(),
   correctAnswers: integer("correct_answers").notNull(),
-  timeTaken: integer("time_taken").notNull(),
+  timeTakenInMs: integer("time_taken_in_ms").notNull(),
   bestStreak: integer("best_streak").notNull(),
   incorrectAttempts: integer("incorrect_attempts").notNull(),
   createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),

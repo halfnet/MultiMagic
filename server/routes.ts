@@ -14,7 +14,7 @@ export function registerRoutes(app: Express): Server {
         practiceDigit: req.body.practiceDigit,
         questionsCount: req.body.questionsCount,
         correctAnswers: req.body.correctAnswers,
-        timeTaken: req.body.timeTaken,
+        timeTakenInMs: req.body.timeTakenInMs,
         bestStreak: req.body.bestStreak,
         incorrectAttempts: req.body.incorrectAttempts,
       });

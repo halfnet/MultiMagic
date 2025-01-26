@@ -115,7 +115,7 @@ export default function Game() {
               practiceDigit: gameState.practiceDigit,
               questionsCount: gameState.questions.length,
               correctAnswers: gameState.currentQuestion,
-              timeTaken: endTime - gameState.startTime,
+              timeTakenInMs: endTime - gameState.startTime,
               bestStreak: newGameState.bestStreak,
               incorrectAttempts: gameState.incorrectAttempts,
             }),
