@@ -1,5 +1,5 @@
 export type Difficulty = 'easy' | 'hard';
-export type GameMode = 'regular' | 'practice';
+export type GameMode = 'regular' | 'practice' | 'challenge';
 
 export interface Question {
   num1: number;
@@ -18,7 +18,17 @@ export interface GameState {
   themeColor: string;
   mode: GameMode;
   practiceDigit?: number;
+  achievementsEarned: string[];
+  lastEarnedAchievement?: Achievement;
 }
+
+export interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  criteria: string; //Example: "Score 1000 points"
+}
+
 
 export const generateQuestion = (difficulty: Difficulty, practiceDigit?: number): Question => {
   const max = difficulty === 'easy' ? 9 : 20;

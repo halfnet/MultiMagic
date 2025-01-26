@@ -12,6 +12,8 @@ import { GameState, Question, Difficulty, GameMode, generateQuestions, checkAnsw
 import { triggerConfetti, triggerCelebration } from "@/lib/confetti";
 import { playCorrectSound, playIncorrectSound, playCompleteSound } from "@/lib/audio";
 import { X, Palette, Brain } from "lucide-react";
+import { Achievement, ACHIEVEMENTS, checkAchievements } from "@/lib/achievements";
+import { AchievementBadge } from "@/components/game/AchievementBadge";
 
 export default function Game() {
   const [gameState, setGameState] = useState<GameState | null>(null);
@@ -64,7 +66,9 @@ export default function Game() {
       streak: 0,
       themeColor,
       mode,
-      practiceDigit: mode === 'practice' ? practiceDigit : undefined
+      practiceDigit: mode === 'practice' ? practiceDigit : undefined,
+      achievementsEarned: [],
+      lastEarnedAchievement: undefined
     });
   };
 
@@ -77,41 +81,51 @@ export default function Game() {
     if (correct) {
       await playCorrectSound();
       triggerConfetti();
-      toast({
-        title: "Correct!",
-        description: "Great job! Keep going!",
-        variant: "default",
-      });
+
+      let newGameState = {
+        ...gameState,
+        currentQuestion: gameState.currentQuestion + 1,
+        score: gameState.score + 1,
+        streak: gameState.streak + 1
+      };
 
       if (gameState.currentQuestion === gameState.questions.length - 1) {
         const endTime = Date.now();
         await playCompleteSound();
-        setGameState({
-          ...gameState,
+        newGameState = {
+          ...newGameState,
           endTime,
-          currentQuestion: gameState.currentQuestion + 1,
-          score: calculateScore(gameState.score + 1, endTime - gameState.startTime),
-          streak: gameState.streak + 1
-        });
+          score: calculateScore(newGameState.score, endTime - gameState.startTime)
+        };
         triggerCelebration();
-      } else {
-        setGameState({
-          ...gameState,
-          currentQuestion: gameState.currentQuestion + 1,
-          score: gameState.score + 1,
-          streak: gameState.streak + 1
+      }
+
+      // Check for achievements
+      const newAchievement = checkAchievements(newGameState, gameState.achievementsEarned);
+      if (newAchievement) {
+        newGameState = {
+          ...newGameState,
+          achievementsEarned: [...gameState.achievementsEarned, newAchievement.id],
+          lastEarnedAchievement: newAchievement
+        };
+        toast({
+          title: "Achievement Unlocked! 🏆",
+          description: `${newAchievement.name} - ${newAchievement.description}`,
+          variant: "default",
         });
       }
+
+      setGameState(newGameState);
     } else {
       await playIncorrectSound();
+      setGameState({
+        ...gameState,
+        streak: 0
+      });
       toast({
         title: "Try again!",
         description: "Keep practicing!",
         variant: "destructive",
-      });
-      setGameState({
-        ...gameState,
-        streak: 0
       });
     }
   };
@@ -245,6 +259,23 @@ export default function Game() {
             streak={gameState.streak}
             time={formatTime(gameState.endTime! - gameState.startTime)}
           />
+
+          {/* Display earned achievements */}
+          {gameState.achievementsEarned.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="text-2xl font-bold">Achievements Earned</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {ACHIEVEMENTS.filter(a => gameState.achievementsEarned.includes(a.id)).map(achievement => (
+                  <AchievementBadge
+                    key={achievement.id}
+                    achievement={achievement}
+                    animate={achievement.id === gameState.lastEarnedAchievement?.id}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="space-x-4">
             <Button
               size="lg"
