@@ -5,17 +5,18 @@ import { ProgressBar } from "@/components/game/ProgressBar";
 import { Achievements } from "@/components/game/Achievements";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
-import { GameState, Question, Difficulty, generateQuestions, checkAnswer, formatTime, calculateScore } from "@/lib/game";
-import { triggerConfetti, triggerCelebration } from "@/lib/confetti";
-import { playCorrectSound, playIncorrectSound, playCompleteSound } from "@/lib/audio";
-import { X, Palette } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { GameState, Question, Difficulty, GameMode, generateQuestions, checkAnswer, formatTime, calculateScore } from "@/lib/game";
+import { triggerConfetti, triggerCelebration } from "@/lib/confetti";
+import { playCorrectSound, playIncorrectSound, playCompleteSound } from "@/lib/audio";
+import { X, Palette, Brain } from "lucide-react";
 
 export default function Game() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [themeColor, setThemeColor] = useState("#7c3aed"); // Default purple color
+  const [practiceDigit, setPracticeDigit] = useState<number>(1);
   const { toast } = useToast();
 
   const updateThemeColor = (color: string) => {
@@ -53,15 +54,17 @@ export default function Game() {
     );
   };
 
-  const startGame = (difficulty: Difficulty) => {
+  const startGame = (difficulty: Difficulty, mode: GameMode = 'regular') => {
     setGameState({
       currentQuestion: 0,
-      questions: generateQuestions(difficulty),
+      questions: generateQuestions(difficulty, 20, mode === 'practice' ? practiceDigit : undefined),
       startTime: Date.now(),
       score: 0,
       difficulty,
       streak: 0,
-      themeColor
+      themeColor,
+      mode,
+      practiceDigit: mode === 'practice' ? practiceDigit : undefined
     });
   };
 
@@ -157,6 +160,41 @@ export default function Game() {
             >
               Hard Mode (1-20)
             </Button>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 text-gray-500 bg-white">Practice Mode</span>
+              </div>
+            </div>
+
+            <div className="space-y-4 pt-4">
+              <div className="flex items-center gap-2">
+                <Label htmlFor="practice-digit" className="flex items-center gap-2">
+                  <Brain className="w-4 h-4" />
+                  Choose a number to practice:
+                </Label>
+                <Input
+                  id="practice-digit"
+                  type="number"
+                  min={1}
+                  max={9}
+                  value={practiceDigit}
+                  onChange={(e) => setPracticeDigit(Math.min(9, Math.max(1, parseInt(e.target.value) || 1)))}
+                  className="w-20 text-center"
+                />
+              </div>
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full text-lg"
+                onClick={() => startGame('easy', 'practice')}
+              >
+                Practice Mode
+              </Button>
+            </div>
           </div>
         </Card>
       </div>
@@ -170,20 +208,27 @@ export default function Game() {
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex flex-col items-center justify-center p-4 space-y-8">
       {!isGameComplete ? (
         <>
-          <div className="w-full max-w-md flex justify-between items-center">
-            <ProgressBar
-              current={gameState.currentQuestion + 1}
-              total={gameState.questions.length}
-            />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleQuit}
-              className="ml-4"
-              title="Quit game"
-            >
-              <X className="h-5 w-5" />
-            </Button>
+          <div className="w-full max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <ProgressBar
+                current={gameState.currentQuestion + 1}
+                total={gameState.questions.length}
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleQuit}
+                className="ml-4"
+                title="Quit game"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            {gameState.mode === 'practice' && (
+              <div className="text-center text-sm text-muted-foreground mb-4">
+                Practicing multiplications with {gameState.practiceDigit}
+              </div>
+            )}
           </div>
           <FlashCard
             num1={currentQuestion.num1}
@@ -203,7 +248,7 @@ export default function Game() {
           <div className="space-x-4">
             <Button
               size="lg"
-              onClick={() => startGame(gameState.difficulty)}
+              onClick={() => startGame(gameState.difficulty, gameState.mode)}
               className="text-lg"
             >
               Play Again
@@ -214,7 +259,7 @@ export default function Game() {
               onClick={handleQuit}
               className="text-lg"
             >
-              Change Difficulty
+              Change Mode
             </Button>
           </div>
         </div>

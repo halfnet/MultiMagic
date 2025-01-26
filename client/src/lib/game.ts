@@ -1,4 +1,5 @@
 export type Difficulty = 'easy' | 'hard';
+export type GameMode = 'regular' | 'practice';
 
 export interface Question {
   num1: number;
@@ -15,10 +16,29 @@ export interface GameState {
   difficulty: Difficulty;
   streak: number;
   themeColor: string;
+  mode: GameMode;
+  practiceDigit?: number;
 }
 
-export const generateQuestion = (difficulty: Difficulty): Question => {
+export const generateQuestion = (difficulty: Difficulty, practiceDigit?: number): Question => {
   const max = difficulty === 'easy' ? 9 : 20;
+
+  if (practiceDigit !== undefined) {
+    // For practice mode, one number is always the practice digit
+    const useFirstNumber = Math.random() < 0.5;
+    const otherNumber = Math.floor(Math.random() * max) + 1;
+
+    const num1 = useFirstNumber ? practiceDigit : otherNumber;
+    const num2 = useFirstNumber ? otherNumber : practiceDigit;
+
+    return {
+      num1,
+      num2,
+      answer: num1 * num2
+    };
+  }
+
+  // Regular mode
   const num1 = Math.floor(Math.random() * max) + 1;
   const num2 = Math.floor(Math.random() * max) + 1;
   return {
@@ -28,8 +48,8 @@ export const generateQuestion = (difficulty: Difficulty): Question => {
   };
 };
 
-export const generateQuestions = (difficulty: Difficulty, count: number = 20): Question[] => {
-  return Array.from({ length: count }, () => generateQuestion(difficulty));
+export const generateQuestions = (difficulty: Difficulty, count: number = 20, practiceDigit?: number): Question[] => {
+  return Array.from({ length: count }, () => generateQuestion(difficulty, practiceDigit));
 };
 
 export const checkAnswer = (question: Question, userAnswer: number): boolean => {
