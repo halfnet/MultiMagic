@@ -362,8 +362,8 @@ export default function Game() {
             <>
               <h2 className="text-4xl font-bold text-primary">Amazing Job! 🎉</h2>
               <Achievements
-                score={gameState.score}
                 streak={gameState.streak}
+                bestStreak={gameState.bestStreak}
                 time={formatTime(gameState.endTime! - gameState.startTime)}
               />
 
