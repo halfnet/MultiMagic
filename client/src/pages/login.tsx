@@ -64,7 +64,11 @@ export default function Login() {
                 <Label>Select Existing User</Label>
                 <Select
                   disabled={isLoadingUsers}
-                  onValueChange={handleLogin}
+                  onValueChange={(value) => {
+                    if (value) {
+                      handleLogin(value);
+                    }
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select a user" />

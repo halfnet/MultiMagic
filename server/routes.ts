@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { db } from '../db';
-import { users, gameResults } from '../db/schema';
+import { users, gameResults, gameQuestionResults } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { sql } from 'drizzle-orm';
 
@@ -25,7 +25,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Simple login route that creates user if doesn't exist
-  app.post('/api/login', async (req, res) => {
+  app.post('/api/login', async (req, res, next) => {
     try {
       const { username } = req.body;
 
@@ -63,7 +63,8 @@ export function registerRoutes(app: Express): Server {
 
   app.post('/api/game-results', async (req, res) => {
     try {
-      const result = await db.insert(gameResults).values({
+      const [result] = await db.insert(gameResults).values({
+        gameId: req.body.gameId,
         userId: req.body.userId,
         difficulty: req.body.difficulty,
         mode: req.body.mode,
@@ -73,7 +74,8 @@ export function registerRoutes(app: Express): Server {
         timeTakenInMs: req.body.timeTakenInMs,
         bestStreak: req.body.bestStreak,
         incorrectAttempts: req.body.incorrectAttempts,
-      });
+      }).returning();
+
       res.json(result);
     } catch (error) {
       console.error('Error saving game result:', error);
@@ -81,40 +83,23 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  // Check username availability
-
   app.post('/api/game-question-results', async (req, res) => {
     try {
       const results = await db.insert(gameQuestionResults).values(
-        req.body.questions.map((q: any, index: number) => ({
+        req.body.questionResults.map((q: any) => ({
           gameId: req.body.gameId,
           userId: req.body.userId,
-          questionNumber: index + 1,
-          num1: q.num1,
-          num2: q.num2,
+          questionNumber: q.questionId,
+          num1: q.numbersUsed[0],
+          num2: q.numbersUsed[1],
           attempts: q.attempts,
-          timeToSolveMs: q.endTime - q.startTime,
+          timeToSolveMs: q.timeTaken,
         }))
       );
       res.json(results);
     } catch (error) {
       console.error('Error saving question results:', error);
       res.status(500).json({ error: 'Failed to save question results' });
-    }
-  });
-
-  app.get('/api/check-username/:username', async (req, res) => {
-    try {
-      const [existingUser] = await db
-        .select()
-        .from(users)
-        .where(eq(users.username, req.params.username))
-        .limit(1);
-
-      res.json({ available: !existingUser });
-    } catch (error) {
-      console.error('Error checking username:', error);
-      res.status(500).json({ error: 'Failed to check username' });
     }
   });
 
