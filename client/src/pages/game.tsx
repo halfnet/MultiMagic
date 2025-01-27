@@ -70,12 +70,11 @@ export default function Game() {
   };
 
   const startGame = (difficulty: Difficulty, mode: GameMode = 'regular') => {
-    // Initialize question states with attempts = 1 and start time
     const questions = generateQuestions(difficulty, mode === 'practice' ? practiceQuestionCount : 10, mode === 'practice' ? practiceDigit : undefined);
-    const questionStates = questions.map(question => ({
-      attempts: 1, // Initialize with 1 attempt
-      startTime: Date.now(), // Initialize start time immediately
-      numbersUsed: [question.num1, question.num2]
+    const questionStates = questions.map(() => ({
+      attempts: 1,
+      startTime: 0, 
+      numbersUsed: [0, 0] 
     }));
 
     const newGameId = nanoid();
@@ -97,6 +96,21 @@ export default function Game() {
       incorrectAttempts: 0,
       questionStates
     });
+
+    setTimeout(() => {
+      if (questionStates.length > 0) {
+        const newQuestionStates = [...questionStates];
+        newQuestionStates[0] = {
+          ...newQuestionStates[0],
+          startTime: Date.now(),
+          numbersUsed: [questions[0].num1, questions[0].num2]
+        };
+        setGameState(prev => ({
+          ...prev,
+          questionStates: newQuestionStates
+        }));
+      }
+    }, 0);
   };
 
   const handleAnswer = async (answer: number) => {
@@ -106,12 +120,26 @@ export default function Game() {
     const correct = checkAnswer(currentQuestion, answer);
     const questionState = gameState.questionStates[gameState.currentQuestion];
 
+    if (questionState.startTime === 0) {
+      const newQuestionStates = [...gameState.questionStates];
+      newQuestionStates[gameState.currentQuestion] = {
+        ...questionState,
+        startTime: Date.now(),
+        numbersUsed: [currentQuestion.num1, currentQuestion.num2]
+      };
+      setGameState({
+        ...gameState,
+        questionStates: newQuestionStates
+      });
+      return; 
+    }
+
     if (!correct) {
       await playIncorrectSound();
       const newQuestionStates = [...gameState.questionStates];
       newQuestionStates[gameState.currentQuestion] = {
         ...questionState,
-        attempts: questionState.attempts + 1, // Increment from initial 1
+        attempts: questionState.attempts + 1
       };
       setGameState({
         ...gameState,
@@ -141,6 +169,15 @@ export default function Game() {
       bestStreak: Math.max(newStreak, gameState.bestStreak),
       questionStates: newQuestionStates
     };
+
+    if (!isLastQuestion) {
+      const nextQuestion = gameState.questions[gameState.currentQuestion + 1];
+      newQuestionStates[gameState.currentQuestion + 1] = {
+        ...newQuestionStates[gameState.currentQuestion + 1],
+        startTime: Date.now(),
+        numbersUsed: [nextQuestion.num1, nextQuestion.num2]
+      };
+    }
 
     if (isLastQuestion) {
       const gameEndTime = Date.now();
