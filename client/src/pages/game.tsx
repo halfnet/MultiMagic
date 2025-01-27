@@ -359,30 +359,62 @@ export default function Game() {
                     <Brain className="w-4 h-4" />
                     Choose a number to practice:
                   </Label>
-                  <Input
-                    id="practice-digit"
-                    type="number"
-                    min={1}
-                    max={20}
-                    value={practiceDigit}
-                    onChange={(e) => setPracticeDigit(Math.min(20, Math.max(1, parseInt(e.target.value) || 1)))}
-                    className="w-24 text-center h-12 text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  />
+                  <div className="flex items-center">
+                    <Input
+                      id="practice-digit"
+                      type="number"
+                      min={1}
+                      max={20}
+                      value={practiceDigit}
+                      onChange={(e) => setPracticeDigit(Math.min(20, Math.max(1, parseInt(e.target.value) || 1)))}
+                      className="w-24 text-center h-12 text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                    <div className="flex flex-col ml-1">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="px-2 py-1 h-6"
+                        onClick={() => setPracticeDigit(Math.min(20, practiceDigit + 1))}
+                      >▲</Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="px-2 py-1 h-6"
+                        onClick={() => setPracticeDigit(Math.max(1, practiceDigit - 1))}
+                      >▼</Button>
+                    </div>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Label htmlFor="question-count" className="flex items-center gap-2">
                     <Brain className="w-4 h-4" />
                     Number of questions:
                   </Label>
-                  <Input
-                    id="question-count"
-                    type="number"
-                    min={1}
-                    max={50}
-                    value={practiceQuestionCount}
-                    onChange={(e) => setPracticeQuestionCount(Math.min(50, Math.max(1, parseInt(e.target.value) || 1)))}
-                    className="w-24 text-center h-12 text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  />
+                  <div className="flex items-center">
+                    <Input
+                      id="question-count"
+                      type="number"
+                      min={1}
+                      max={50}
+                      value={practiceQuestionCount}
+                      onChange={(e) => setPracticeQuestionCount(Math.min(50, Math.max(1, parseInt(e.target.value) || 1)))}
+                      className="w-24 text-center h-12 text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                    <div className="flex flex-col ml-1">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="px-2 py-1 h-6"
+                        onClick={() => setPracticeQuestionCount(Math.min(50, practiceQuestionCount + 1))}
+                      >▲</Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="px-2 py-1 h-6"
+                        onClick={() => setPracticeQuestionCount(Math.max(1, practiceQuestionCount - 1))}
+                      >▼</Button>
+                    </div>
+                  </div>
                 </div>
               </div>
               <Button
