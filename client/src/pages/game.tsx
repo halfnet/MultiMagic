@@ -366,7 +366,7 @@ export default function Game() {
                     max={20}
                     value={practiceDigit}
                     onChange={(e) => setPracticeDigit(Math.min(20, Math.max(1, parseInt(e.target.value) || 1)))}
-                    className="w-20 text-center"
+                    className="w-24 text-center h-12 text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                 </div>
                 <div className="flex items-center gap-2">
@@ -381,7 +381,7 @@ export default function Game() {
                     max={50}
                     value={practiceQuestionCount}
                     onChange={(e) => setPracticeQuestionCount(Math.min(50, Math.max(1, parseInt(e.target.value) || 1)))}
-                    className="w-20 text-center"
+                    className="w-24 text-center h-12 text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                 </div>
               </div>
