@@ -340,7 +340,7 @@ export default function Game() {
               className="w-full text-lg"
               onClick={() => startGame('hard')}
             >
-              Hard Mode (1-20)
+              Hard Mode (1-19)
             </Button>
 
             <div className="relative">
