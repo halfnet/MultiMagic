@@ -18,7 +18,7 @@ export function Achievements({ bestStreak, time }: AchievementsProps) {
       >
         <Card className="p-4 flex flex-col items-center">
           <Star className="w-8 h-8 text-purple-500 mb-2" />
-          <div className="text-2xl font-bold">{streak}</div>
+          <div className="text-2xl font-bold">{bestStreak}</div>
           <div className="text-sm text-gray-600">Best Streak</div>
         </Card>
       </motion.div>
