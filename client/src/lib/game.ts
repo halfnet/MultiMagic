@@ -65,7 +65,20 @@ export const generateQuestion = (difficulty: Difficulty, practiceDigit?: number)
 };
 
 export const generateQuestions = (difficulty: Difficulty, count: number = 10, practiceDigit?: number): Question[] => {
-  return Array.from({ length: count }, () => generateQuestion(difficulty, practiceDigit));
+  const usedPairs = new Set<string>();
+  const questions: Question[] = [];
+
+  while (questions.length < count) {
+    const question = generateQuestion(difficulty, practiceDigit);
+    const pair = [question.num1, question.num2].sort().join('x');
+    
+    if (!usedPairs.has(pair)) {
+      usedPairs.add(pair);
+      questions.push(question);
+    }
+  }
+
+  return questions;
 };
 
 export const checkAnswer = (question: Question, userAnswer: number): boolean => {
