@@ -16,6 +16,7 @@ import { X, Palette, Brain } from "lucide-react";
 import { Achievement, ACHIEVEMENTS, checkAchievements } from "@/lib/achievements";
 import { AchievementBadge } from "@/components/game/AchievementBadge";
 import { Timer } from "@/components/game/Timer";
+import { nanoid } from 'nanoid';
 
 interface QuestionState {
   attempts: number;
@@ -32,6 +33,7 @@ export default function Game() {
   const [showResults, setShowResults] = useState(false);
   const { toast } = useToast();
   const { user } = useCookieAuth();
+  const [gameId, setGameId] = useState<string>('');
 
   const updateThemeColor = (color: string) => {
     setThemeColor(color);
@@ -75,7 +77,11 @@ export default function Game() {
       numbersUsed: [question.num1, question.num2]
     }));
 
+    const newGameId = nanoid();
+    setGameId(newGameId);
+
     setGameState({
+      gameId: newGameId,
       currentQuestion: 0,
       questions,
       startTime: Date.now(),
@@ -105,7 +111,7 @@ export default function Game() {
       newQuestionStates[gameState.currentQuestion] = {
         ...questionState,
         attempts: questionState.attempts + 1,
-        startTime: Date.now() //Record start time on first attempt
+        startTime: questionState.startTime || Date.now() 
       };
       setGameState({
         ...gameState,
@@ -116,12 +122,11 @@ export default function Game() {
       return;
     }
 
-    // Record completion time for the question
     const newQuestionStates = [...gameState.questionStates];
     newQuestionStates[gameState.currentQuestion] = {
       ...questionState,
       endTime: Date.now(),
-      startTime: questionState.startTime === 0 ? Date.now() : questionState.startTime
+      startTime: questionState.startTime || Date.now()
     };
 
     await playCorrectSound();
@@ -148,25 +153,19 @@ export default function Game() {
 
       try {
         const questionResults = gameState.questions.map((q, i) => ({
-          questionId: i +1, //Adding questionId
-          gameId: 'tempGameId', // Replace with actual gameId from database
+          questionId: i + 1,
+          gameId: gameState.gameId,
           userId: user.id,
           attempts: newGameState.questionStates[i].attempts,
-          timeTaken: newGameState.questionStates[i].endTime! - (newGameState.questionStates[i].startTime === 0 ? newGameState.startTime : newGameState.questionStates[i].startTime),
-          numbersUsed: newGameState.questionStates[i].numbersUsed,
+          timeTaken: newGameState.questionStates[i].endTime! - (newGameState.questionStates[i].startTime || gameState.startTime),
+          numbersUsed: [q.num1, q.num2],
         }));
-
-        await fetch('/api/game-question-results', { //Send question results to new endpoint
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ questionResults }),
-        });
 
         await fetch('/api/game-results', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            gameId: 'tempGameId', // Replace with actual gameId from database
+            gameId: gameState.gameId,
             userId: user.id,
             difficulty: gameState.difficulty,
             mode: gameState.mode,
@@ -176,6 +175,16 @@ export default function Game() {
             timeTakenInMs: endTime - gameState.startTime,
             bestStreak: newGameState.bestStreak,
             incorrectAttempts: gameState.incorrectAttempts,
+          }),
+        });
+
+        await fetch('/api/game-question-results', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            gameId: gameState.gameId,
+            userId: user.id,
+            questionResults
           }),
         });
       } catch (error) {
