@@ -63,6 +63,7 @@ export function registerRoutes(app: Express): Server {
 
   app.post('/api/game-results', async (req, res) => {
     try {
+      console.log('Saving game result:', req.body);
       const [result] = await db.insert(gameResults).values({
         gameId: req.body.gameId,
         userId: req.body.userId,
@@ -76,6 +77,7 @@ export function registerRoutes(app: Express): Server {
         incorrectAttempts: req.body.incorrectAttempts,
       }).returning();
 
+      console.log('Game result saved:', result);
       res.json(result);
     } catch (error) {
       console.error('Error saving game result:', error);

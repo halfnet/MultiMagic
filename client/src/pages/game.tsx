@@ -208,9 +208,9 @@ export default function Game() {
             mode: gameState.mode,
             practiceDigit: gameState.practiceDigit,
             questionsCount: gameState.questions.length,
-            correctAnswers: gameState.currentQuestion + 1,
+            correctAnswers: gameState.currentQuestion,
             timeTakenInMs: gameEndTime - gameState.startTime,
-            bestStreak: newGameState.bestStreak,
+            bestStreak: gameState.bestStreak,
             incorrectAttempts: gameState.incorrectAttempts,
           }),
         });
