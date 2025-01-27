@@ -17,6 +17,13 @@ import { Achievement, ACHIEVEMENTS, checkAchievements } from "@/lib/achievements
 import { AchievementBadge } from "@/components/game/AchievementBadge";
 import { Timer } from "@/components/game/Timer";
 
+interface QuestionState {
+  attempts: number;
+  startTime: number;
+  endTime?: number;
+  numbersUsed: number[];
+}
+
 export default function Game() {
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [themeColor, setThemeColor] = useState("#7c3aed");
@@ -61,9 +68,16 @@ export default function Game() {
   };
 
   const startGame = (difficulty: Difficulty, mode: GameMode = 'regular') => {
+    const questions = generateQuestions(difficulty, mode === 'practice' ? practiceQuestionCount : 10, mode === 'practice' ? practiceDigit : undefined);
+    const questionStates = questions.map(question => ({
+      attempts: 0,
+      startTime: 0,
+      numbersUsed: [question.num1, question.num2]
+    }));
+
     setGameState({
       currentQuestion: 0,
-      questions: generateQuestions(difficulty, mode === 'practice' ? practiceQuestionCount : 10, mode === 'practice' ? practiceDigit : undefined),
+      questions,
       startTime: Date.now(),
       difficulty,
       streak: 0,
@@ -73,7 +87,8 @@ export default function Game() {
       practiceDigit: mode === 'practice' ? practiceDigit : undefined,
       achievementsEarned: [],
       lastEarnedAchievement: undefined,
-      incorrectAttempts: 0
+      incorrectAttempts: 0,
+      questionStates
     });
   };
 
@@ -82,112 +97,141 @@ export default function Game() {
 
     const currentQuestion = gameState.questions[gameState.currentQuestion];
     const correct = checkAnswer(currentQuestion, answer);
+    const questionState = gameState.questionStates[gameState.currentQuestion];
 
-    if (correct) {
-      await playCorrectSound();
-      triggerConfetti();
-
-      const isLastQuestion = gameState.currentQuestion === gameState.questions.length - 1;
-      const newStreak = gameState.streak + 1;
-      let newGameState = {
+    if (!correct) {
+      await playIncorrectSound();
+      const newQuestionStates = [...gameState.questionStates];
+      newQuestionStates[gameState.currentQuestion] = {
+        ...questionState,
+        attempts: questionState.attempts + 1,
+        startTime: Date.now() //Record start time on first attempt
+      };
+      setGameState({
         ...gameState,
-        currentQuestion: gameState.currentQuestion + 1,
-        streak: newStreak,
-        bestStreak: Math.max(newStreak, gameState.bestStreak)
+        questionStates: newQuestionStates,
+        incorrectAttempts: gameState.incorrectAttempts + 1,
+        streak: 0
+      });
+      return;
+    }
+
+    // Record completion time for the question
+    const newQuestionStates = [...gameState.questionStates];
+    newQuestionStates[gameState.currentQuestion] = {
+      ...questionState,
+      endTime: Date.now(),
+      startTime: questionState.startTime === 0 ? Date.now() : questionState.startTime
+    };
+
+    await playCorrectSound();
+    triggerConfetti();
+
+    const isLastQuestion = gameState.currentQuestion === gameState.questions.length - 1;
+    const newStreak = gameState.streak + 1;
+    let newGameState = {
+      ...gameState,
+      currentQuestion: gameState.currentQuestion + 1,
+      streak: newStreak,
+      bestStreak: Math.max(newStreak, gameState.bestStreak),
+      questionStates: newQuestionStates
+    };
+
+    if (isLastQuestion) {
+      const endTime = Date.now();
+      await playCompleteSound();
+
+      newGameState = {
+        ...newGameState,
+        endTime
       };
 
-      if (isLastQuestion) {
-        const endTime = Date.now();
-        await playCompleteSound();
+      try {
+        const questionResults = gameState.questions.map((q, i) => ({
+          questionId: i +1, //Adding questionId
+          gameId: 'tempGameId', // Replace with actual gameId from database
+          userId: user.id,
+          attempts: newGameState.questionStates[i].attempts,
+          timeTaken: newGameState.questionStates[i].endTime! - (newGameState.questionStates[i].startTime === 0 ? newGameState.startTime : newGameState.questionStates[i].startTime),
+          numbersUsed: newGameState.questionStates[i].numbersUsed,
+        }));
 
-        newGameState = {
-          ...newGameState,
-          endTime
-        };
+        await fetch('/api/game-question-results', { //Send question results to new endpoint
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ questionResults }),
+        });
 
-        try {
-          await fetch('/api/game-results', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              userId: user.id,
-              difficulty: gameState.difficulty,
-              mode: gameState.mode,
-              practiceDigit: gameState.practiceDigit,
-              questionsCount: gameState.questions.length,
-              correctAnswers: gameState.currentQuestion + 1,
-              timeTakenInMs: endTime - gameState.startTime,
-              bestStreak: newGameState.bestStreak,
-              incorrectAttempts: gameState.incorrectAttempts,
-            }),
-          });
-        } catch (error) {
-          console.error('Failed to save game results:', error);
-        }
+        await fetch('/api/game-results', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            gameId: 'tempGameId', // Replace with actual gameId from database
+            userId: user.id,
+            difficulty: gameState.difficulty,
+            mode: gameState.mode,
+            practiceDigit: gameState.practiceDigit,
+            questionsCount: gameState.questions.length,
+            correctAnswers: gameState.currentQuestion + 1,
+            timeTakenInMs: endTime - gameState.startTime,
+            bestStreak: newGameState.bestStreak,
+            incorrectAttempts: gameState.incorrectAttempts,
+          }),
+        });
+      } catch (error) {
+        console.error('Failed to save game results:', error);
+      }
 
-        setShowResults(false);
+      setShowResults(false);
 
-        const earnedAchievements = [];
-        for (const achievement of ACHIEVEMENTS) {
-          if (!gameState.achievementsEarned.includes(achievement.id) && achievement.condition(newGameState)) {
-            earnedAchievements.push(achievement);
-          }
-        }
-
-        if (earnedAchievements.length > 0) {
-          const lastEarned = earnedAchievements[earnedAchievements.length - 1];
-          newGameState = {
-            ...newGameState,
-            achievementsEarned: [
-              ...gameState.achievementsEarned,
-              ...earnedAchievements.map(a => a.id)
-            ],
-            lastEarnedAchievement: lastEarned
-          };
-
-          earnedAchievements.forEach(achievement => {
-            toast({
-              title: "Achievement Unlocked! 🏆",
-              description: `${achievement.name} - ${achievement.description}`,
-              variant: "default",
-            });
-          });
-        }
-
-        triggerCelebration();
-        setTimeout(() => {
-          setShowResults(true);
-        }, 2500);
-      } else {
-        const newAchievement = checkAchievements(newGameState, gameState.achievementsEarned);
-        if (newAchievement) {
-          newGameState = {
-            ...newGameState,
-            achievementsEarned: [...gameState.achievementsEarned, newAchievement.id],
-            lastEarnedAchievement: newAchievement
-          };
-          toast({
-            title: "Achievement Unlocked! 🏆",
-            description: `${newAchievement.name} - ${newAchievement.description}`,
-            variant: "default",
-          });
+      const earnedAchievements = [];
+      for (const achievement of ACHIEVEMENTS) {
+        if (!gameState.achievementsEarned.includes(achievement.id) && achievement.condition(newGameState)) {
+          earnedAchievements.push(achievement);
         }
       }
 
-      setGameState(newGameState);
+      if (earnedAchievements.length > 0) {
+        const lastEarned = earnedAchievements[earnedAchievements.length - 1];
+        newGameState = {
+          ...newGameState,
+          achievementsEarned: [
+            ...gameState.achievementsEarned,
+            ...earnedAchievements.map(a => a.id)
+          ],
+          lastEarnedAchievement: lastEarned
+        };
+
+        earnedAchievements.forEach(achievement => {
+          toast({
+            title: "Achievement Unlocked! 🏆",
+            description: `${achievement.name} - ${achievement.description}`,
+            variant: "default",
+          });
+        });
+      }
+
+      triggerCelebration();
+      setTimeout(() => {
+        setShowResults(true);
+      }, 2500);
     } else {
-      await playIncorrectSound();
-      setGameState({
-        ...gameState,
-        streak: 0,
-        incorrectAttempts: gameState.incorrectAttempts + 1
-      });
-      toast({
-        title: "Try again!",
-        description: "Keep practicing!",
-        variant: "destructive",
-      });
+      const newAchievement = checkAchievements(newGameState, gameState.achievementsEarned);
+      if (newAchievement) {
+        newGameState = {
+          ...newGameState,
+          achievementsEarned: [...gameState.achievementsEarned, newAchievement.id],
+          lastEarnedAchievement: newAchievement
+        };
+        toast({
+          title: "Achievement Unlocked! 🏆",
+          description: `${newAchievement.name} - ${newAchievement.description}`,
+          variant: "default",
+        });
+      }
     }
+
+    setGameState(newGameState);
   };
 
   const handleQuit = () => {

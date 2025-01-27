@@ -82,6 +82,27 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Check username availability
+
+  app.post('/api/game-question-results', async (req, res) => {
+    try {
+      const results = await db.insert(gameQuestionResults).values(
+        req.body.questions.map((q: any, index: number) => ({
+          gameId: req.body.gameId,
+          userId: req.body.userId,
+          questionNumber: index + 1,
+          num1: q.num1,
+          num2: q.num2,
+          attempts: q.attempts,
+          timeToSolveMs: q.endTime - q.startTime,
+        }))
+      );
+      res.json(results);
+    } catch (error) {
+      console.error('Error saving question results:', error);
+      res.status(500).json({ error: 'Failed to save question results' });
+    }
+  });
+
   app.get('/api/check-username/:username', async (req, res) => {
     try {
       const [existingUser] = await db

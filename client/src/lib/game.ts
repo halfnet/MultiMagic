@@ -7,9 +7,17 @@ export interface Question {
   answer: number;
 }
 
+export interface QuestionState {
+  attempts: number;
+  startTime: number;
+  endTime?: number;
+}
+
 export interface GameState {
+  gameId: string;
   currentQuestion: number;
   questions: Question[];
+  questionStates: QuestionState[];
   startTime: number;
   endTime?: number;
   difficulty: Difficulty;

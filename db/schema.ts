@@ -10,6 +10,7 @@ export const users = pgTable("users", {
 
 export const gameResults = pgTable("game_results", {
   id: serial("id").primaryKey(),
+  gameId: text("game_id").notNull().unique(),
   userId: integer("user_id").references(() => users.id),
   difficulty: text("difficulty").notNull(),
   mode: text("mode").notNull(),
@@ -29,5 +30,24 @@ export const selectGameResultSchema = createSelectSchema(gameResults);
 
 export type InsertUser = typeof users.$inferInsert;
 export type SelectUser = typeof users.$inferSelect;
+
+export const gameQuestionResults = pgTable("game_question_results", {
+  id: serial("id").primaryKey(),
+  gameId: text("game_id").references(() => gameResults.gameId),
+  userId: integer("user_id").references(() => users.id),
+  questionNumber: integer("question_number").notNull(),
+  num1: integer("num1").notNull(),
+  num2: integer("num2").notNull(),
+  attempts: integer("attempts").notNull(),
+  timeToSolveMs: integer("time_to_solve_ms").notNull(),
+  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
+export const insertGameQuestionResultSchema = createInsertSchema(gameQuestionResults);
+export const selectGameQuestionResultSchema = createSelectSchema(gameQuestionResults);
+
+export type InsertGameQuestionResult = typeof gameQuestionResults.$inferInsert;
+export type SelectGameQuestionResult = typeof gameQuestionResults.$inferSelect;
+
 export type InsertGameResult = typeof gameResults.$inferInsert;
 export type SelectGameResult = typeof gameResults.$inferSelect;
