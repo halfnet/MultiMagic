@@ -10,7 +10,7 @@ export const users = pgTable("users", {
 
 export const gameResults = pgTable("game_results", {
   id: serial("id").primaryKey(),
-  gameId: text("game_id").notNull().unique(),
+  gameId: text("game_id").unique().notNull(),
   userId: integer("user_id").references(() => users.id),
   difficulty: text("difficulty").notNull(),
   mode: text("mode").notNull(),
@@ -23,17 +23,9 @@ export const gameResults = pgTable("game_results", {
   createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
-export const insertUserSchema = createInsertSchema(users);
-export const selectUserSchema = createSelectSchema(users);
-export const insertGameResultSchema = createInsertSchema(gameResults);
-export const selectGameResultSchema = createSelectSchema(gameResults);
-
-export type InsertUser = typeof users.$inferInsert;
-export type SelectUser = typeof users.$inferSelect;
-
 export const gameQuestionResults = pgTable("game_question_results", {
   id: serial("id").primaryKey(),
-  gameId: text("game_id").references(() => gameResults.gameId),
+  gameId: text("game_id").references(() => gameResults.gameId).notNull(),
   userId: integer("user_id").references(() => users.id),
   questionNumber: integer("question_number").notNull(),
   num1: integer("num1").notNull(),
@@ -43,11 +35,18 @@ export const gameQuestionResults = pgTable("game_question_results", {
   createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
+// Schema validation and type definitions
+export const insertUserSchema = createInsertSchema(users);
+export const selectUserSchema = createSelectSchema(users);
+export const insertGameResultSchema = createInsertSchema(gameResults);
+export const selectGameResultSchema = createSelectSchema(gameResults);
 export const insertGameQuestionResultSchema = createInsertSchema(gameQuestionResults);
 export const selectGameQuestionResultSchema = createSelectSchema(gameQuestionResults);
 
+// Type exports
+export type InsertUser = typeof users.$inferInsert;
+export type SelectUser = typeof users.$inferSelect;
 export type InsertGameQuestionResult = typeof gameQuestionResults.$inferInsert;
 export type SelectGameQuestionResult = typeof gameQuestionResults.$inferSelect;
-
 export type InsertGameResult = typeof gameResults.$inferInsert;
 export type SelectGameResult = typeof gameResults.$inferSelect;

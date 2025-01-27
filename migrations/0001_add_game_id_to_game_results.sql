@@ -1,2 +1,2 @@
 
-ALTER TABLE game_results ADD COLUMN game_id TEXT NOT NULL UNIQUE;
+ALTER TABLE game_results ADD COLUMN game_id TEXT UNIQUE;
