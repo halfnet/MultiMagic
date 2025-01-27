@@ -33,7 +33,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: 'Star',
     condition: (gameState: GameState) => {
       return gameState.endTime !== undefined && 
-             gameState.score === gameState.questions.length && 
+             gameState.currentQuestion === gameState.questions.length && 
              gameState.incorrectAttempts === 0;
     }
   },
