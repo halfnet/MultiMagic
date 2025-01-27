@@ -28,7 +28,7 @@ export interface GameState {
 import { Achievement } from './achievements';
 
 export const generateQuestion = (difficulty: Difficulty, practiceDigit?: number): Question => {
-  const max = difficulty === 'easy' ? 9 : 20;
+  const max = difficulty === 'easy' ? 9 : 19;
   const min = difficulty === 'easy' ? 1 : 5;
 
   if (practiceDigit !== undefined) {
