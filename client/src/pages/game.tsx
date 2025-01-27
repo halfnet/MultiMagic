@@ -70,10 +70,11 @@ export default function Game() {
   };
 
   const startGame = (difficulty: Difficulty, mode: GameMode = 'regular') => {
+    // Initialize question states with attempts = 1 and start time
     const questions = generateQuestions(difficulty, mode === 'practice' ? practiceQuestionCount : 10, mode === 'practice' ? practiceDigit : undefined);
     const questionStates = questions.map(question => ({
-      attempts: 0,
-      startTime: 0,
+      attempts: 1, // Initialize with 1 attempt
+      startTime: Date.now(), // Initialize start time immediately
       numbersUsed: [question.num1, question.num2]
     }));
 
@@ -110,8 +111,7 @@ export default function Game() {
       const newQuestionStates = [...gameState.questionStates];
       newQuestionStates[gameState.currentQuestion] = {
         ...questionState,
-        attempts: questionState.attempts + 1,
-        startTime: questionState.startTime || Date.now() 
+        attempts: questionState.attempts + 1, // Increment from initial 1
       };
       setGameState({
         ...gameState,
@@ -123,10 +123,10 @@ export default function Game() {
     }
 
     const newQuestionStates = [...gameState.questionStates];
+    const endTime = Date.now();
     newQuestionStates[gameState.currentQuestion] = {
       ...questionState,
-      endTime: Date.now(),
-      startTime: questionState.startTime || Date.now()
+      endTime,
     };
 
     await playCorrectSound();
@@ -143,12 +143,12 @@ export default function Game() {
     };
 
     if (isLastQuestion) {
-      const endTime = Date.now();
+      const gameEndTime = Date.now();
       await playCompleteSound();
 
       newGameState = {
         ...newGameState,
-        endTime
+        endTime: gameEndTime
       };
 
       try {
@@ -157,7 +157,7 @@ export default function Game() {
           gameId: gameState.gameId,
           userId: user.id,
           attempts: newGameState.questionStates[i].attempts,
-          timeTaken: newGameState.questionStates[i].endTime! - (newGameState.questionStates[i].startTime || gameState.startTime),
+          timeTaken: newGameState.questionStates[i].endTime! - newGameState.questionStates[i].startTime,
           numbersUsed: [q.num1, q.num2],
         }));
 
@@ -172,7 +172,7 @@ export default function Game() {
             practiceDigit: gameState.practiceDigit,
             questionsCount: gameState.questions.length,
             correctAnswers: gameState.currentQuestion + 1,
-            timeTakenInMs: endTime - gameState.startTime,
+            timeTakenInMs: gameEndTime - gameState.startTime,
             bestStreak: newGameState.bestStreak,
             incorrectAttempts: gameState.incorrectAttempts,
           }),
