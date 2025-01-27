@@ -29,6 +29,7 @@ import { Achievement } from './achievements';
 
 export const generateQuestion = (difficulty: Difficulty, practiceDigit?: number): Question => {
   const max = difficulty === 'easy' ? 9 : 20;
+  const min = difficulty === 'easy' ? 1 : 5;
 
   if (practiceDigit !== undefined) {
     // For practice mode, one number is always the practice digit
@@ -46,8 +47,16 @@ export const generateQuestion = (difficulty: Difficulty, practiceDigit?: number)
   }
 
   // Regular mode
-  const num1 = Math.floor(Math.random() * max) + 1;
-  const num2 = Math.floor(Math.random() * max) + 1;
+  let num1, num2;
+  if (difficulty === 'hard') {
+    do {
+      num1 = Math.floor(Math.random() * (max - min + 1)) + min;
+      num2 = Math.floor(Math.random() * (max - min + 1)) + min;
+    } while (num1 + num2 < 15);
+  } else {
+    num1 = Math.floor(Math.random() * max) + 1;
+    num2 = Math.floor(Math.random() * max) + 1;
+  }
   return {
     num1,
     num2,
