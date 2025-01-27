@@ -32,3 +32,4 @@ try {
 }
 
 export const db = dbInstance;
+export { users, gameResults, gameQuestionResults }; // Added gameQuestionResults export.  Assumes it's defined in @db/schema
