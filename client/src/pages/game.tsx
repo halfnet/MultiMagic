@@ -364,9 +364,9 @@ export default function Game() {
                       id="practice-digit"
                       type="number"
                       min={1}
-                      max={20}
+                      max={19}
                       value={practiceDigit}
-                      onChange={(e) => setPracticeDigit(Math.min(20, Math.max(1, parseInt(e.target.value) || 1)))}
+                      onChange={(e) => setPracticeDigit(Math.min(19, Math.max(1, parseInt(e.target.value) || 1)))}
                       className="w-24 text-center h-12 text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                     <div className="flex flex-col ml-1">
@@ -374,7 +374,7 @@ export default function Game() {
                         type="button"
                         variant="outline"
                         className="px-2 py-1 h-6"
-                        onClick={() => setPracticeDigit(Math.min(20, practiceDigit + 1))}
+                        onClick={() => setPracticeDigit(Math.min(19, practiceDigit + 1))}
                       >▲</Button>
                       <Button
                         type="button"
@@ -395,9 +395,9 @@ export default function Game() {
                       id="question-count"
                       type="number"
                       min={1}
-                      max={50}
+                      max={20}
                       value={practiceQuestionCount}
-                      onChange={(e) => setPracticeQuestionCount(Math.min(50, Math.max(1, parseInt(e.target.value) || 1)))}
+                      onChange={(e) => setPracticeQuestionCount(Math.min(20, Math.max(1, parseInt(e.target.value) || 1)))}
                       className="w-24 text-center h-12 text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                     <div className="flex flex-col ml-1">
@@ -405,7 +405,7 @@ export default function Game() {
                         type="button"
                         variant="outline"
                         className="px-2 py-1 h-6"
-                        onClick={() => setPracticeQuestionCount(Math.min(50, practiceQuestionCount + 1))}
+                        onClick={() => setPracticeQuestionCount(Math.min(20, practiceQuestionCount + 1))}
                       >▲</Button>
                       <Button
                         type="button"
