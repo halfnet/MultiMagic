@@ -299,15 +299,9 @@ export default function Game() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex flex-col items-center justify-center p-4">
         <Card className="p-8 max-w-md w-full text-center space-y-6">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-4xl font-bold text-primary">Math Challenge!</h1>
-            <div className="flex items-center gap-2">
-              <div className="flex flex-col items-end gap-1">
-                <span className="text-sm text-muted-foreground">
-                  Playing as {user?.username}
-                </span>
-                {user && <DailyStats userId={user.id} />}
-              </div>
+          <div className="flex flex-col gap-4 mb-6">
+            <div className="flex justify-between items-center">
+              <h1 className="text-3xl font-bold text-primary">Math Challenge!</h1>
               <Button
                 variant="ghost"
                 size="sm"
@@ -316,6 +310,14 @@ export default function Game() {
               >
                 Switch User
               </Button>
+            </div>
+            <div className="flex justify-end items-center gap-3 border-t pt-3">
+              <div className="flex flex-col items-end gap-2">
+                <span className="text-sm font-medium text-muted-foreground">
+                  Playing as {user?.username}
+                </span>
+                {user && <DailyStats userId={user.id} />}
+              </div>
             </div>
           </div>
           <div className="mb-6 space-y-4">
