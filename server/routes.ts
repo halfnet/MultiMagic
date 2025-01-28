@@ -112,15 +112,16 @@ export function registerRoutes(app: Express): Server {
       
       const stats = await db.execute(sql`
         SELECT 
-          COALESCE(SUM(CASE WHEN difficulty = 'easy' THEN 1 ELSE 0 END), 0) as easy_count,
-          COALESCE(SUM(CASE WHEN difficulty = 'hard' THEN 1 ELSE 0 END), 0) as hard_count
+          COALESCE(SUM(CASE WHEN difficulty = 'easy' THEN 1 ELSE 0 END), 0)::integer as easy_count,
+          COALESCE(SUM(CASE WHEN difficulty = 'hard' THEN 1 ELSE 0 END), 0)::integer as hard_count
         FROM game_results
         WHERE user_id = ${userId}
         AND created_at::timestamp >= TIMEZONE(${userTimezone}, CURRENT_DATE::timestamp)
         AND created_at::timestamp < TIMEZONE(${userTimezone}, (CURRENT_DATE + INTERVAL '1 day')::timestamp)
       `);
 
-      res.json({ easy_count: Number(stats[0].easy_count), hard_count: Number(stats[0].hard_count) });
+      const result = stats[0] as { easy_count: number; hard_count: number };
+      res.json(result);
     } catch (error) {
       console.error('Error fetching daily stats:', error);
       res.status(500).json({ error: 'Failed to fetch daily stats' });
