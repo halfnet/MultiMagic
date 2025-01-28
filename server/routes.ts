@@ -110,7 +110,7 @@ export function registerRoutes(app: Express): Server {
       const userId = parseInt(req.query.userId as string);
       const userTimezone = req.query.timezone as string || 'UTC';
       
-      const stats = await db.query(sql`
+      const stats = await db.execute(sql`
         WITH user_day AS (
           SELECT DATE_TRUNC('day', TIMEZONE(${userTimezone}, created_at::timestamp)) as game_date,
                  difficulty,
