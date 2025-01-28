@@ -116,16 +116,16 @@ export function registerRoutes(app: Express): Server {
           COALESCE(COUNT(CASE WHEN difficulty = 'hard' THEN 1 END), 0) as hard_count
         FROM game_results
         WHERE user_id = ${userId}
-        AND created_at::timestamp >= TIMEZONE(${userTimezone}, CURRENT_DATE::timestamp)
-        AND created_at::timestamp < TIMEZONE(${userTimezone}, (CURRENT_DATE + INTERVAL '1 day')::timestamp)
+        AND created_at::timestamp >= TIMEZONE(${userTimezone}, (CURRENT_DATE AT TIME ZONE ${userTimezone})::date::timestamp)
+        AND created_at::timestamp < TIMEZONE(${userTimezone}, (CURRENT_DATE AT TIME ZONE ${userTimezone})::date::timestamp) + INTERVAL '1 day'
       `);
 
-      if (!stats || !stats[0]) {
+      if (!stats || !stats.rowCount) {
         res.json({ easy_count: 0, hard_count: 0 });
       } else {
         res.json({
-          easy_count: Number(stats[0].easy_count || 0),
-          hard_count: Number(stats[0].hard_count || 0)
+          easy_count: Number(stats.rows[0].easy_count || 0),
+          hard_count: Number(stats.rows[0].hard_count || 0)
         });
       }
     } catch (error) {
