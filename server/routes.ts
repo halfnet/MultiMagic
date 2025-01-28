@@ -119,7 +119,7 @@ export function registerRoutes(app: Express): Server {
           WHERE user_id = ${userId}
           AND created_at::timestamp >= TIMEZONE(${userTimezone}, CURRENT_DATE::timestamp)
           AND created_at::timestamp < TIMEZONE(${userTimezone}, (CURRENT_DATE + INTERVAL '1 day')::timestamp)
-          GROUP BY DATE_TRUNC('day', TIMEZONE(${userTimezone}, created_at::timestamp)), difficulty
+          GROUP BY 1, 2
         )
         SELECT 
           COALESCE(SUM(CASE WHEN difficulty = 'easy' THEN count ELSE 0 END), 0) as easy_count,
