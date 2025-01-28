@@ -85,6 +85,20 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  app.post('/api/user/theme', async (req, res) => {
+    try {
+      const { userId, themeColor } = req.body;
+      await db
+        .update(users)
+        .set({ themeColor })
+        .where(eq(users.id, userId));
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error saving theme color:', error);
+      res.status(500).json({ error: 'Failed to save theme color' });
+    }
+  });
+
   app.post('/api/game-question-results', async (req, res) => {
     try {
       const results = await db.insert(gameQuestionResults).values(

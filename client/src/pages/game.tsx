@@ -28,7 +28,7 @@ interface QuestionState {
 
 export default function Game() {
   const [gameState, setGameState] = useState<GameState | null>(null);
-  const [themeColor, setThemeColor] = useState("#7c3aed");
+  const [themeColor, setThemeColor] = useState(user?.themeColor || "#7c3aed");
   const [practiceDigit, setPracticeDigit] = useState<number>(5);
   const [practiceQuestionCount, setPracticeQuestionCount] = useState<number>(5);
   const [showResults, setShowResults] = useState(false);
@@ -36,8 +36,19 @@ export default function Game() {
   const { user } = useCookieAuth();
   const [gameId, setGameId] = useState<string>('');
 
-  const updateThemeColor = (color: string) => {
+  const updateThemeColor = async (color: string) => {
     setThemeColor(color);
+    if (user) {
+      try {
+        await fetch('/api/user/theme', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user.id, themeColor: color }),
+        });
+      } catch (error) {
+        console.error('Failed to save theme color:', error);
+      }
+    }
     const r = parseInt(color.slice(1, 3), 16) / 255;
     const g = parseInt(color.slice(3, 5), 16) / 255;
     const b = parseInt(color.slice(5, 7), 16) / 255;

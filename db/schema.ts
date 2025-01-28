@@ -6,6 +6,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").unique().notNull(),
   lastLoginAt: text("last_login_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+  themeColor: text("theme_color").default('#7c3aed'),
 });
 
 export const gameResults = pgTable("game_results", {
