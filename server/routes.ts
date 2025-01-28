@@ -105,6 +105,35 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  app.get('/api/daily-stats', async (req, res) => {
+    try {
+      const userId = parseInt(req.query.userId as string);
+      const userTimezone = req.query.timezone as string || 'UTC';
+      
+      const stats = await db.query(sql`
+        WITH user_day AS (
+          SELECT DATE_TRUNC('day', TIMEZONE(${userTimezone}, created_at::timestamp)) as game_date,
+                 difficulty,
+                 COUNT(*) as count
+          FROM game_results 
+          WHERE user_id = ${userId}
+          AND created_at::timestamp >= TIMEZONE(${userTimezone}, CURRENT_DATE::timestamp)
+          AND created_at::timestamp < TIMEZONE(${userTimezone}, (CURRENT_DATE + INTERVAL '1 day')::timestamp)
+          GROUP BY DATE_TRUNC('day', TIMEZONE(${userTimezone}, created_at::timestamp)), difficulty
+        )
+        SELECT 
+          COALESCE(SUM(CASE WHEN difficulty = 'easy' THEN count ELSE 0 END), 0) as easy_count,
+          COALESCE(SUM(CASE WHEN difficulty = 'hard' THEN count ELSE 0 END), 0) as hard_count
+        FROM user_day
+      `);
+
+      res.json(stats[0]);
+    } catch (error) {
+      console.error('Error fetching daily stats:', error);
+      res.status(500).json({ error: 'Failed to fetch daily stats' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

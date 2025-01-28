@@ -16,6 +16,7 @@ import { X, Palette, Brain } from "lucide-react";
 import { Achievement, ACHIEVEMENTS, checkAchievements } from "@/lib/achievements";
 import { AchievementBadge } from "@/components/game/AchievementBadge";
 import { Timer } from "@/components/game/Timer";
+import { DailyStats } from "@/components/game/DailyStats";
 import { nanoid } from 'nanoid';
 
 interface QuestionState {
@@ -301,9 +302,12 @@ export default function Game() {
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-4xl font-bold text-primary">Math Challenge!</h1>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">
-                Playing as {user?.username}
-              </span>
+              <div className="flex flex-col items-end gap-1">
+                <span className="text-sm text-muted-foreground">
+                  Playing as {user?.username}
+                </span>
+                {user && <DailyStats userId={user.id} />}
+              </div>
               <Button
                 variant="ghost"
                 size="sm"
