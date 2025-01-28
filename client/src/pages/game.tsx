@@ -317,7 +317,7 @@ export default function Game() {
                 variant="outline"
                 size="sm"
                 onClick={handleLogout}
-                className="border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all"
+                className="w-full text-lg bg-primary/90 hover:bg-primary text-primary-foreground"
               >
                 <svg 
                   xmlns="http://www.w3.org/2000/svg" 
