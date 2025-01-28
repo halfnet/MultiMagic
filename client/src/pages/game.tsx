@@ -27,13 +27,13 @@ interface QuestionState {
 }
 
 export default function Game() {
+  const { user } = useCookieAuth();
+  const { toast } = useToast();
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [themeColor, setThemeColor] = useState(user?.themeColor || "#7c3aed");
   const [practiceDigit, setPracticeDigit] = useState<number>(5);
   const [practiceQuestionCount, setPracticeQuestionCount] = useState<number>(5);
   const [showResults, setShowResults] = useState(false);
-  const { toast } = useToast();
-  const { user } = useCookieAuth();
   const [gameId, setGameId] = useState<string>('');
 
   const updateThemeColor = async (color: string) => {
