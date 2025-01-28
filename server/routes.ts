@@ -13,6 +13,7 @@ export function registerRoutes(app: Express): Server {
         .select({
           id: users.id,
           username: users.username,
+          themeColor: users.themeColor,
         })
         .from(users)
         .orderBy(users.username);
@@ -25,7 +26,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Simple login route that creates user if doesn't exist
-  app.post('/api/login', async (req, res, next) => {
+  app.post('/api/login', async (req, res) => {
     try {
       const { username } = req.body;
 
@@ -35,7 +36,11 @@ export function registerRoutes(app: Express): Server {
 
       // Check if user exists
       let [user] = await db
-        .select()
+        .select({
+          id: users.id,
+          username: users.username,
+          themeColor: users.themeColor,
+        })
         .from(users)
         .where(eq(users.username, username))
         .limit(1);
@@ -44,15 +49,22 @@ export function registerRoutes(app: Express): Server {
         // Create new user if doesn't exist
         [user] = await db
           .insert(users)
-          .values({ username })
-          .returning();
-      } else {
-        // Update last login time
-        await db
-          .update(users)
-          .set({ lastLoginAt: sql`CURRENT_TIMESTAMP` })
-          .where(eq(users.id, user.id));
+          .values({ 
+            username,
+            themeColor: '#7c3aed', // Set default theme color
+          })
+          .returning({
+            id: users.id,
+            username: users.username,
+            themeColor: users.themeColor,
+          });
       }
+
+      // Update last login time
+      await db
+        .update(users)
+        .set({ lastLoginAt: sql`CURRENT_TIMESTAMP` })
+        .where(eq(users.id, user.id));
 
       res.json(user);
     } catch (error) {
@@ -61,9 +73,9 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Rest of the routes remain unchanged
   app.post('/api/game-results', async (req, res) => {
     try {
-      console.log('Saving game result:', req.body);
       const [result] = await db.insert(gameResults).values({
         gameId: req.body.gameId,
         userId: req.body.userId,
@@ -77,7 +89,6 @@ export function registerRoutes(app: Express): Server {
         incorrectAttempts: req.body.incorrectAttempts,
       }).returning();
 
-      console.log('Game result saved:', result);
       res.json(result);
     } catch (error) {
       console.error('Error saving game result:', error);
@@ -123,7 +134,7 @@ export function registerRoutes(app: Express): Server {
     try {
       const userId = parseInt(req.query.userId as string);
       const userTimezone = req.query.timezone as string || 'UTC';
-      
+
       const stats = await db.execute(sql`
         SELECT 
           COALESCE(COUNT(CASE WHEN difficulty = 'easy' THEN 1 END), 0) as easy_count,
