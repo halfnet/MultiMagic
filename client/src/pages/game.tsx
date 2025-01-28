@@ -402,13 +402,13 @@ export default function Game() {
                       <Button
                         type="button"
                         variant="outline"
-                        className="px-2 py-1 h-6"
+                        className="px-2 py-1 h-6 bg-gray-100 hover:bg-gray-200"
                         onClick={() => setPracticeDigit(Math.min(19, practiceDigit + 1))}
                       >▲</Button>
                       <Button
                         type="button"
                         variant="outline"
-                        className="px-2 py-1 h-6"
+                        className="px-2 py-1 h-6 bg-gray-100 hover:bg-gray-200"
                         onClick={() => setPracticeDigit(Math.max(1, practiceDigit - 1))}
                       >▼</Button>
                     </div>
@@ -433,13 +433,13 @@ export default function Game() {
                       <Button
                         type="button"
                         variant="outline"
-                        className="px-2 py-1 h-6"
+                        className="px-2 py-1 h-6 bg-gray-100 hover:bg-gray-200"
                         onClick={() => setPracticeQuestionCount(Math.min(20, practiceQuestionCount + 1))}
                       >▲</Button>
                       <Button
                         type="button"
                         variant="outline"
-                        className="px-2 py-1 h-6"
+                        className="px-2 py-1 h-6 bg-gray-100 hover:bg-gray-200"
                         onClick={() => setPracticeQuestionCount(Math.max(1, practiceQuestionCount - 1))}
                       >▼</Button>
                     </div>
