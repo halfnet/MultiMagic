@@ -111,23 +111,16 @@ export function registerRoutes(app: Express): Server {
       const userTimezone = req.query.timezone as string || 'UTC';
       
       const stats = await db.execute(sql`
-        WITH user_day AS (
-          SELECT DATE_TRUNC('day', TIMEZONE(${userTimezone}, created_at::timestamp)) as game_date,
-                 difficulty,
-                 COUNT(*) as count
-          FROM game_results 
-          WHERE user_id = ${userId}
-          AND created_at::timestamp >= TIMEZONE(${userTimezone}, CURRENT_DATE::timestamp)
-          AND created_at::timestamp < TIMEZONE(${userTimezone}, (CURRENT_DATE + INTERVAL '1 day')::timestamp)
-          GROUP BY 1, 2
-        )
         SELECT 
-          COALESCE(SUM(CASE WHEN difficulty = 'easy' THEN count ELSE 0 END), 0) as easy_count,
-          COALESCE(SUM(CASE WHEN difficulty = 'hard' THEN count ELSE 0 END), 0) as hard_count
-        FROM user_day
+          COALESCE(SUM(CASE WHEN difficulty = 'easy' THEN 1 ELSE 0 END), 0) as easy_count,
+          COALESCE(SUM(CASE WHEN difficulty = 'hard' THEN 1 ELSE 0 END), 0) as hard_count
+        FROM game_results
+        WHERE user_id = ${userId}
+        AND created_at::timestamp >= TIMEZONE(${userTimezone}, CURRENT_DATE::timestamp)
+        AND created_at::timestamp < TIMEZONE(${userTimezone}, (CURRENT_DATE + INTERVAL '1 day')::timestamp)
       `);
 
-      res.json(stats[0]);
+      res.json({ easy_count: Number(stats[0].easy_count), hard_count: Number(stats[0].hard_count) });
     } catch (error) {
       console.error('Error fetching daily stats:', error);
       res.status(500).json({ error: 'Failed to fetch daily stats' });
