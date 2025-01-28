@@ -141,8 +141,8 @@ export function registerRoutes(app: Express): Server {
           COALESCE(COUNT(CASE WHEN difficulty = 'hard' THEN 1 END), 0) as hard_count
         FROM game_results
         WHERE user_id = ${userId}
-        AND created_at::timestamp >= TIMEZONE(${userTimezone}, (CURRENT_DATE AT TIME ZONE ${userTimezone})::date::timestamp)
-        AND created_at::timestamp < TIMEZONE(${userTimezone}, (CURRENT_DATE AT TIME ZONE ${userTimezone})::date::timestamp) + INTERVAL '1 day'
+        AND created_at::timestamp >= TIMEZONE(${userTimezone}, (CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone})::date::timestamp)
+        AND created_at::timestamp < TIMEZONE(${userTimezone}, (CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone})::date::timestamp) + INTERVAL '1 day'
       `);
 
       if (!stats || !stats.rowCount) {
