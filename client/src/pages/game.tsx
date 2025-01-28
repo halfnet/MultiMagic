@@ -303,11 +303,23 @@ export default function Game() {
             <div className="flex justify-between items-center">
               <h1 className="text-3xl font-bold text-primary">Math Challenge!</h1>
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={handleLogout}
-                className="text-muted-foreground"
+                className="border-primary/50 hover:border-primary hover:bg-primary/10"
               >
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  className="w-4 h-4"
+                >
+                  <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1" />
+                </svg>
                 Switch User
               </Button>
             </div>
