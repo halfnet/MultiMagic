@@ -317,7 +317,7 @@ export default function Game() {
                 variant="outline"
                 size="sm"
                 onClick={handleLogout}
-                className="border-primary/50 hover:border-primary hover:bg-primary/10"
+                className="border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all"
               >
                 <svg 
                   xmlns="http://www.w3.org/2000/svg" 
@@ -448,8 +448,7 @@ export default function Game() {
               </div>
               <Button
                 size="lg"
-                variant="outline"
-                className="w-full text-lg"
+                className="w-full text-lg bg-primary/90 hover:bg-primary"
                 onClick={() => startGame('easy', 'practice')}
               >
                 Practice Mode
