@@ -21,7 +21,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: 'Complete the game in under 1 minute',
     icon: 'Clock',
     condition: (gameState: GameState) => {
-      if (!gameState.endTime) return false;
+      if (!gameState.endTime || gameState.mode === 'practice') return false;
       const timeInSeconds = (gameState.endTime - gameState.startTime) / 1000;
       return timeInSeconds < 60;
     }
@@ -33,6 +33,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: 'Star',
     condition: (gameState: GameState) => {
       return gameState.endTime !== undefined && 
+             gameState.mode !== 'practice' &&
              gameState.currentQuestion === gameState.questions.length && 
              gameState.incorrectAttempts === 0;
     }
