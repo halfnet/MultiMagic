@@ -26,12 +26,12 @@ export function NumberInput({ onSubmit, disabled }: NumberInputProps) {
           type="number"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          className="text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none number-input"
-          placeholder="answer here, enter to submit"
+          className={`text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none number-input ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+          placeholder={disabled ? 'Processing...' : 'answer here, enter to submit'}
           disabled={disabled}
           min={0}
           max={400}
-          autoFocus
+          autoFocus={!disabled}
         />
       </div>
     </form>

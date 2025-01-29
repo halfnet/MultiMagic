@@ -125,8 +125,10 @@ export default function Game() {
     }, 0);
   };
 
+  const [isProcessing, setIsProcessing] = useState(false);
+  
   const handleAnswer = async (answer: number) => {
-    if (!gameState || !user) return;
+    if (!gameState || !user || isProcessing) return;
 
     const currentQuestion = gameState.questions[gameState.currentQuestion];
     const correct = checkAnswer(currentQuestion, answer);
@@ -192,6 +194,7 @@ export default function Game() {
     }
 
     if (isLastQuestion) {
+      setIsProcessing(true);
       const gameEndTime = Date.now();
       await playCompleteSound();
 
@@ -504,7 +507,7 @@ export default function Game() {
             num2={currentQuestion.num2}
             show={true}
           />
-          <NumberInput onSubmit={handleAnswer} />
+          <NumberInput onSubmit={handleAnswer} disabled={isProcessing} />
         </>
       ) : (
         <div className="space-y-8 text-center">
