@@ -82,6 +82,7 @@ export default function Game() {
   };
 
   const startGame = (difficulty: Difficulty, mode: GameMode = 'regular') => {
+    setIsProcessing(false);  // Reset processing state
     const questions = generateQuestions(difficulty, mode === 'practice' ? practiceQuestionCount : 10, mode === 'practice' ? practiceDigit : undefined);
     const questionStates = questions.map(() => ({
       attempts: 1,
