@@ -159,6 +159,68 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  app.get('/api/analytics/games-by-day', async (req, res) => {
+    try {
+      const userId = req.query.userId ? parseInt(req.query.userId as string) : undefined;
+      const result = await db.execute(sql`
+        WITH days AS (
+          SELECT generate_series(
+            CURRENT_DATE - INTERVAL '6 days',
+            CURRENT_DATE,
+            INTERVAL '1 day'
+          )::date AS day
+        )
+        SELECT 
+          days.day,
+          COALESCE(COUNT(CASE WHEN gr.difficulty = 'easy' THEN 1 END), 0) as easy_count,
+          COALESCE(COUNT(CASE WHEN gr.difficulty = 'hard' THEN 1 END), 0) as hard_count,
+          COALESCE(COUNT(CASE WHEN gr.mode = 'practice' THEN 1 END), 0) as practice_count
+        FROM days
+        LEFT JOIN game_results gr ON 
+          DATE(gr.created_at) = days.day
+          ${userId ? sql`AND gr.user_id = ${userId}` : sql``}
+        GROUP BY days.day
+        ORDER BY days.day
+      `);
+      res.json(result.rows);
+    } catch (error) {
+      console.error('Error fetching games by day:', error);
+      res.status(500).json({ error: 'Failed to fetch analytics' });
+    }
+  });
+
+  app.get('/api/analytics/response-times', async (req, res) => {
+    try {
+      const userId = req.query.userId ? parseInt(req.query.userId as string) : undefined;
+      const result = await db.execute(sql`
+        WITH weeks AS (
+          SELECT generate_series(
+            CURRENT_DATE - INTERVAL '7 weeks',
+            CURRENT_DATE,
+            INTERVAL '1 week'
+          )::date AS week_start
+        )
+        SELECT 
+          weeks.week_start,
+          gr.difficulty,
+          ROUND(AVG(gqr.time_to_solve_ms::numeric / 1000), 2) as avg_time_seconds
+        FROM weeks
+        LEFT JOIN game_results gr ON 
+          DATE(gr.created_at) >= weeks.week_start
+          AND DATE(gr.created_at) < weeks.week_start + INTERVAL '1 week'
+          ${userId ? sql`AND gr.user_id = ${userId}` : sql``}
+        LEFT JOIN game_question_results gqr ON gr.game_id = gqr.game_id
+        WHERE gr.mode = 'regular'
+        GROUP BY weeks.week_start, gr.difficulty
+        ORDER BY weeks.week_start, gr.difficulty
+      `);
+      res.json(result.rows);
+    } catch (error) {
+      console.error('Error fetching response times:', error);
+      res.status(500).json({ error: 'Failed to fetch analytics' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

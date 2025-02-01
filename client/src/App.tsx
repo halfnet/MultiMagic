@@ -6,6 +6,7 @@ import Game from "@/pages/game";
 import Login from "@/pages/login";
 import NotFound from "@/pages/not-found";
 import { useCookieAuth } from "@/hooks/use-cookie-auth";
+import { Analytics } from './components/game/Analytics'; // Added import for Analytics component
 
 function Router() {
   const { user, isLoading } = useCookieAuth();
@@ -25,6 +26,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Game} />
+      <Route path="/analytics" element={<Analytics />} /> {/* Added Analytics route */}
       <Route component={NotFound} />
     </Switch>
   );
