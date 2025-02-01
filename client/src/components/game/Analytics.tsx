@@ -58,7 +58,7 @@ export function Analytics() {
   }));
 
   return (
-    <div className="space-y-8 p-6">
+    <div className="space-y-6 p-4">
       <div className="flex items-center gap-4">
         <Label>Filter by User:</Label>
         <Select value={selectedUser} onValueChange={setSelectedUser}>
