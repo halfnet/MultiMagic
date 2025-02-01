@@ -253,7 +253,7 @@ export function registerRoutes(app: Express): Server {
             ROW_NUMBER() OVER (PARTITION BY difficulty ORDER BY avg_time_ms DESC) as rn
           FROM NumberStats
         ) ranked
-        WHERE rn <= 5
+        WHERE rn <= 2
         ORDER BY difficulty, avg_time_ms DESC;
       `);
       res.json(result.rows);

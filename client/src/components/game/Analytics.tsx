@@ -218,7 +218,7 @@ export function Analytics() {
                   </td>
                   <td className="py-2 px-4">{entry.number}</td>
                   <td className="py-2 px-4">
-                    {(entry.avg_time_ms / 1000).toFixed(2)}s
+                    {(entry.avg_time_ms / 1000).toFixed(1)}s
                   </td>
                 </tr>
               ))}
