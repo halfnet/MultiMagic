@@ -80,7 +80,7 @@ export function Analytics() {
 
       <Card className="p-6">
         <h3 className="text-lg font-semibold mb-4">Games Played (Last 7 Days)</h3>
-        <div className="h-[400px]">
+        <div className="h-[280px]">
           <ResponsiveBar
             data={gamesData}
             keys={['easy_count', 'hard_count', 'practice_count']}
@@ -134,7 +134,7 @@ export function Analytics() {
 
       <Card className="p-6">
         <h3 className="text-lg font-semibold mb-4">Average Response Time (Last 8 Weeks)</h3>
-        <div className="h-[400px]">
+        <div className="h-[280px]">
           <ResponsiveLine
             data={responseTimeLineData}
             margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
