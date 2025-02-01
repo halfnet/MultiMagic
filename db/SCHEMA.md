@@ -1,6 +1,6 @@
+
 # Database Schema - Math Game Application
 
-```
 [users]
 +---------------+---------+----------+
 | Column        | Type    | Notes    |
@@ -8,6 +8,7 @@
 | id           | integer | PK       |
 | username     | text    | UNIQUE   |
 | last_login_at| text    | NOT NULL |
+| theme_color  | text    | DEFAULT  |
 +---------------+---------+----------+
                      ^
                      |
@@ -48,7 +49,6 @@
 | time_to_solve_ms| integer| NOT NULL      |
 | created_at     | text    | NOT NULL      |
 +----------------+---------+---------------+
-```
 
 ## Relationships
 
@@ -66,3 +66,4 @@
 - All timestamp fields (`created_at`, `last_login_at`) are stored as text with `CURRENT_TIMESTAMP` default
 - `game_id` is used as the unique identifier for linking game results with their question results
 - User relationships are maintained throughout for data integrity and querying flexibility
+- `theme_color` has a default value of '#7c3aed'
