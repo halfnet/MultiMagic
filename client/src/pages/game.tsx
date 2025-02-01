@@ -130,7 +130,7 @@ export default function Game() {
   };
 
   const [isProcessing, setIsProcessing] = useState(false);
-  
+
   const handleAnswer = async (answer: number) => {
     if (!gameState || !user || isProcessing) return;
 
@@ -365,7 +365,7 @@ export default function Game() {
               </div>
             </div>
             <div className="flex justify-between items-center gap-3 border-t pt-3">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
                 <div className="flex items-center gap-2">
                   <Label htmlFor="color-picker" className="text-sm flex items-center gap-1">
                     <Palette className="w-3 h-3" />
