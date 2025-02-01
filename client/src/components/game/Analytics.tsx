@@ -33,9 +33,8 @@ export function Analytics() {
   const [responseTimeData, setResponseTimeData] = useState<ResponseTimeData[]>([]);
   const [slowestNumbers, setSlowestNumbers] = useState<Array<{
     difficulty: string;
-    num1: number;
-    num2: number;
-    time_to_solve_ms: number;
+    number: number;
+    avg_time_ms: number;
   }>>([]);
 
   useEffect(() => {
@@ -201,14 +200,14 @@ export function Analytics() {
       </Card>
 
       <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Slowest Numbers to Answer</h3>
+        <h3 className="text-lg font-semibold mb-4">Top 5 Most Time-Consuming Numbers</h3>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
               <tr className="border-b">
                 <th className="py-2 px-4 text-left">Mode</th>
-                <th className="py-2 px-4 text-left">Numbers</th>
-                <th className="py-2 px-4 text-left">Time (seconds)</th>
+                <th className="py-2 px-4 text-left">Number</th>
+                <th className="py-2 px-4 text-left">Average Time (seconds)</th>
               </tr>
             </thead>
             <tbody>
@@ -217,9 +216,9 @@ export function Analytics() {
                   <td className="py-2 px-4">
                     {entry.difficulty === 'easy' ? 'Easy Mode' : 'Hard Mode'}
                   </td>
-                  <td className="py-2 px-4">{entry.num1} × {entry.num2}</td>
+                  <td className="py-2 px-4">{entry.number}</td>
                   <td className="py-2 px-4">
-                    {(entry.time_to_solve_ms / 1000).toFixed(2)}s
+                    {(entry.avg_time_ms / 1000).toFixed(2)}s
                   </td>
                 </tr>
               ))}

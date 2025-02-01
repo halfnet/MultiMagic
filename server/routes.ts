@@ -225,22 +225,36 @@ export function registerRoutes(app: Express): Server {
     try {
       const userId = req.query.userId ? parseInt(req.query.userId as string) : undefined;
       const result = await db.execute(sql`
-        WITH RankedNumbers AS (
+        WITH NumberStats AS (
           SELECT 
             gr.difficulty,
-            gqr.num1,
-            gqr.num2,
-            gqr.time_to_solve_ms,
-            ROW_NUMBER() OVER (PARTITION BY gr.difficulty ORDER BY gqr.time_to_solve_ms DESC) as rn
+            n.number,
+            AVG(gqr.time_to_solve_ms)::float as avg_time_ms
           FROM game_results gr
           JOIN game_question_results gqr ON gr.game_id = gqr.game_id
+          CROSS JOIN LATERAL (
+            VALUES 
+              (gqr.num1),
+              (gqr.num2)
+          ) as n(number)
           WHERE gr.mode = 'regular'
           ${userId ? sql`AND gr.user_id = ${userId}` : sql``}
+          GROUP BY gr.difficulty, n.number
         )
-        SELECT *
-        FROM RankedNumbers
-        WHERE rn <= 2
-        ORDER BY difficulty, time_to_solve_ms DESC;
+        SELECT 
+          difficulty,
+          number,
+          avg_time_ms
+        FROM (
+          SELECT 
+            difficulty,
+            number,
+            avg_time_ms,
+            ROW_NUMBER() OVER (PARTITION BY difficulty ORDER BY avg_time_ms DESC) as rn
+          FROM NumberStats
+        ) ranked
+        WHERE rn <= 5
+        ORDER BY difficulty, avg_time_ms DESC;
       `);
       res.json(result.rows);
     } catch (error) {
