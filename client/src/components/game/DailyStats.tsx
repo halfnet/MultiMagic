@@ -21,7 +21,7 @@ export function DailyStats({ userId }: { userId: number }) {
 
   return (
     <div className="text-sm text-muted-foreground space-x-4">
-      <span>Today's games:</span>
+      <span>Played:</span>
       <span>Easy: {stats.easy_count}</span>
       <span>Hard: {stats.hard_count}</span>
     </div>

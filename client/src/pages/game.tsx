@@ -367,7 +367,7 @@ export default function Game() {
             <div className="flex justify-end items-center gap-3 border-t pt-3">
               <div className="flex flex-col items-end gap-2">
                 <span className="text-sm font-medium text-muted-foreground">
-                  Playing as {user?.username}
+                  Player: {user?.username}
                 </span>
                 <div className="text-sm text-muted-foreground space-x-4">
                   {user && <DailyStats userId={user.id} />}

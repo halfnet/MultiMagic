@@ -17,6 +17,6 @@ export function ScreenTime({ userId }: ScreenTimeProps) {
   }, [userId]);
 
   return (
-    <span>Screen Time Earned: {screenTime.toFixed(1)}hr</span>
+    <span>Screen Time Earned: {screenTime.toFixed(0)} mins</span>
   );
 }
