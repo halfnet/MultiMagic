@@ -383,7 +383,7 @@ export default function Game() {
                 {user && <ScreenTime userId={user.id} />}
               </div>
               <span className="text-sm font-medium text-muted-foreground">
-                <User className="w-4 h-4 inline mr-1"/> Player: {user?.username}
+                <User className="w-4 h-4 inline mr-1"/>{user?.username}
               </span>
             </div>
           </div>
