@@ -1,7 +1,9 @@
 
 import { useState, useEffect } from 'react';
+import { useLocation } from 'wouter';
 import { ResponsiveBar } from '@nivo/bar';
 import { ResponsiveLine } from '@nivo/line';
+import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Label } from '../ui/label';
@@ -26,6 +28,7 @@ interface User {
 }
 
 export function Analytics() {
+  const [_, setLocation] = useLocation();
   const [users, setUsers] = useState<User[]>([]);
   const { user } = useCookieAuth();
   const [selectedUser, setSelectedUser] = useState<string>(user?.id.toString() || 'all');
@@ -71,7 +74,13 @@ export function Analytics() {
 
   return (
     <div className="space-y-6 p-4">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 justify-between">
+        <Button 
+          onClick={() => setLocation('/')}
+          className="bg-primary/90 hover:bg-primary text-primary-foreground"
+        >
+          Back to Game
+        </Button>
         <Label>Filter by User:</Label>
         <Select value={selectedUser} onValueChange={setSelectedUser}>
           <SelectTrigger className="w-48">
