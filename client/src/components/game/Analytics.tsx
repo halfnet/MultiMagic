@@ -211,7 +211,7 @@ export function Analytics() {
               </tr>
             </thead>
             <tbody>
-              {slowestNumbers.map((entry, index) => (
+              {(slowestNumbers || []).map((entry, index) => (
                 <tr key={index} className="border-b">
                   <td className="py-2 px-4">
                     {entry.difficulty === 'easy' ? 'Easy Mode' : 'Hard Mode'}
