@@ -61,12 +61,13 @@ export function Analytics() {
 
   const responseTimeLineData = ['easy', 'hard'].map(difficulty => ({
     id: difficulty === 'easy' ? 'Easy Mode' : 'Hard Mode',
-    data: responseTimeData
-      .filter(d => d.difficulty === difficulty)
+    data: (responseTimeData || [])
+      .filter(d => d?.difficulty === difficulty)
       .map(d => ({
-        x: new Date(d.week_start).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' }),
-        y: d.avg_time_seconds
+        x: d?.week_start ? new Date(d.week_start).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' }) : '',
+        y: d?.avg_time_seconds || 0
       }))
+      .filter(d => d.x)
   }));
 
   return (
