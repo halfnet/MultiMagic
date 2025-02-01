@@ -364,30 +364,30 @@ export default function Game() {
                 </Button>
               </div>
             </div>
-            <div className="flex justify-end items-center gap-3 border-t pt-3">
-              <div className="flex flex-col items-end gap-2">
-                <span className="text-sm font-medium text-muted-foreground">
-                  Player: {user?.username}
-                </span>
+            <div className="flex justify-between items-center gap-3 border-t pt-3">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="color-picker" className="text-sm flex items-center gap-1">
+                    <Palette className="w-3 h-3" />
+                    Theme
+                  </Label>
+                  <Input
+                    id="color-picker"
+                    type="color"
+                    value={themeColor}
+                    onChange={(e) => updateThemeColor(e.target.value)}
+                    className="w-16 h-8 cursor-pointer"
+                  />
+                </div>
                 <div className="text-sm text-muted-foreground space-x-4">
                   {user && <DailyStats userId={user.id} />}
                   {user && <ScreenTime userId={user.id} />}
                 </div>
               </div>
+              <span className="text-sm font-medium text-muted-foreground">
+                Player: {user?.username}
+              </span>
             </div>
-          </div>
-          <div className="mb-6 space-y-4">
-            <Label htmlFor="color-picker" className="flex items-center gap-2">
-              <Palette className="w-4 h-4" />
-              Choose Your Color Theme
-            </Label>
-            <Input
-              id="color-picker"
-              type="color"
-              value={themeColor}
-              onChange={(e) => updateThemeColor(e.target.value)}
-              className="w-full h-12 cursor-pointer"
-            />
           </div>
           <div className="space-y-4">
             <Button
