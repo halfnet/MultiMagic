@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from 'react';
+import { Clock } from 'lucide-react';
 
 interface ScreenTimeProps {
   userId: number;
@@ -17,6 +18,9 @@ export function ScreenTime({ userId }: ScreenTimeProps) {
   }, [userId]);
 
   return (
-    <span>Screen Time Earned: {screenTime.toFixed(0)} mins</span>
+    <span className="flex items-center gap-2">
+      <Clock className="w-4 h-4" />
+      {screenTime.toFixed(0)} mins
+    </span>
   );
 }

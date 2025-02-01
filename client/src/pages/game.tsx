@@ -13,7 +13,7 @@ import { useCookieAuth } from "@/hooks/use-cookie-auth";
 import { GameState, Question, Difficulty, GameMode, generateQuestions, checkAnswer, formatTime, calculateScore } from "@/lib/game";
 import { triggerConfetti, triggerCelebration } from "@/lib/confetti";
 import { playCorrectSound, playIncorrectSound, playCompleteSound } from "@/lib/audio";
-import { X, Palette, Brain } from "lucide-react";
+import { X, Palette, Brain, User } from "lucide-react";
 import { Achievement, ACHIEVEMENTS, checkAchievements } from "@/lib/achievements";
 import { AchievementBadge } from "@/components/game/AchievementBadge";
 import { Timer } from "@/components/game/Timer";
@@ -383,7 +383,7 @@ export default function Game() {
                 {user && <ScreenTime userId={user.id} />}
               </div>
               <span className="text-sm font-medium text-muted-foreground">
-                Player: {user?.username}
+                <User className="w-4 h-4 inline mr-1"/> Player: {user?.username}
               </span>
             </div>
           </div>
@@ -569,7 +569,7 @@ export default function Game() {
                   onClick={() => startGame(gameState.difficulty, gameState.mode)}
                   className="text-lg"
                 >
-                  Play Again
+                  <User className="w-4 h-4 inline mr-1"/> Play Again
                 </Button>
                 <Button
                   size="lg"
