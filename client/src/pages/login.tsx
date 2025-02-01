@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { ResponsiveBar } from '@nivo/bar';
 import {
   Select,
   SelectContent,
@@ -22,6 +23,10 @@ export default function Login() {
   const { login, isLoginLoading } = useCookieAuth();
   const [_, setLocation] = useLocation();
   const { toast } = useToast();
+
+  const { data: previewData } = useQuery({
+    queryKey: ['/api/analytics/games-by-day'],
+  });
 
   const { data: users = [], isLoading: isLoadingUsers } = useQuery<SelectUser[]>({
     queryKey: ['/api/users'],
@@ -49,8 +54,32 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex items-center justify-center p-4">
-      <Card className="w-full max-w-md p-8">
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="w-full max-w-3xl space-y-6">
+        <Card className="p-6">
+          <h2 className="text-2xl font-bold mb-4">Math Game Analytics Preview</h2>
+          <div className="h-[300px]">
+            {previewData && (
+              <ResponsiveBar
+                data={previewData}
+                keys={['easy_count', 'hard_count', 'practice_count']}
+                indexBy="day"
+                margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
+                padding={0.3}
+                colors={['#4ade80', '#f43f5e', '#a855f7']}
+                axisBottom={{
+                  tickRotation: -45,
+                  format: (value) => new Date(value).toLocaleDateString(),
+                }}
+              />
+            )}
+          </div>
+          <p className="text-center mt-4 text-muted-foreground">
+            Log in to view detailed analytics and track your progress!
+          </p>
+        </Card>
+        
+        <Card className="w-full max-w-md p-8 mx-auto">
+          <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2 text-center">
             <h1 className="text-3xl font-bold">Welcome to Math Game</h1>
             <p className="text-muted-foreground">
@@ -140,6 +169,7 @@ export default function Login() {
           )}
         </form>
       </Card>
+      </div>
     </div>
   );
 }
