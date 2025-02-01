@@ -145,6 +145,26 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  app.get('/api/screen-time', async (req, res) => {
+    try {
+      const userId = parseInt(req.query.userId as string);
+      const timezone = req.query.timezone as string || 'UTC';
+      
+      const result = await db.execute(sql`
+        SELECT COALESCE(SUM(screen_time_earned::float), 0) as total_screen_time
+        FROM game_results
+        WHERE user_id = ${userId}
+        AND created_at::timestamp >= date_trunc('week', TIMEZONE(${timezone}, CURRENT_TIMESTAMP AT TIME ZONE ${timezone}))
+        AND created_at::timestamp < date_trunc('week', TIMEZONE(${timezone}, CURRENT_TIMESTAMP AT TIME ZONE ${timezone})) + INTERVAL '1 week'
+      `);
+      
+      res.json({ screenTime: Number(result.rows[0].total_screen_time) });
+    } catch (error) {
+      console.error('Error fetching screen time:', error);
+      res.status(500).json({ error: 'Failed to fetch screen time' });
+    }
+  });
+
   app.get('/api/daily-stats', async (req, res) => {
     try {
       const userId = parseInt(req.query.userId as string);

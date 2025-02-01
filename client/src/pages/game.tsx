@@ -18,6 +18,7 @@ import { Achievement, ACHIEVEMENTS, checkAchievements } from "@/lib/achievements
 import { AchievementBadge } from "@/components/game/AchievementBadge";
 import { Timer } from "@/components/game/Timer";
 import { DailyStats } from "@/components/game/DailyStats";
+import { ScreenTime } from "@/components/game/ScreenTime";
 import { nanoid } from 'nanoid';
 
 interface QuestionState {
@@ -368,7 +369,10 @@ export default function Game() {
                 <span className="text-sm font-medium text-muted-foreground">
                   Playing as {user?.username}
                 </span>
-                {user && <DailyStats userId={user.id} />}
+                <div className="text-sm text-muted-foreground space-x-4">
+                  {user && <DailyStats userId={user.id} />}
+                  {user && <ScreenTime userId={user.id} />}
+                </div>
               </div>
             </div>
           </div>
