@@ -365,20 +365,19 @@ export default function Game() {
               </div>
             </div>
             <div className="flex justify-between items-center gap-3 border-t pt-3">
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="color-picker" className="text-sm flex items-center gap-1">
-                    <Palette className="w-3 h-3" />
-                    Theme
-                  </Label>
-                  <Input
-                    id="color-picker"
-                    type="color"
-                    value={themeColor}
-                    onChange={(e) => updateThemeColor(e.target.value)}
-                    className="w-16 h-8 cursor-pointer"
-                  />
-                </div>
+              <div className="flex flex-col gap-1">
+                <Label htmlFor="color-picker" className="text-sm flex items-center gap-1">
+                  <Palette className="w-3 h-3" />
+                  Theme
+                </Label>
+                <Input
+                  id="color-picker"
+                  type="color"
+                  value={themeColor}
+                  onChange={(e) => updateThemeColor(e.target.value)}
+                  className="w-16 h-8 cursor-pointer"
+                />
+              </div>
                 <div className="text-sm text-muted-foreground space-x-4">
                   {user && <DailyStats userId={user.id} />}
                   {user && <ScreenTime userId={user.id} />}
