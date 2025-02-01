@@ -76,6 +76,20 @@ export function registerRoutes(app: Express): Server {
   // Rest of the routes remain unchanged
   app.post('/api/game-results', async (req, res) => {
     try {
+      // Calculate screen time earned
+      let screenTime = 0;
+      const hasSpeedMaster = req.body.timeTakenInMs < 60000; // Less than 1 minute
+      const hasPerfectScore = req.body.incorrectAttempts === 0;
+      const hasAllAchievements = hasSpeedMaster && hasPerfectScore;
+
+      if (req.body.mode === 'regular') {
+        if (req.body.difficulty === 'easy') {
+          screenTime = hasAllAchievements ? 1.0 : 0.5;
+        } else if (req.body.difficulty === 'hard') {
+          screenTime = hasAllAchievements ? 6.0 : 2.0;
+        }
+      }
+
       const [result] = await db.insert(gameResults).values({
         gameId: req.body.gameId,
         userId: req.body.userId,
@@ -87,6 +101,7 @@ export function registerRoutes(app: Express): Server {
         timeTakenInMs: req.body.timeTakenInMs,
         bestStreak: req.body.bestStreak,
         incorrectAttempts: req.body.incorrectAttempts,
+        screenTimeEarned: screenTime,
       }).returning();
 
       res.json(result);
