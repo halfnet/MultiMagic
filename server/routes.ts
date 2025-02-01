@@ -238,6 +238,7 @@ export function registerRoutes(app: Express): Server {
               (gqr.num2)
           ) as n(number)
           WHERE gr.mode = 'regular'
+          AND gr.created_at >= CURRENT_TIMESTAMP - INTERVAL '1 week'
           ${userId ? sql`AND gr.user_id = ${userId}` : sql``}
           GROUP BY gr.difficulty, n.number
         )
