@@ -66,10 +66,10 @@ export function Analytics() {
     data: (responseTimeData || [])
       .filter(d => d?.difficulty === difficulty)
       .map(d => ({
-        x: d?.week_start ? new Date(d.week_start).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' }) : '',
+        x: d?.week_start ? new Date(d.week_start).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' }) : 'No Data',
         y: d?.avg_time_seconds || 0
       }))
-      .filter(d => d.x)
+      .filter(d => d.x) || [{ x: 'No Data', y: 0 }]
   }));
 
   return (
