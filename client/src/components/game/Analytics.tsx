@@ -200,7 +200,7 @@ export function Analytics() {
       </Card>
 
       <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Top 5 Most Time-Consuming Numbers</h3>
+        <h3 className="text-lg font-semibold mb-4">Hardest Numbers</h3>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
