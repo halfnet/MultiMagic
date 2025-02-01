@@ -26,7 +26,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Game} />
-      <Route path="/analytics" element={<Analytics />} /> {/* Added Analytics route */}
+      <Route path="/analytics" component={Analytics} />
       <Route component={NotFound} />
     </Switch>
   );
