@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { FlashCard } from "@/components/game/FlashCard";
 import { NumberInput } from "@/components/game/NumberInput";
 import { ProgressBar } from "@/components/game/ProgressBar";
@@ -29,6 +30,7 @@ interface QuestionState {
 export default function Game() {
   const { user } = useCookieAuth();
   const { toast } = useToast();
+  const [_, setLocation] = useLocation();
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [themeColor, setThemeColor] = useState(user?.themeColor || "#7c3aed");
   const [practiceDigit, setPracticeDigit] = useState<number>(5);
@@ -341,7 +343,7 @@ export default function Game() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => window.location.href = '/analytics'}
+                  onClick={() => setLocation('/analytics')}
                   className="w-full text-lg bg-primary/90 hover:bg-primary text-primary-foreground"
                 >
                   <svg
