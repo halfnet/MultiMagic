@@ -317,26 +317,49 @@ export default function Game() {
           <div className="flex flex-col gap-4 mb-6">
             <div className="flex justify-between items-center">
               <h1 className="text-3xl font-bold text-primary">Math Challenge!</h1>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleLogout}
-                className="w-full text-lg bg-primary/90 hover:bg-primary text-primary-foreground"
-              >
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  className="w-4 h-4"
+              <div className="space-y-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="w-full text-lg bg-primary/90 hover:bg-primary text-primary-foreground"
                 >
-                  <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1" />
-                </svg>
-                Switch User
-              </Button>
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    className="w-4 h-4 mr-2"
+                  >
+                    <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1" />
+                  </svg>
+                  Switch User
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.location.href = '/analytics'}
+                  className="w-full text-lg bg-primary/90 hover:bg-primary text-primary-foreground"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-4 h-4 mr-2"
+                  >
+                    <path d="M3 3v18h18" />
+                    <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
+                  </svg>
+                  Report
+                </Button>
+              </div>
             </div>
             <div className="flex justify-end items-center gap-3 border-t pt-3">
               <div className="flex flex-col items-end gap-2">
