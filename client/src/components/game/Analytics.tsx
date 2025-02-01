@@ -83,7 +83,7 @@ export function Analytics() {
             data={gamesData}
             keys={['easy_count', 'hard_count', 'practice_count']}
             indexBy="day"
-            margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
+            margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
             padding={0.3}
             valueScale={{ type: 'linear' }}
             indexScale={{ type: 'band', round: true }}
@@ -135,7 +135,7 @@ export function Analytics() {
         <div className="h-[400px]">
           <ResponsiveLine
             data={responseTimeLineData}
-            margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+            margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
             xScale={{ type: 'point' }}
             yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false }}
             axisTop={null}
