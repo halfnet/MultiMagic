@@ -105,11 +105,11 @@ export function Analytics() {
             legends={[
               {
                 dataFrom: 'keys',
-                anchor: 'bottom-right',
-                direction: 'column',
+                anchor: 'top',
+                direction: 'row',
                 justify: false,
-                translateX: 120,
-                translateY: 0,
+                translateX: 0,
+                translateY: -40,
                 itemsSpacing: 2,
                 itemWidth: 100,
                 itemHeight: 20,
@@ -159,11 +159,11 @@ export function Analytics() {
             useMesh={true}
             legends={[
               {
-                anchor: 'bottom-right',
-                direction: 'column',
+                anchor: 'top',
+                direction: 'row',
                 justify: false,
-                translateX: 100,
-                translateY: 0,
+                translateX: 0,
+                translateY: -40,
                 itemsSpacing: 0,
                 itemDirection: 'left-to-right',
                 itemWidth: 80,
