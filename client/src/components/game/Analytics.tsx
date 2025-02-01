@@ -52,7 +52,7 @@ export function Analytics() {
     data: responseTimeData
       .filter(d => d.difficulty === difficulty)
       .map(d => ({
-        x: new Date(d.week_start).toLocaleDateString(),
+        x: new Date(d.week_start).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' }),
         y: d.avg_time_seconds
       }))
   }));
@@ -93,7 +93,7 @@ export function Analytics() {
             axisRight={null}
             axisBottom={{
               tickRotation: -45,
-              format: (value) => new Date(value).toLocaleDateString(),
+              format: (value) => new Date(value).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' }),
             }}
             axisLeft={{
               tickSize: 5,
