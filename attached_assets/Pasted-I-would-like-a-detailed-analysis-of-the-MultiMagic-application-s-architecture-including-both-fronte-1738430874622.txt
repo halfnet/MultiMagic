@@ -1,0 +1,41 @@
+I would like a detailed analysis of the MultiMagic application's architecture, including both frontend and backend components. Put the final analysis into a file.
+
+Please provide the following details:
+
+1. Overall Architecture
+Identify the structure of the application (e.g., monolithic, microservices, client-server).
+Explain how the frontend and backend communicate (e.g., REST API, GraphQL, WebSockets).
+Identify key dependencies and frameworks used in both frontend and backend.
+2. Frontend (React + TypeScript)
+Describe the main structure of the frontend (e.g., component hierarchy, routing, state management).
+Identify key UI components and their roles.
+Explain how state management is handled (e.g., Redux, Zustand, Context API).
+Identify how API calls are made (e.g., Axios, Fetch API, GraphQL client).
+Look for reusable UI components and design patterns used.
+Identify any styling solutions used (e.g., CSS modules, Tailwind, Styled Components).
+3. Backend
+Identify the backend framework used (e.g., Express, NestJS, Koa).
+Explain the API structure (e.g., RESTful endpoints, GraphQL resolvers).
+Describe how authentication and authorization are handled (e.g., JWT, OAuth, session-based).
+Identify database interactions (e.g., ORM used like Prisma, TypeORM, Knex).
+Explain how business logic is structured (e.g., services, controllers, middlewares).
+Identify background jobs or scheduled tasks (if any).
+4. Database (PostgreSQL)
+Describe the database schema and key tables.
+Identify relationships between tables (e.g., one-to-many, many-to-many).
+Check for database migrations and seed data (e.g., using Knex, Prisma, TypeORM migrations).
+Look for indexing strategies and performance optimizations.
+5. DevOps & Build Process
+Identify the build process and package management (e.g., Webpack, Vite, Parcel).
+Check for CI/CD pipelines (e.g., GitHub Actions, CircleCI, Jenkins).
+Identify any Docker or containerization setup.
+Look for environment configuration (e.g., .env files, secrets management).
+6. Additional Considerations
+Identify any unit tests, integration tests, or end-to-end tests.
+Look for logging and monitoring solutions.
+Identify error handling mechanisms in both frontend and backend.
+Highlight any notable security considerations.
+7. Summary & Recommendations
+Provide a high-level summary of the application's architecture.
+Suggest potential improvements or areas of optimization.
+Highlight any best practices that are followed well.
