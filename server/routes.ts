@@ -221,6 +221,34 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  app.get('/api/analytics/slowest-numbers', async (req, res) => {
+    try {
+      const userId = req.query.userId ? parseInt(req.query.userId as string) : undefined;
+      const result = await db.execute(sql`
+        WITH RankedNumbers AS (
+          SELECT 
+            gr.difficulty,
+            gqr.num1,
+            gqr.num2,
+            gqr.time_to_solve_ms,
+            ROW_NUMBER() OVER (PARTITION BY gr.difficulty ORDER BY gqr.time_to_solve_ms DESC) as rn
+          FROM game_results gr
+          JOIN game_question_results gqr ON gr.game_id = gqr.game_id
+          WHERE gr.mode = 'regular'
+          ${userId ? sql`AND gr.user_id = ${userId}` : sql``}
+        )
+        SELECT *
+        FROM RankedNumbers
+        WHERE rn <= 2
+        ORDER BY difficulty, time_to_solve_ms DESC;
+      `);
+      res.json(result.rows);
+    } catch (error) {
+      console.error('Error fetching slowest numbers:', error);
+      res.status(500).json({ error: 'Failed to fetch analytics' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
