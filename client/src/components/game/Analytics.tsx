@@ -220,14 +220,14 @@ export function Analytics() {
               </tr>
             </thead>
             <tbody>
-              {(slowestNumbers || []).map((entry, index) => (
+              {(Array.isArray(slowestNumbers) ? slowestNumbers : []).map((entry, index) => (
                 <tr key={index} className="border-b">
                   <td className="py-2 px-4">
-                    {entry.difficulty === 'easy' ? 'Easy Mode' : 'Hard Mode'}
+                    {entry?.difficulty === 'easy' ? 'Easy Mode' : 'Hard Mode'}
                   </td>
-                  <td className="py-2 px-4">{entry.number}</td>
+                  <td className="py-2 px-4">{entry?.number || 0}</td>
                   <td className="py-2 px-4">
-                    {(entry.avg_time_ms / 1000).toFixed(1)}s
+                    {((entry?.avg_time_ms || 0) / 1000).toFixed(1)}s
                   </td>
                 </tr>
               ))}
