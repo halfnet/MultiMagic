@@ -5,6 +5,7 @@ import { ResponsiveLine } from '@nivo/line';
 import { Card } from '../ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Label } from '../ui/label';
+import { useCookieAuth } from '@/hooks/use-cookie-auth';
 
 interface GamesData {
   day: string;
@@ -26,7 +27,8 @@ interface User {
 
 export function Analytics() {
   const [users, setUsers] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState<string>('all');
+  const { user } = useCookieAuth();
+  const [selectedUser, setSelectedUser] = useState<string>(user?.id.toString() || 'all');
   const [gamesData, setGamesData] = useState<GamesData[]>([]);
   const [responseTimeData, setResponseTimeData] = useState<ResponseTimeData[]>([]);
 
