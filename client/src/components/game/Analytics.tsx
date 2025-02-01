@@ -144,7 +144,7 @@ export function Analytics() {
       </Card>
 
       <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Average Response Time (Last 8 Weeks)</h3>
+        <h3 className="text-lg font-semibold mb-4">Time To Answer (Last 8 Weeks)</h3>
         <div className="h-[280px]">
           <ResponsiveLine
             data={responseTimeLineData}
@@ -160,7 +160,7 @@ export function Analytics() {
               tickSize: 5,
               tickPadding: 5,
               tickRotation: 0,
-              legend: 'seconds',
+              legend: 'Time (seconds)',
               legendOffset: -40,
               legendPosition: 'middle'
             }}
