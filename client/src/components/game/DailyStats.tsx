@@ -21,10 +21,12 @@ export function DailyStats({ userId }: { userId: number }) {
   if (!stats) return null;
 
   return (
-    <div className="text-sm text-muted-foreground space-x-4 flex items-center">
-      <GamepadIcon className="w-4 h-4 mr-2" />
-      <span>Easy: {stats.easy_count}</span>
-      <span>Hard: {stats.hard_count}</span>
+    <div className="flex items-center gap-2">
+      <GamepadIcon className="w-4 h-4 shrink-0" />
+      <div className="space-x-4">
+        <span>Easy: {stats.easy_count}</span>
+        <span>Hard: {stats.hard_count}</span>
+      </div>
     </div>
   );
 }

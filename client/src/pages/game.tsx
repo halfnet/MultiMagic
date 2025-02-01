@@ -378,7 +378,7 @@ export default function Game() {
                   className="w-16 h-8 cursor-pointer"
                 />
               </div>
-              <div className="text-sm text-muted-foreground space-x-4">
+              <div className="text-sm text-muted-foreground flex flex-col gap-2">
                 {user && <DailyStats userId={user.id} />}
                 {user && <ScreenTime userId={user.id} />}
               </div>
