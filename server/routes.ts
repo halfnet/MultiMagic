@@ -458,6 +458,36 @@ app.use((req, res, next) => {
     }
   });
 
+  // Get game question results for a specific game
+  app.get('/api/game-question-results/:gameId', async (req, res) => {
+    try {
+      const results = await db
+        .select()
+        .from(gameQuestionResults)
+        .where(eq(gameQuestionResults.gameId, req.params.gameId));
+      res.json(results);
+    } catch (error) {
+      console.error('Error fetching game question results:', error);
+      res.status(500).json({ error: 'Failed to fetch game question results' });
+    }
+  });
+
+  // Get game question results for a specific user
+  app.get('/api/game-question-results/user/:userId', async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const results = await db
+        .select()
+        .from(gameQuestionResults)
+        .where(eq(gameQuestionResults.userId, userId))
+        .orderBy(gameQuestionResults.createdAt);
+      res.json(results);
+    } catch (error) {
+      console.error('Error fetching user game question results:', error);
+      res.status(500).json({ error: 'Failed to fetch user game question results' });
+    }
+  });
+
   app.get('/api/analytics/slowest-numbers', async (req, res) => {
     try {
       const userId = req.query.userId ? parseInt(req.query.userId as string) : undefined;
