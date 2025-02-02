@@ -208,6 +208,9 @@ export default function Game() {
       };
 
       try {
+        const csrfResponse = await fetch('/api/csrf-token');
+        const { csrfToken } = await csrfResponse.json();
+        
         const questionResults = gameState.questions.map((q, i) => ({
           questionId: i + 1,
           gameId: gameState.gameId,
@@ -219,7 +222,10 @@ export default function Game() {
 
         await fetch('/api/game-results', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'CSRF-Token': csrfToken
+          },
           body: JSON.stringify({
             gameId: gameState.gameId,
             userId: user.id,
@@ -236,7 +242,10 @@ export default function Game() {
 
         await fetch('/api/game-question-results', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'CSRF-Token': csrfToken
+          },
           body: JSON.stringify({
             gameId: gameState.gameId,
             userId: user.id,
