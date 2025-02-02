@@ -14,6 +14,17 @@ import { specs } from './swagger';
  * @swagger
  * components:
  *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         username:
+ *           type: string
+ *         themeColor:
+ *           type: string
+ *         lastLoginAt:
+ *           type: string
  *     GameQuestionResult:
  *       type: object
  *       properties:
@@ -173,6 +184,15 @@ import { specs } from './swagger';
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/User'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
  * 
  * @swagger
  * /api/login:
