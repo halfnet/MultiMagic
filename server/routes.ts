@@ -179,7 +179,13 @@ export function registerRoutes(app: Express): Server {
 
   // Provide CSRF token to frontend
   app.get('/api/csrf-token', (req, res) => {
-    res.json({ csrfToken: req.csrfToken() });
+    try {
+      const token = req.csrfToken();
+      res.json({ csrfToken: token });
+    } catch (error) {
+      console.error('Error generating CSRF token:', error);
+      res.status(500).json({ error: 'Failed to generate CSRF token' });
+    }
   });
 
   // Get all users for the dropdown
