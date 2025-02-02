@@ -175,12 +175,32 @@ export function registerRoutes(app: Express): Server {
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
-  app.use(csrf({ cookie: true }));
+  app.use(csrf({ 
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict'
+  }
+}));
+
+// Add CORS headers for development
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, CSRF-Token');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
 
   // Provide CSRF token to frontend
   app.get('/api/csrf-token', (req, res) => {
     try {
       const token = req.csrfToken();
+      res.cookie('XSRF-TOKEN', token, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict'
+      });
       res.json({ csrfToken: token });
     } catch (error) {
       console.error('Error generating CSRF token:', error);
