@@ -34,6 +34,126 @@ import { specs } from './swagger';
  *           type: string
  *         mode:
  *           type: string
+ *         practiceDigit:
+ *           type: integer
+ *         questionsCount:
+ *           type: integer
+ *         correctAnswers:
+ *           type: integer
+ *         timeTakenInMs:
+ *           type: integer
+ *         bestStreak:
+ *           type: integer
+ *         incorrectAttempts:
+ *           type: integer
+ *         screenTimeEarned:
+ *           type: number
+ * 
+ * @swagger
+ * /api/users:
+ *   get:
+ *     summary: Get all users
+ *     description: Retrieves a list of all users
+ *     responses:
+ *       200:
+ *         description: List of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ * 
+ * @swagger
+ * /api/login:
+ *   post:
+ *     summary: Login or create user
+ *     description: Logs in an existing user or creates a new one
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ * 
+ * @swagger
+ * /api/game-results:
+ *   post:
+ *     summary: Save game results
+ *     description: Saves the results of a completed game
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/GameResult'
+ *     responses:
+ *       200:
+ *         description: Saved game result
+ * 
+ * @swagger
+ * /api/screen-time:
+ *   get:
+ *     summary: Get user's screen time
+ *     description: Retrieves the total screen time earned by a user
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: timezone
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Screen time data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 screenTime:
+ *                   type: number
+ * 
+ * @swagger
+ * /api/daily-stats:
+ *   get:
+ *     summary: Get user's daily statistics
+ *     description: Retrieves the count of easy and hard games played today
+ *     parameters:
+ *       - in: query
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: timezone
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Daily statistics
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 easy_count:
+ *                   type: integer
+ *                 hard_count:
+ *                   type: integer
  */
 
 export function registerRoutes(app: Express): Server {
