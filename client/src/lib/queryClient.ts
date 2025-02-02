@@ -4,8 +4,14 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       queryFn: async ({ queryKey }) => {
+        const csrfResponse = await fetch('/api/csrf-token');
+        const { csrfToken } = await csrfResponse.json();
+        
         const res = await fetch(queryKey[0] as string, {
           credentials: "include",
+          headers: {
+            'CSRF-Token': csrfToken
+          }
         });
 
         if (!res.ok) {

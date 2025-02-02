@@ -4,8 +4,22 @@ import { db } from '../db';
 import { users, gameResults, gameQuestionResults } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { sql } from 'drizzle-orm';
+import csrf from 'csurf';
+import cookieParser from 'cookie-parser';
+import express from 'express';
+
 
 export function registerRoutes(app: Express): Server {
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
+  app.use(cookieParser());
+  app.use(csrf({ cookie: true }));
+
+  // Provide CSRF token to frontend
+  app.get('/api/csrf-token', (req, res) => {
+    res.json({ csrfToken: req.csrfToken() });
+  });
+
   // Get all users for the dropdown
   app.get('/api/users', async (req, res) => {
     try {
@@ -149,7 +163,7 @@ export function registerRoutes(app: Express): Server {
     try {
       const userId = parseInt(req.query.userId as string);
       const userTimezone = req.query.timezone as string || 'UTC';
-      
+
       const result = await db.execute(sql`
         SELECT COALESCE(SUM(screen_time_earned::float), 0) as total_screen_time
         FROM game_results
@@ -157,7 +171,7 @@ export function registerRoutes(app: Express): Server {
         AND created_at::timestamp >= TIMEZONE(${userTimezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone}) + INTERVAL '1 week' - INTERVAL '1 day')
         AND created_at::timestamp < TIMEZONE(${userTimezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone}) + INTERVAL '2 weeks' - INTERVAL '1 day')
       `);
-      
+
       res.json({ screenTime: Number(result.rows[0].total_screen_time) });
     } catch (error) {
       console.error('Error fetching screen time:', error);
