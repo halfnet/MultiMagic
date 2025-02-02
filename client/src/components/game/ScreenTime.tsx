@@ -20,7 +20,7 @@ export function ScreenTime({ userId }: ScreenTimeProps) {
   return (
     <div className="flex items-center gap-2">
       <Clock className="w-4 h-4 shrink-0" />
-      <span>{screenTime.toFixed(0)} mins earned this wk</span>
+      <span>{(screenTime || 0).toFixed(0)} mins earned this wk</span>
     </div>
   );
 }
