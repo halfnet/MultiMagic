@@ -12,6 +12,21 @@ import { specs } from './swagger';
 
 /**
  * @swagger
+ * /api/csrf-token:
+ *   get:
+ *     summary: Get CSRF token
+ *     description: Retrieves a CSRF token required for POST/PUT/DELETE requests
+ *     responses:
+ *       200:
+ *         description: CSRF token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 csrfToken:
+ *                   type: string
+ * 
  * components:
  *   schemas:
  *     User:
