@@ -43,9 +43,16 @@ export default function Game() {
     setThemeColor(color);
     if (user) {
       try {
+        const csrfResponse = await fetch('/api/csrf-token');
+        const { csrfToken } = await csrfResponse.json();
+        
         await fetch('/api/user/theme', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          headers: { 
+            'Content-Type': 'application/json',
+            'CSRF-Token': csrfToken
+          },
           body: JSON.stringify({ userId: user.id, themeColor: color }),
         });
       } catch (error) {
