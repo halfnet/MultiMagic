@@ -12,6 +12,101 @@ import { specs } from './swagger';
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     GameQuestionResult:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         gameId:
+ *           type: string
+ *         userId:
+ *           type: integer
+ *         questionNumber:
+ *           type: integer
+ *         num1:
+ *           type: integer
+ *         num2:
+ *           type: integer
+ *         attempts:
+ *           type: integer
+ *         timeToSolveMs:
+ *           type: integer
+ *         createdAt:
+ *           type: string
+ * 
+ * /api/game-question-results/{gameId}:
+ *   get:
+ *     summary: Get game question results for a specific game
+ *     parameters:
+ *       - in: path
+ *         name: gameId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of game question results
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/GameQuestionResult'
+ * 
+ * /api/game-question-results/user/{userId}:
+ *   get:
+ *     summary: Get game question results for a specific user
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of game question results
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/GameQuestionResult'
+ * 
+ * /api/game-question-results:
+ *   post:
+ *     summary: Save game question results
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               gameId:
+ *                 type: string
+ *               userId:
+ *                 type: integer
+ *               questionResults:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     questionId:
+ *                       type: integer
+ *                     numbersUsed:
+ *                       type: array
+ *                       items:
+ *                         type: integer
+ *                     attempts:
+ *                       type: integer
+ *                     timeTaken:
+ *                       type: integer
+ *     responses:
+ *       200:
+ *         description: Saved game question results
+ * 
  * /api/csrf-token:
  *   get:
  *     summary: Get CSRF token
