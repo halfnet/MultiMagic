@@ -12,41 +12,6 @@ import { specs } from './swagger';
 
 /**
  * @swagger
- * components:
- *   schemas:
- *     User:
- *       type: object
- *       properties:
- *         id:
- *           type: integer
- *         username:
- *           type: string
- *         themeColor:
- *           type: string
- *         lastLoginAt:
- *           type: string
- *     GameQuestionResult:
- *       type: object
- *       properties:
- *         id:
- *           type: integer
- *         gameId:
- *           type: string
- *         userId:
- *           type: integer
- *         questionNumber:
- *           type: integer
- *         num1:
- *           type: integer
- *         num2:
- *           type: integer
- *         attempts:
- *           type: integer
- *         timeToSolveMs:
- *           type: integer
- *         createdAt:
- *           type: string
- * 
  * /api/game-question-results/{gameId}:
  *   get:
  *     summary: Get game question results for a specific game
@@ -143,6 +108,29 @@ import { specs } from './swagger';
  *         username:
  *           type: string
  *         themeColor:
+ *           type: string
+ *         lastLoginAt:
+ *           type: string
+ *     GameQuestionResult:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         gameId:
+ *           type: string
+ *         userId:
+ *           type: integer
+ *         questionNumber:
+ *           type: integer
+ *         num1:
+ *           type: integer
+ *         num2:
+ *           type: integer
+ *         attempts:
+ *           type: integer
+ *         timeToSolveMs:
+ *           type: integer
+ *         createdAt:
  *           type: string
  *     GameResult:
  *       type: object
