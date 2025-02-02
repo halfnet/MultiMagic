@@ -7,7 +7,34 @@ import { sql } from 'drizzle-orm';
 import csrf from 'csurf';
 import cookieParser from 'cookie-parser';
 import express from 'express';
+import swaggerUi from 'swagger-ui-express';
+import { specs } from './swagger';
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *         username:
+ *           type: string
+ *         themeColor:
+ *           type: string
+ *     GameResult:
+ *       type: object
+ *       properties:
+ *         gameId:
+ *           type: string
+ *         userId:
+ *           type: integer
+ *         difficulty:
+ *           type: string
+ *         mode:
+ *           type: string
+ */
 
 export function registerRoutes(app: Express): Server {
   app.use(express.json());
@@ -312,6 +339,8 @@ export function registerRoutes(app: Express): Server {
       res.status(500).json({ error: 'Failed to fetch analytics' });
     }
   });
+
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
   const httpServer = createServer(app);
   return httpServer;
