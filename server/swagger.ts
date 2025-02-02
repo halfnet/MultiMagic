@@ -15,6 +15,21 @@ const options = {
         description: 'API Server',
       },
     ],
+    components: {
+      securitySchemes: {
+        csrf: {
+          type: 'apiKey',
+          in: 'header',
+          name: 'CSRF-Token',
+          description: 'CSRF token required for POST/PUT/DELETE requests. Get it from /api/csrf-token endpoint.'
+        }
+      }
+    },
+    security: [
+      {
+        csrf: []
+      }
+    ]
   },
   apis: ['./server/routes.ts'],
 };
