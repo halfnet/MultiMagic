@@ -155,7 +155,7 @@ export function registerRoutes(app: Express): Server {
         FROM game_results
         WHERE user_id = ${userId}
         AND created_at::timestamp >= TIMEZONE(${userTimezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone}) + INTERVAL '1 week' - INTERVAL '1 day')
-        AND created_at::timestamp < TIMEZONE(${userTimezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone}) + INTERVAL '2 week2' - INTERVAL '1 day')
+        AND created_at::timestamp < TIMEZONE(${userTimezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone}) + INTERVAL '2 weeks' - INTERVAL '1 day')
       `);
       
       res.json({ screenTime: Number(result.rows[0].total_screen_time) });
