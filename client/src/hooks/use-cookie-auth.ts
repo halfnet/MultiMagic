@@ -24,9 +24,16 @@ export function useCookieAuth() {
 
   const loginMutation = useMutation({
     mutationFn: async (username: string) => {
+      const csrfResponse = await fetch('/api/csrf-token');
+      const { csrfToken } = await csrfResponse.json();
+      
       const response = await fetch('/api/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'CSRF-Token': csrfToken
+        },
+        credentials: 'include',
         body: JSON.stringify({ username }),
       });
 
