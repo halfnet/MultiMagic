@@ -280,15 +280,18 @@ export function registerRoutes(app: Express): Server {
   app.use(cookieParser());
   app.use(csrf({ 
   cookie: {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict'
+    httpOnly: false,
+    secure: false,
+    sameSite: 'lax'
   }
 }));
 
-// Add CORS headers for development
+// CORS configuration
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  const origin = req.headers.origin;
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type, CSRF-Token');
   res.header('Access-Control-Allow-Credentials', 'true');
