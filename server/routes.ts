@@ -282,19 +282,24 @@ export function registerRoutes(app: Express): Server {
   cookie: {
     httpOnly: false,
     secure: false,
-    sameSite: 'lax'
+    sameSite: 'none',
+    path: '/',
+    domain: '.replit.dev'
   }
 }));
 
 // CORS configuration
 app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (origin) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, CSRF-Token');
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, CSRF-Token, X-CSRF-Token');
   res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Expose-Headers', 'CSRF-Token');
+  
+  // Handle OPTIONS preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
   next();
 });
 
