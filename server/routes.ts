@@ -282,7 +282,7 @@ export function registerRoutes(app: Express): Server {
   cookie: {
     httpOnly: false,
     secure: false,
-    sameSite: 'none',
+    sameSite: 'None',
     path: '/',
     domain: '.replit.dev'
   }
