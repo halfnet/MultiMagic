@@ -256,8 +256,8 @@ export default function Game() {
             questionsCount: gameState.questions.length,
             correctAnswers: gameState.questions.length,
             timeTakenInMs: gameEndTime - gameState.startTime,
-            bestStreak: gameState.bestStreak,
-            incorrectAttempts: gameState.incorrectAttempts,
+            bestStreak: newGameState.bestStreak,
+            incorrectAttempts: newGameState.incorrectAttempts,
           }),
         });
 
