@@ -374,27 +374,37 @@ export default function Game() {
                   </svg>
                   Switch User
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setLocation('/analytics')}
-                  className="w-full text-lg bg-primary/90 hover:bg-primary text-primary-foreground"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="w-4 h-4 mr-2"
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setLocation('/analytics')}
+                    className="w-full text-lg bg-primary/90 hover:bg-primary text-primary-foreground"
                   >
-                    <path d="M3 3v18h18" />
-                    <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
-                  </svg>
-                  Report
-                </Button>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-4 h-4 mr-2"
+                    >
+                      <path d="M3 3v18h18" />
+                      <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
+                    </svg>
+                    Report
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setLocation('/amc')}
+                    className="w-full text-lg bg-primary/90 hover:bg-primary text-primary-foreground"
+                  >
+                    AMC Problems
+                  </Button>
+                </div>
               </div>
             </div>
             <div className="flex justify-between items-center gap-3 border-t pt-3">
