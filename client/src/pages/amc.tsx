@@ -71,7 +71,12 @@ export default function AMC() {
               <Button onClick={() => setShowProblem(false)}>
                 Back to Selection
               </Button>
-              <Button onClick={() => setShowProblem(true)}>
+              <Button 
+                onClick={() => {
+                  refetch();
+                  setShowProblem(true);
+                }}
+              >
                 Next Problem
               </Button>
             </div>
