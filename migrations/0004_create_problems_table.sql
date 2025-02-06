@@ -6,6 +6,6 @@ CREATE TABLE IF NOT EXISTS problems (
   problem_number INTEGER NOT NULL,
   question_html TEXT,
   solution_html TEXT,
-  answer VARCHAR(100),
+  answer VARCHAR(10),
   CONSTRAINT unique_problem UNIQUE (year, competition_type, problem_number)
 );
