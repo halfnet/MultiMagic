@@ -6,7 +6,8 @@ import Game from '@/pages/game';
 import Login from '@/pages/login';
 import NotFound from '@/pages/not-found';
 import { useCookieAuth } from '@/hooks/use-cookie-auth';
-import { Analytics } from './components/game/Analytics'; // Added import for Analytics component
+import { Analytics } from './components/game/Analytics';
+import AMC from './pages/amc';
 
 function Router() {
   const { user, isLoading } = useCookieAuth();
