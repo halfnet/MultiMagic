@@ -17,7 +17,7 @@ export default function AMC() {
   const [_, setLocation] = useLocation();
   const [showProblem, setShowProblem] = useState(false);
   
-  const { data: problem } = useQuery<Problem>({
+  const { data: problem, refetch } = useQuery<Problem>({
     queryKey: ['random-amc8-problem'],
     queryFn: async () => {
       const csrfResponse = await fetch('/api/csrf-token');
@@ -48,7 +48,13 @@ export default function AMC() {
         
         {!showProblem ? (
           <div className="flex gap-4 justify-center">
-            <Button size="lg" onClick={() => setShowProblem(true)}>
+            <Button 
+              size="lg" 
+              onClick={() => {
+                refetch();
+                setShowProblem(true);
+              }}
+            >
               AMC 8
             </Button>
             <Button size="lg" disabled>
