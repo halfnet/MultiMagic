@@ -352,13 +352,13 @@ export default function Game() {
         <Card className="p-8 max-w-md w-full text-center space-y-6">
           <div className="flex flex-col gap-4 mb-6">
             <div className="flex justify-between items-center">
-              <h1 className="text-3xl font-bold text-primary">Math Challenge!</h1>
+              <h1 className="text-2xl font-bold text-primary">Math Challenge!</h1>
               <div className="space-y-2">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={handleLogout}
-                  className="w-full text-lg bg-primary/90 hover:bg-primary text-primary-foreground"
+                  className="w-full text-sm bg-primary/90 hover:bg-primary text-primary-foreground py-1"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -368,7 +368,7 @@ export default function Game() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="w-4 h-4 mr-2"
+                    className="w-3 h-3 mr-1"
                   >
                     <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1" />
                   </svg>
@@ -379,7 +379,7 @@ export default function Game() {
                     variant="outline"
                     size="sm"
                     onClick={() => setLocation('/analytics')}
-                    className="w-full text-lg bg-primary/90 hover:bg-primary text-primary-foreground"
+                    className="w-full text-sm bg-primary/90 hover:bg-primary text-primary-foreground py-1"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -389,7 +389,7 @@ export default function Game() {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="w-4 h-4 mr-2"
+                      className="w-3 h-3 mr-1"
                     >
                       <path d="M3 3v18h18" />
                       <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
@@ -400,7 +400,7 @@ export default function Game() {
                     variant="outline"
                     size="sm"
                     onClick={() => setLocation('/amc')}
-                    className="w-full text-lg bg-primary/90 hover:bg-primary text-primary-foreground"
+                    className="w-full text-sm bg-primary/90 hover:bg-primary text-primary-foreground py-1"
                   >
                     AMC Problems
                   </Button>
