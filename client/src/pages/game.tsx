@@ -240,7 +240,7 @@ export default function Game() {
             mode: gameState.mode,
             practiceDigit: gameState.practiceDigit,
             questionsCount: gameState.questions.length,
-            correctAnswers: gameState.currentQuestion,
+            correctAnswers: gameState.questions.length,
             timeTakenInMs: gameEndTime - gameState.startTime,
             bestStreak: gameState.bestStreak,
             incorrectAttempts: gameState.incorrectAttempts,
