@@ -60,3 +60,26 @@ export type InsertGameQuestionResult = typeof gameQuestionResults.$inferInsert;
 export type SelectGameQuestionResult = typeof gameQuestionResults.$inferSelect;
 export type InsertGameResult = typeof gameResults.$inferInsert;
 export type SelectGameResult = typeof gameResults.$inferSelect;
+
+export const problems = pgTable('problems', {
+  id: serial('id').primaryKey(),
+  year: integer('year').notNull(),
+  competitionType: text('competition_type').notNull(),
+  problemNumber: integer('problem_number').notNull(),
+  questionHtml: text('question_html'),
+  solutionHtml: text('solution_html'),
+  answer: text('answer'),
+}, (table) => {
+  return {
+    uniqueProblem: uniqueIndex('unique_problem').on(
+      table.year,
+      table.competitionType,
+      table.problemNumber
+    ),
+  }
+});
+
+export const insertProblemSchema = createInsertSchema(problems);
+export const selectProblemSchema = createSelectSchema(problems);
+export type InsertProblem = typeof problems.$inferInsert;
+export type SelectProblem = typeof problems.$inferSelect;
