@@ -27,6 +27,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Game} />
       <Route path="/analytics" component={Analytics} />
+      <Route path="/amc" component={AMC} />
       <Route component={NotFound} />
     </Switch>
   );

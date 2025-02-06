@@ -639,6 +639,27 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  app.get('/api/problems/random/amc8', async (req, res) => {
+    try {
+      const result = await db.execute(sql`
+        SELECT *
+        FROM problems
+        WHERE competition_type = 'amc8'
+        ORDER BY RANDOM()
+        LIMIT 1
+      `);
+      
+      if (!result.rows[0]) {
+        return res.status(404).json({ error: 'No AMC 8 problems found' });
+      }
+      
+      res.json(result.rows[0]);
+    } catch (error) {
+      console.error('Error fetching random AMC 8 problem:', error);
+      res.status(500).json({ error: 'Failed to fetch problem' });
+    }
+  });
+
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
   const httpServer = createServer(app);
