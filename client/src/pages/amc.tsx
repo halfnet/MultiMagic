@@ -8,9 +8,9 @@ import { useQuery } from '@tanstack/react-query';
 interface Problem {
   id: number;
   year: number;
-  competitionType: string;
-  problemNumber: number;
-  questionHtml: string;
+  competition_type: string;
+  problem_number: number;
+  question_html: string;
 }
 
 export default function AMC() {
@@ -59,7 +59,7 @@ export default function AMC() {
           <div className="space-y-6">
             <div 
               className="prose max-w-none"
-              dangerouslySetInnerHTML={{ __html: problem?.questionHtml || '' }}
+              dangerouslySetInnerHTML={{ __html: problem?.question_html || '' }}
             />
             <div className="flex justify-between">
               <Button onClick={() => setShowProblem(false)}>
