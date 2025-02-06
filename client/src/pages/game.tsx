@@ -1,24 +1,33 @@
-import { useState, useEffect } from "react";
-import { useLocation } from "wouter";
-import { FlashCard } from "@/components/game/FlashCard";
-import { NumberInput } from "@/components/game/NumberInput";
-import { ProgressBar } from "@/components/game/ProgressBar";
-import { Achievements } from "@/components/game/Achievements";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
-import { useCookieAuth } from "@/hooks/use-cookie-auth";
-import { GameState, Question, Difficulty, GameMode, generateQuestions, checkAnswer, formatTime, calculateScore } from "@/lib/game";
-import { triggerConfetti, triggerCelebration } from "@/lib/confetti";
-import { playCorrectSound, playIncorrectSound, playCompleteSound } from "@/lib/audio";
-import { X, Palette, Brain, User } from "lucide-react";
-import { Achievement, ACHIEVEMENTS, checkAchievements } from "@/lib/achievements";
-import { AchievementBadge } from "@/components/game/AchievementBadge";
-import { Timer } from "@/components/game/Timer";
-import { DailyStats } from "@/components/game/DailyStats";
-import { ScreenTime } from "@/components/game/ScreenTime";
+import { useState, useEffect } from 'react';
+import { useLocation } from 'wouter';
+import { FlashCard } from '@/components/game/FlashCard';
+import { NumberInput } from '@/components/game/NumberInput';
+import { ProgressBar } from '@/components/game/ProgressBar';
+import { Achievements } from '@/components/game/Achievements';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { useCookieAuth } from '@/hooks/use-cookie-auth';
+import {
+  GameState,
+  Question,
+  Difficulty,
+  GameMode,
+  generateQuestions,
+  checkAnswer,
+  formatTime,
+  calculateScore,
+} from '@/lib/game';
+import { triggerConfetti, triggerCelebration } from '@/lib/confetti';
+import { playCorrectSound, playIncorrectSound, playCompleteSound } from '@/lib/audio';
+import { X, Palette, Brain, User } from 'lucide-react';
+import { Achievement, ACHIEVEMENTS, checkAchievements } from '@/lib/achievements';
+import { AchievementBadge } from '@/components/game/AchievementBadge';
+import { Timer } from '@/components/game/Timer';
+import { DailyStats } from '@/components/game/DailyStats';
+import { ScreenTime } from '@/components/game/ScreenTime';
 import { nanoid } from 'nanoid';
 
 interface QuestionState {
@@ -33,7 +42,7 @@ export default function Game() {
   const { toast } = useToast();
   const [_, setLocation] = useLocation();
   const [gameState, setGameState] = useState<GameState | null>(null);
-  const [themeColor, setThemeColor] = useState(user?.themeColor || "#7c3aed");
+  const [themeColor, setThemeColor] = useState(user?.themeColor || '#7c3aed');
   const [practiceDigit, setPracticeDigit] = useState<number>(5);
   const [practiceQuestionCount, setPracticeQuestionCount] = useState<number>(5);
   const [showResults, setShowResults] = useState(false);
@@ -45,13 +54,13 @@ export default function Game() {
       try {
         const csrfResponse = await fetch('/api/csrf-token');
         const { csrfToken } = await csrfResponse.json();
-        
+
         await fetch('/api/user/theme', {
           method: 'POST',
           credentials: 'include',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
-            'CSRF-Token': csrfToken
+            'CSRF-Token': csrfToken,
           },
           body: JSON.stringify({ userId: user.id, themeColor: color }),
         });
@@ -86,18 +95,22 @@ export default function Game() {
     }
 
     document.documentElement.style.setProperty(
-      "--primary",
+      '--primary',
       `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`
     );
   };
 
   const startGame = (difficulty: Difficulty, mode: GameMode = 'regular') => {
-    setIsProcessing(false);  // Reset processing state
-    const questions = generateQuestions(difficulty, mode === 'practice' ? practiceQuestionCount : 10, mode === 'practice' ? practiceDigit : undefined);
+    setIsProcessing(false); // Reset processing state
+    const questions = generateQuestions(
+      difficulty,
+      mode === 'practice' ? practiceQuestionCount : 10,
+      mode === 'practice' ? practiceDigit : undefined
+    );
     const questionStates = questions.map(() => ({
       attempts: 1,
-      startTime: 0, 
-      numbersUsed: [0, 0] 
+      startTime: 0,
+      numbersUsed: [0, 0],
     }));
 
     const newGameId = nanoid();
@@ -117,7 +130,7 @@ export default function Game() {
       achievementsEarned: [],
       lastEarnedAchievement: undefined,
       incorrectAttempts: 0,
-      questionStates
+      questionStates,
     });
 
     setTimeout(() => {
@@ -126,11 +139,11 @@ export default function Game() {
         newQuestionStates[0] = {
           ...newQuestionStates[0],
           startTime: Date.now(),
-          numbersUsed: [questions[0].num1, questions[0].num2]
+          numbersUsed: [questions[0].num1, questions[0].num2],
         };
         setGameState(prev => ({
           ...prev,
-          questionStates: newQuestionStates
+          questionStates: newQuestionStates,
         }));
       }
     }, 0);
@@ -150,13 +163,13 @@ export default function Game() {
       newQuestionStates[gameState.currentQuestion] = {
         ...questionState,
         startTime: Date.now(),
-        numbersUsed: [currentQuestion.num1, currentQuestion.num2]
+        numbersUsed: [currentQuestion.num1, currentQuestion.num2],
       };
       setGameState({
         ...gameState,
-        questionStates: newQuestionStates
+        questionStates: newQuestionStates,
       });
-      return; 
+      return;
     }
 
     if (!correct) {
@@ -164,13 +177,13 @@ export default function Game() {
       const newQuestionStates = [...gameState.questionStates];
       newQuestionStates[gameState.currentQuestion] = {
         ...questionState,
-        attempts: questionState.attempts + 1
+        attempts: questionState.attempts + 1,
       };
       setGameState({
         ...gameState,
         questionStates: newQuestionStates,
         incorrectAttempts: gameState.incorrectAttempts + 1,
-        streak: 0
+        streak: 0,
       });
       return;
     }
@@ -192,7 +205,7 @@ export default function Game() {
       currentQuestion: gameState.currentQuestion + 1,
       streak: newStreak,
       bestStreak: Math.max(newStreak, gameState.bestStreak),
-      questionStates: newQuestionStates
+      questionStates: newQuestionStates,
     };
 
     if (!isLastQuestion) {
@@ -200,7 +213,7 @@ export default function Game() {
       newQuestionStates[gameState.currentQuestion + 1] = {
         ...newQuestionStates[gameState.currentQuestion + 1],
         startTime: Date.now(),
-        numbersUsed: [nextQuestion.num1, nextQuestion.num2]
+        numbersUsed: [nextQuestion.num1, nextQuestion.num2],
       };
     }
 
@@ -211,27 +224,28 @@ export default function Game() {
 
       newGameState = {
         ...newGameState,
-        endTime: gameEndTime
+        endTime: gameEndTime,
       };
 
       try {
         const csrfResponse = await fetch('/api/csrf-token');
         const { csrfToken } = await csrfResponse.json();
-        
+
         const questionResults = gameState.questions.map((q, i) => ({
           questionId: i + 1,
           gameId: gameState.gameId,
           userId: user.id,
           attempts: newGameState.questionStates[i].attempts,
-          timeTaken: newGameState.questionStates[i].endTime! - newGameState.questionStates[i].startTime,
+          timeTaken:
+            newGameState.questionStates[i].endTime! - newGameState.questionStates[i].startTime,
           numbersUsed: [q.num1, q.num2],
         }));
 
         await fetch('/api/game-results', {
           method: 'POST',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
-            'CSRF-Token': csrfToken
+            'CSRF-Token': csrfToken,
           },
           body: JSON.stringify({
             gameId: gameState.gameId,
@@ -249,14 +263,14 @@ export default function Game() {
 
         await fetch('/api/game-question-results', {
           method: 'POST',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
-            'CSRF-Token': csrfToken
+            'CSRF-Token': csrfToken,
           },
           body: JSON.stringify({
             gameId: gameState.gameId,
             userId: user.id,
-            questionResults
+            questionResults,
           }),
         });
       } catch (error) {
@@ -267,7 +281,10 @@ export default function Game() {
 
       const earnedAchievements = [];
       for (const achievement of ACHIEVEMENTS) {
-        if (!gameState.achievementsEarned.includes(achievement.id) && achievement.condition(newGameState)) {
+        if (
+          !gameState.achievementsEarned.includes(achievement.id) &&
+          achievement.condition(newGameState)
+        ) {
           earnedAchievements.push(achievement);
         }
       }
@@ -278,16 +295,16 @@ export default function Game() {
           ...newGameState,
           achievementsEarned: [
             ...gameState.achievementsEarned,
-            ...earnedAchievements.map(a => a.id)
+            ...earnedAchievements.map(a => a.id),
           ],
-          lastEarnedAchievement: lastEarned
+          lastEarnedAchievement: lastEarned,
         };
 
         earnedAchievements.forEach(achievement => {
           toast({
-            title: "Achievement Unlocked! 🏆",
+            title: 'Achievement Unlocked! 🏆',
             description: `${achievement.name} - ${achievement.description}`,
-            variant: "default",
+            variant: 'default',
           });
         });
       }
@@ -302,12 +319,12 @@ export default function Game() {
         newGameState = {
           ...newGameState,
           achievementsEarned: [...gameState.achievementsEarned, newAchievement.id],
-          lastEarnedAchievement: newAchievement
+          lastEarnedAchievement: newAchievement,
         };
         toast({
-          title: "Achievement Unlocked! 🏆",
+          title: 'Achievement Unlocked! 🏆',
           description: `${newAchievement.name} - ${newAchievement.description}`,
-          variant: "default",
+          variant: 'default',
         });
       }
     }
@@ -318,9 +335,9 @@ export default function Game() {
   const handleQuit = () => {
     setGameState(null);
     toast({
-      title: "Game ended",
-      description: "You can start a new game anytime!",
-      variant: "default",
+      title: 'Game ended',
+      description: 'You can start a new game anytime!',
+      variant: 'default',
     });
   };
 
@@ -343,14 +360,14 @@ export default function Game() {
                   onClick={handleLogout}
                   className="w-full text-lg bg-primary/90 hover:bg-primary text-primary-foreground"
                 >
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     className="w-4 h-4 mr-2"
                   >
                     <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1" />
@@ -390,7 +407,7 @@ export default function Game() {
                   id="color-picker"
                   type="color"
                   value={themeColor}
-                  onChange={(e) => updateThemeColor(e.target.value)}
+                  onChange={e => updateThemeColor(e.target.value)}
                   className="w-16 h-8 cursor-pointer"
                 />
               </div>
@@ -399,23 +416,16 @@ export default function Game() {
                 {user && <ScreenTime userId={user.id} />}
               </div>
               <span className="text-sm font-medium text-muted-foreground">
-                <User className="w-4 h-4 inline mr-1"/>{user?.username}
+                <User className="w-4 h-4 inline mr-1" />
+                {user?.username}
               </span>
             </div>
           </div>
           <div className="space-y-4">
-            <Button
-              size="lg"
-              className="w-full text-lg"
-              onClick={() => startGame('easy')}
-            >
+            <Button size="lg" className="w-full text-lg" onClick={() => startGame('easy')}>
               Easy Mode (1-9)
             </Button>
-            <Button
-              size="lg"
-              className="w-full text-lg"
-              onClick={() => startGame('hard')}
-            >
+            <Button size="lg" className="w-full text-lg" onClick={() => startGame('hard')}>
               Hard Mode (5-19)
             </Button>
 
@@ -442,7 +452,9 @@ export default function Game() {
                       min={1}
                       max={19}
                       value={practiceDigit}
-                      onChange={(e) => setPracticeDigit(Math.min(19, Math.max(1, parseInt(e.target.value) || 1)))}
+                      onChange={e =>
+                        setPracticeDigit(Math.min(19, Math.max(1, parseInt(e.target.value) || 1)))
+                      }
                       className="w-24 text-center h-12 text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                     <div className="flex flex-col ml-1">
@@ -451,13 +463,17 @@ export default function Game() {
                         variant="outline"
                         className="px-2 py-1 h-6 bg-gray-100 hover:bg-gray-200"
                         onClick={() => setPracticeDigit(Math.min(19, practiceDigit + 1))}
-                      >▲</Button>
+                      >
+                        ▲
+                      </Button>
                       <Button
                         type="button"
                         variant="outline"
                         className="px-2 py-1 h-6 bg-gray-100 hover:bg-gray-200"
                         onClick={() => setPracticeDigit(Math.max(1, practiceDigit - 1))}
-                      >▼</Button>
+                      >
+                        ▼
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -473,7 +489,11 @@ export default function Game() {
                       min={1}
                       max={20}
                       value={practiceQuestionCount}
-                      onChange={(e) => setPracticeQuestionCount(Math.min(20, Math.max(1, parseInt(e.target.value) || 1)))}
+                      onChange={e =>
+                        setPracticeQuestionCount(
+                          Math.min(20, Math.max(1, parseInt(e.target.value) || 1))
+                        )
+                      }
                       className="w-24 text-center h-12 text-lg [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                     <div className="flex flex-col ml-1">
@@ -481,14 +501,22 @@ export default function Game() {
                         type="button"
                         variant="outline"
                         className="px-2 py-1 h-6 bg-gray-100 hover:bg-gray-200"
-                        onClick={() => setPracticeQuestionCount(Math.min(20, practiceQuestionCount + 1))}
-                      >▲</Button>
+                        onClick={() =>
+                          setPracticeQuestionCount(Math.min(20, practiceQuestionCount + 1))
+                        }
+                      >
+                        ▲
+                      </Button>
                       <Button
                         type="button"
                         variant="outline"
                         className="px-2 py-1 h-6 bg-gray-100 hover:bg-gray-200"
-                        onClick={() => setPracticeQuestionCount(Math.max(1, practiceQuestionCount - 1))}
-                      >▼</Button>
+                        onClick={() =>
+                          setPracticeQuestionCount(Math.max(1, practiceQuestionCount - 1))
+                        }
+                      >
+                        ▼
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -523,9 +551,7 @@ export default function Game() {
                 />
               </div>
               <div className="flex items-center gap-2 ml-4">
-                <span className="text-sm text-muted-foreground">
-                  {user?.username}
-                </span>
+                <span className="text-sm text-muted-foreground">{user?.username}</span>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -546,11 +572,7 @@ export default function Game() {
               <Timer startTime={gameState.startTime} />
             </div>
           </div>
-          <FlashCard
-            num1={currentQuestion.num1}
-            num2={currentQuestion.num2}
-            show={true}
-          />
+          <FlashCard num1={currentQuestion.num1} num2={currentQuestion.num2} show={true} />
           <NumberInput onSubmit={handleAnswer} disabled={isProcessing} />
         </>
       ) : (
@@ -568,13 +590,15 @@ export default function Game() {
                 <div className="space-y-4">
                   <h3 className="text-2xl font-bold">Achievements Earned</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {ACHIEVEMENTS.filter(a => gameState.achievementsEarned.includes(a.id)).map(achievement => (
-                      <AchievementBadge
-                        key={achievement.id}
-                        achievement={achievement}
-                        animate={achievement.id === gameState.lastEarnedAchievement?.id}
-                      />
-                    ))}
+                    {ACHIEVEMENTS.filter(a => gameState.achievementsEarned.includes(a.id)).map(
+                      achievement => (
+                        <AchievementBadge
+                          key={achievement.id}
+                          achievement={achievement}
+                          animate={achievement.id === gameState.lastEarnedAchievement?.id}
+                        />
+                      )
+                    )}
                   </div>
                 </div>
               )}
@@ -585,22 +609,15 @@ export default function Game() {
                   onClick={() => startGame(gameState.difficulty, gameState.mode)}
                   className="text-lg"
                 >
-                  <User className="w-4 h-4 inline mr-1"/> Play Again
+                  <User className="w-4 h-4 inline mr-1" /> Play Again
                 </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  onClick={handleQuit}
-                  className="text-lg"
-                >
+                <Button size="lg" variant="outline" onClick={handleQuit} className="text-lg">
                   Change Mode
                 </Button>
               </div>
             </>
           ) : (
-            <div className="animate-bounce text-4xl font-bold text-primary">
-              🎉 Fantastic! 🎉
-            </div>
+            <div className="animate-bounce text-4xl font-bold text-primary">🎉 Fantastic! 🎉</div>
           )}
         </div>
       )}

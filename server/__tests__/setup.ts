@@ -1,14 +1,14 @@
 import { beforeAll } from '@jest/globals';
 import { afterAll } from '@jest/globals';
-import { drizzle } from "drizzle-orm/neon-serverless";
-import * as schema from "../../db/schema";
+import { drizzle } from 'drizzle-orm/neon-serverless';
+import * as schema from '../../db/schema';
 import { Pool } from 'pg';
-import ws from "ws";
+import ws from 'ws';
 
 if (!process.env.TEST_DATABASE_URL) {
   console.error('Missing TEST_DATABASE_URL environment variable');
   throw new Error(
-    "TEST_DATABASE_URL environment variable is not set. Please ensure the database is properly provisioned.",
+    'TEST_DATABASE_URL environment variable is not set. Please ensure the database is properly provisioned.'
   );
 }
 
@@ -28,8 +28,8 @@ try {
 
 export const testDb = dbInstance;
 
-
-beforeAll(async () => {  // Clear test data only if using test database
+beforeAll(async () => {
+  // Clear test data only if using test database
   if (!process.env.TEST_DATABASE_URL) {
     console.warn('Warning: Tests are running against production database');
     return;

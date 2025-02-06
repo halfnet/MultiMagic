@@ -1,61 +1,62 @@
-
 # Database Schema - Math Game Application
 
 [users]
 +---------------+---------+----------+
-| Column        | Type    | Notes    |
+| Column | Type | Notes |
 +---------------+---------+----------+
-| id           | integer | PK       |
-| username     | text    | UNIQUE   |
-| last_login_at| text    | NOT NULL |
-| theme_color  | text    | DEFAULT  |
+| id | integer | PK |
+| username | text | UNIQUE |
+| last_login_at| text | NOT NULL |
+| theme_color | text | DEFAULT |
 +---------------+---------+----------+
-                     ^
-                     |
-                     | 1:N
-                     |
+^
+|
+| 1:N
+|
 [game_results]
 +-------------------+---------+----------+
-| Column            | Type    | Notes    |
+| Column | Type | Notes |
 +-------------------+---------+----------+
-| id                | integer | PK       |
-| game_id           | text    | UNIQUE   |
-| user_id           | integer | FK->users|
-| difficulty        | text    | NOT NULL |
-| mode             | text    | NOT NULL |
-| practice_digit    | integer | NULL OK  |
-| questions_count   | integer | NOT NULL |
-| correct_answers   | integer | NOT NULL |
-| time_taken_in_ms  | integer | NOT NULL |
-| best_streak      | integer | NOT NULL |
+| id | integer | PK |
+| game_id | text | UNIQUE |
+| user_id | integer | FK->users|
+| difficulty | text | NOT NULL |
+| mode | text | NOT NULL |
+| practice_digit | integer | NULL OK |
+| questions_count | integer | NOT NULL |
+| correct_answers | integer | NOT NULL |
+| time_taken_in_ms | integer | NOT NULL |
+| best_streak | integer | NOT NULL |
 | incorrect_attempts| integer | NOT NULL |
-| created_at       | text    | NOT NULL |
+| created_at | text | NOT NULL |
 +-------------------+---------+----------+
-                     ^
-                     |
-                     | 1:N
-                     |
+^
+|
+| 1:N
+|
 [game_question_results]
 +----------------+---------+---------------+
-| Column         | Type    | Notes         |
+| Column | Type | Notes |
 +----------------+---------+---------------+
-| id             | integer | PK            |
-| game_id        | text    | FK->game_res  |
-| user_id        | integer | FK->users     |
-| question_number| integer | NOT NULL      |
-| num1           | integer | NOT NULL      |
-| num2           | integer | NOT NULL      |
-| attempts       | integer | NOT NULL      |
-| time_to_solve_ms| integer| NOT NULL      |
-| created_at     | text    | NOT NULL      |
+| id | integer | PK |
+| game_id | text | FK->game_res |
+| user_id | integer | FK->users |
+| question_number| integer | NOT NULL |
+| num1 | integer | NOT NULL |
+| num2 | integer | NOT NULL |
+| attempts | integer | NOT NULL |
+| time_to_solve_ms| integer| NOT NULL |
+| created_at | text | NOT NULL |
 +----------------+---------+---------------+
 
 ## Relationships
 
 1. One user can have many game_results (1:N)
+
    - `users.id` -> `game_results.user_id`
 
 2. One game_result can have many game_question_results (1:N)
+
    - `game_results.game_id` -> `game_question_results.game_id`
 
 3. Each game_question_result is also associated with a user (1:N)

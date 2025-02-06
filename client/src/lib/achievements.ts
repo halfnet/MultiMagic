@@ -24,7 +24,7 @@ export const ACHIEVEMENTS: Achievement[] = [
       if (!gameState.endTime || gameState.mode === 'practice') return false;
       const timeInSeconds = (gameState.endTime - gameState.startTime) / 1000;
       return timeInSeconds < 60;
-    }
+    },
   },
   {
     id: 'perfect-score',
@@ -32,11 +32,13 @@ export const ACHIEVEMENTS: Achievement[] = [
     description: 'Complete the game without any mistakes',
     icon: 'Star',
     condition: (gameState: GameState) => {
-      return gameState.endTime !== undefined && 
-             gameState.mode !== 'practice' &&
-             gameState.currentQuestion === gameState.questions.length && 
-             gameState.incorrectAttempts === 0;
-    }
+      return (
+        gameState.endTime !== undefined &&
+        gameState.mode !== 'practice' &&
+        gameState.currentQuestion === gameState.questions.length &&
+        gameState.incorrectAttempts === 0
+      );
+    },
   },
   {
     id: 'practice-champion',
@@ -45,11 +47,14 @@ export const ACHIEVEMENTS: Achievement[] = [
     icon: 'Brain',
     condition: (gameState: GameState) => {
       return gameState.mode === 'practice' && gameState.streak >= 5;
-    }
-  }
+    },
+  },
 ];
 
-export const checkAchievements = (gameState: GameState, currentAchievements: string[]): Achievement | undefined => {
+export const checkAchievements = (
+  gameState: GameState,
+  currentAchievements: string[]
+): Achievement | undefined => {
   for (const achievement of ACHIEVEMENTS) {
     if (!currentAchievements.includes(achievement.id) && achievement.condition(gameState)) {
       return achievement;

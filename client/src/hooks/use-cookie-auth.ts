@@ -26,12 +26,12 @@ export function useCookieAuth() {
     mutationFn: async (username: string) => {
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
-      
+
       const response = await fetch('/api/login', {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'CSRF-Token': csrfToken
+          'CSRF-Token': csrfToken,
         },
         credentials: 'include',
         body: JSON.stringify({ username }),
@@ -45,7 +45,7 @@ export function useCookieAuth() {
       document.cookie = `${COOKIE_NAME}=${username}; path=/; max-age=31536000`; // 1 year
       return user;
     },
-    onSuccess: (user) => {
+    onSuccess: user => {
       queryClient.setQueryData(['user'], user);
       toast({
         title: 'Welcome!',
@@ -82,7 +82,7 @@ export function useCookieAuth() {
         }
 
         document.documentElement.style.setProperty(
-          "--primary",
+          '--primary',
           `${Math.round(h * 360)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`
         );
       }
@@ -105,6 +105,6 @@ export function useCookieAuth() {
     user,
     isLoading,
     login: loginMutation.mutate,
-    isLoginLoading: loginMutation.isPending
+    isLoginLoading: loginMutation.isPending,
   };
 }

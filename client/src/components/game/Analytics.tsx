@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { ResponsiveBar } from '@nivo/bar';
@@ -34,11 +33,13 @@ export function Analytics() {
   const [selectedUser, setSelectedUser] = useState<string>(user?.id.toString() || 'all');
   const [gamesData, setGamesData] = useState<GamesData[]>([]);
   const [responseTimeData, setResponseTimeData] = useState<ResponseTimeData[]>([]);
-  const [slowestNumbers, setSlowestNumbers] = useState<Array<{
-    difficulty: string;
-    number: number;
-    avg_time_ms: number;
-  }>>([]);
+  const [slowestNumbers, setSlowestNumbers] = useState<
+    Array<{
+      difficulty: string;
+      number: number;
+      avg_time_ms: number;
+    }>
+  >([]);
 
   useEffect(() => {
     fetch('/api/users')
@@ -66,16 +67,21 @@ export function Analytics() {
     data: (responseTimeData || [])
       .filter(d => d?.difficulty === difficulty)
       .map(d => ({
-        x: d?.week_start ? new Date(d.week_start).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' }) : 'No Data',
-        y: d?.avg_time_seconds || 0
+        x: d?.week_start
+          ? new Date(d.week_start).toLocaleDateString(undefined, {
+              month: 'numeric',
+              day: 'numeric',
+            })
+          : 'No Data',
+        y: d?.avg_time_seconds || 0,
       }))
-      .filter(d => d.x) || [{ x: 'No Data', y: 0 }]
+      .filter(d => d.x) || [{ x: 'No Data', y: 0 }],
   }));
 
   return (
     <div className="space-y-6 p-4">
       <div className="flex items-center gap-4 justify-between">
-        <Button 
+        <Button
           onClick={() => setLocation('/')}
           className="bg-primary/90 hover:bg-primary text-primary-foreground"
         >
@@ -114,7 +120,8 @@ export function Analytics() {
             axisRight={null}
             axisBottom={{
               tickRotation: -45,
-              format: (value) => new Date(value).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' }),
+              format: value =>
+                new Date(value).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric' }),
             }}
             axisLeft={{
               tickSize: 5,
@@ -141,11 +148,11 @@ export function Analytics() {
                   {
                     on: 'hover',
                     style: {
-                      itemOpacity: 1
-                    }
-                  }
-                ]
-              }
+                      itemOpacity: 1,
+                    },
+                  },
+                ],
+              },
             ]}
           />
         </div>
@@ -170,7 +177,7 @@ export function Analytics() {
               tickRotation: 0,
               legend: 'Time (seconds)',
               legendOffset: -40,
-              legendPosition: 'middle'
+              legendPosition: 'middle',
             }}
             pointSize={10}
             pointColor={{ theme: 'background' }}
@@ -198,11 +205,11 @@ export function Analytics() {
                     on: 'hover',
                     style: {
                       itemBackground: 'rgba(0, 0, 0, .03)',
-                      itemOpacity: 1
-                    }
-                  }
-                ]
-              }
+                      itemOpacity: 1,
+                    },
+                  },
+                ],
+              },
             ]}
           />
         </div>
@@ -226,9 +233,7 @@ export function Analytics() {
                     {entry?.difficulty === 'easy' ? 'Easy Mode' : 'Hard Mode'}
                   </td>
                   <td className="py-2 px-4">{entry?.number || 0}</td>
-                  <td className="py-2 px-4">
-                    {((entry?.avg_time_ms || 0) / 1000).toFixed(1)}s
-                  </td>
+                  <td className="py-2 px-4">{((entry?.avg_time_ms || 0) / 1000).toFixed(1)}s</td>
                 </tr>
               ))}
             </tbody>

@@ -50,7 +50,7 @@ export const generateQuestion = (difficulty: Difficulty, practiceDigit?: number)
     return {
       num1,
       num2,
-      answer: num1 * num2
+      answer: num1 * num2,
     };
   }
 
@@ -68,18 +68,22 @@ export const generateQuestion = (difficulty: Difficulty, practiceDigit?: number)
   return {
     num1,
     num2,
-    answer: num1 * num2
+    answer: num1 * num2,
   };
 };
 
-export const generateQuestions = (difficulty: Difficulty, count: number = 10, practiceDigit?: number): Question[] => {
+export const generateQuestions = (
+  difficulty: Difficulty,
+  count: number = 10,
+  practiceDigit?: number
+): Question[] => {
   const usedPairs = new Set<string>();
   const questions: Question[] = [];
 
   while (questions.length < count) {
     const question = generateQuestion(difficulty, practiceDigit);
     const pair = [question.num1, question.num2].sort().join('x');
-    
+
     if (!usedPairs.has(pair)) {
       usedPairs.add(pair);
       questions.push(question);

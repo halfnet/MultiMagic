@@ -10,7 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { useCookieAuth } from '@/hooks/use-cookie-auth';
 import { useQuery } from '@tanstack/react-query';
@@ -64,7 +64,7 @@ export default function Login() {
                 <Label>Select Existing User</Label>
                 <Select
                   disabled={isLoadingUsers}
-                  onValueChange={(value) => {
+                  onValueChange={value => {
                     if (value) {
                       handleLogin(value);
                     }
@@ -74,7 +74,7 @@ export default function Login() {
                     <SelectValue placeholder="Select a user" />
                   </SelectTrigger>
                   <SelectContent>
-                    {users.map((user) => (
+                    {users.map(user => (
                       <SelectItem key={user.id} value={user.username}>
                         {user.username}
                       </SelectItem>
@@ -88,9 +88,7 @@ export default function Login() {
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
-                    Or
-                  </span>
+                  <span className="bg-background px-2 text-muted-foreground">Or</span>
                 </div>
               </div>
 
@@ -111,7 +109,7 @@ export default function Login() {
                   id="username"
                   placeholder="Enter your username"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={e => setUsername(e.target.value)}
                   required
                   minLength={2}
                 />

@@ -1,4 +1,3 @@
-
 import swaggerJsdoc from 'swagger-jsdoc';
 
 const options = {
@@ -21,15 +20,16 @@ const options = {
           type: 'apiKey',
           in: 'header',
           name: 'CSRF-Token',
-          description: 'CSRF token required for POST/PUT/DELETE requests. Get it from /api/csrf-token endpoint.'
-        }
-      }
+          description:
+            'CSRF token required for POST/PUT/DELETE requests. Get it from /api/csrf-token endpoint.',
+        },
+      },
     },
     security: [
       {
-        csrf: []
-      }
-    ]
+        csrf: [],
+      },
+    ],
   },
   apis: ['./server/routes.ts'],
 };

@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
-import { formatTime } from "@/lib/game";
+import { useState, useEffect } from 'react';
+import { formatTime } from '@/lib/game';
 
 interface TimerProps {
   startTime: number;
 }
 
 export function Timer({ startTime }: TimerProps) {
-  const [elapsedTime, setElapsedTime] = useState("0:00");
+  const [elapsedTime, setElapsedTime] = useState('0:00');
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -17,9 +17,5 @@ export function Timer({ startTime }: TimerProps) {
     return () => clearInterval(interval);
   }, [startTime]);
 
-  return (
-    <div className="text-sm text-muted-foreground">
-      Time: {elapsedTime}
-    </div>
-  );
+  return <div className="text-sm text-muted-foreground">Time: {elapsedTime}</div>;
 }

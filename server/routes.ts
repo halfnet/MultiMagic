@@ -1,5 +1,5 @@
-import type { Express } from "express";
-import { createServer, type Server } from "http";
+import type { Express } from 'express';
+import { createServer, type Server } from 'http';
 import { db } from '../db';
 import { users, gameResults, gameQuestionResults } from '../db/schema';
 import { eq } from 'drizzle-orm';
@@ -30,7 +30,7 @@ import { specs } from './swagger';
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/GameQuestionResult'
- * 
+ *
  * /api/game-question-results/user/{userId}:
  *   get:
  *     summary: Get game question results for a specific user
@@ -49,7 +49,7 @@ import { specs } from './swagger';
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/GameQuestionResult'
- * 
+ *
  * /api/game-question-results:
  *   post:
  *     summary: Save game question results
@@ -82,7 +82,7 @@ import { specs } from './swagger';
  *     responses:
  *       200:
  *         description: Saved game question results
- * 
+ *
  * /api/csrf-token:
  *   get:
  *     summary: Get CSRF token
@@ -97,7 +97,7 @@ import { specs } from './swagger';
  *               properties:
  *                 csrfToken:
  *                   type: string
- * 
+ *
  * components:
  *   schemas:
  *     User:
@@ -157,7 +157,7 @@ import { specs } from './swagger';
  *           type: integer
  *         screenTimeEarned:
  *           type: number
- * 
+ *
  * @swagger
  * /api/users:
  *   get:
@@ -181,7 +181,7 @@ import { specs } from './swagger';
  *               properties:
  *                 error:
  *                   type: string
- * 
+ *
  * @swagger
  * /api/login:
  *   post:
@@ -203,7 +203,7 @@ import { specs } from './swagger';
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
- * 
+ *
  * @swagger
  * /api/game-results:
  *   post:
@@ -218,7 +218,7 @@ import { specs } from './swagger';
  *     responses:
  *       200:
  *         description: Saved game result
- * 
+ *
  * @swagger
  * /api/screen-time:
  *   get:
@@ -244,7 +244,7 @@ import { specs } from './swagger';
  *               properties:
  *                 screenTime:
  *                   type: number
- * 
+ *
  * @swagger
  * /api/daily-stats:
  *   get:
@@ -278,25 +278,27 @@ export function registerRoutes(app: Express): Server {
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
-  app.use(csrf({ 
-  cookie: {
-    httpOnly: false,
-    secure: false,
-    sameSite: 'lax'
-  }
-}));
+  app.use(
+    csrf({
+      cookie: {
+        httpOnly: false,
+        secure: false,
+        sameSite: 'lax',
+      },
+    })
+  );
 
-// CORS configuration
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (origin) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, CSRF-Token');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  next();
-});
+  // CORS configuration
+  app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    if (origin) {
+      res.header('Access-Control-Allow-Origin', origin);
+    }
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, CSRF-Token');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    next();
+  });
 
   // Provide CSRF token to frontend
   app.get('/api/csrf-token', (req, res) => {
@@ -305,7 +307,7 @@ app.use((req, res, next) => {
       res.cookie('XSRF-TOKEN', token, {
         httpOnly: false,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict'
+        sameSite: 'strict',
       });
       res.json({ csrfToken: token });
     } catch (error) {
@@ -357,7 +359,7 @@ app.use((req, res, next) => {
         // Create new user if doesn't exist
         [user] = await db
           .insert(users)
-          .values({ 
+          .values({
             username,
             themeColor: '#7c3aed', // Set default theme color
           })
@@ -398,19 +400,22 @@ app.use((req, res, next) => {
         }
       }
 
-      const [result] = await db.insert(gameResults).values({
-        gameId: req.body.gameId,
-        userId: req.body.userId,
-        difficulty: req.body.difficulty,
-        mode: req.body.mode,
-        practiceDigit: req.body.practiceDigit,
-        questionsCount: req.body.questionsCount,
-        correctAnswers: req.body.correctAnswers,
-        timeTakenInMs: req.body.timeTakenInMs,
-        bestStreak: req.body.bestStreak,
-        incorrectAttempts: req.body.incorrectAttempts,
-        screenTimeEarned: screenTime,
-      }).returning();
+      const [result] = await db
+        .insert(gameResults)
+        .values({
+          gameId: req.body.gameId,
+          userId: req.body.userId,
+          difficulty: req.body.difficulty,
+          mode: req.body.mode,
+          practiceDigit: req.body.practiceDigit,
+          questionsCount: req.body.questionsCount,
+          correctAnswers: req.body.correctAnswers,
+          timeTakenInMs: req.body.timeTakenInMs,
+          bestStreak: req.body.bestStreak,
+          incorrectAttempts: req.body.incorrectAttempts,
+          screenTimeEarned: screenTime,
+        })
+        .returning();
 
       res.json(result);
     } catch (error) {
@@ -422,10 +427,7 @@ app.use((req, res, next) => {
   app.post('/api/user/theme', async (req, res) => {
     try {
       const { userId, themeColor } = req.body;
-      await db
-        .update(users)
-        .set({ themeColor })
-        .where(eq(users.id, userId));
+      await db.update(users).set({ themeColor }).where(eq(users.id, userId));
       res.json({ success: true });
     } catch (error) {
       console.error('Error saving theme color:', error);
@@ -456,7 +458,7 @@ app.use((req, res, next) => {
   app.get('/api/screen-time', async (req, res) => {
     try {
       const userId = parseInt(req.query.userId as string);
-      const userTimezone = req.query.timezone as string || 'UTC';
+      const userTimezone = (req.query.timezone as string) || 'UTC';
 
       const result = await db.execute(sql`
         SELECT COALESCE(SUM(screen_time_earned::float), 0) as total_screen_time
@@ -476,7 +478,7 @@ app.use((req, res, next) => {
   app.get('/api/daily-stats', async (req, res) => {
     try {
       const userId = parseInt(req.query.userId as string);
-      const userTimezone = req.query.timezone as string || 'UTC';
+      const userTimezone = (req.query.timezone as string) || 'UTC';
 
       const stats = await db.execute(sql`
         SELECT 
@@ -493,7 +495,7 @@ app.use((req, res, next) => {
       } else {
         res.json({
           easy_count: Number(stats.rows[0].easy_count || 0),
-          hard_count: Number(stats.rows[0].hard_count || 0)
+          hard_count: Number(stats.rows[0].hard_count || 0),
         });
       }
     } catch (error) {

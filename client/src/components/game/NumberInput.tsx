@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { motion } from "framer-motion";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { motion } from 'framer-motion';
 
 interface NumberInputProps {
   onSubmit: (value: number) => void;
@@ -9,13 +9,13 @@ interface NumberInputProps {
 }
 
 export function NumberInput({ onSubmit, disabled }: NumberInputProps) {
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (value) {
       onSubmit(parseInt(value, 10));
-      setValue("");
+      setValue('');
     }
   };
 
@@ -25,7 +25,7 @@ export function NumberInput({ onSubmit, disabled }: NumberInputProps) {
         <Input
           type="number"
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={e => setValue(e.target.value)}
           className={`text-2xl font-bold text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none number-input ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
           placeholder={disabled ? 'Processing...' : 'answer here, enter to submit'}
           disabled={disabled}

@@ -1,6 +1,6 @@
-import { Trophy, Star, Timer } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { motion } from "framer-motion";
+import { Trophy, Star, Timer } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { motion } from 'framer-motion';
 
 interface AchievementsProps {
   streak: number;
@@ -11,11 +11,7 @@ interface AchievementsProps {
 export function Achievements({ bestStreak, time }: AchievementsProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.4 }}
-      >
+      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.4 }}>
         <Card className="p-4 flex flex-col items-center">
           <Star className="w-8 h-8 text-purple-500 mb-2" />
           <div className="text-2xl font-bold">{bestStreak}</div>
@@ -23,11 +19,7 @@ export function Achievements({ bestStreak, time }: AchievementsProps) {
         </Card>
       </motion.div>
 
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.6 }}
-      >
+      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.6 }}>
         <Card className="p-4 flex flex-col items-center">
           <Timer className="w-8 h-8 text-blue-500 mb-2" />
           <div className="text-2xl font-bold">{time}</div>

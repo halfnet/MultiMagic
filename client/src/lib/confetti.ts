@@ -8,21 +8,21 @@ export const triggerConfetti = () => {
     decay: 0.94,
     startVelocity: 30,
     shapes: ['star'],
-    colors: ['FFE400', 'FFBD00', 'E89400', 'FFCA6C', 'FDFFB8']
+    colors: ['FFE400', 'FFBD00', 'E89400', 'FFCA6C', 'FDFFB8'],
   };
 
   confetti({
     ...defaults,
     particleCount: 40,
     scalar: 1.2,
-    shapes: ['star']
+    shapes: ['star'],
   });
 
   confetti({
     ...defaults,
     particleCount: 25,
     scalar: 0.75,
-    shapes: ['circle']
+    shapes: ['circle'],
   });
 };
 
@@ -50,7 +50,7 @@ export const triggerCelebration = () => {
       angle: 60,
       spread: 55,
       origin: { x: 0, y: 0.7 },
-      colors: colors
+      colors: colors,
     });
 
     // Right side
@@ -59,9 +59,8 @@ export const triggerCelebration = () => {
       angle: 120,
       spread: 55,
       origin: { x: 1, y: 0.7 },
-      colors: colors
+      colors: colors,
     });
-
   }, 150);
 
   // Add some random bursts from random positions
@@ -76,11 +75,11 @@ export const triggerCelebration = () => {
       particleCount: 30,
       startVelocity: 30,
       spread: 360,
-      origin: { 
-        x: Math.random(), 
-        y: Math.random() - 0.2
+      origin: {
+        x: Math.random(),
+        y: Math.random() - 0.2,
       },
-      colors: colors
+      colors: colors,
     });
   }, 200);
 };

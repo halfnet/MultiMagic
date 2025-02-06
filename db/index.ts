@@ -1,6 +1,6 @@
-import { drizzle } from "drizzle-orm/neon-serverless";
-import ws from "ws";
-import * as schema from "@db/schema";
+import { drizzle } from 'drizzle-orm/neon-serverless';
+import ws from 'ws';
+import * as schema from '@db/schema';
 
 // Log all available environment variables for debugging (excluding sensitive values)
 console.log('Checking database environment variables...');
@@ -13,7 +13,7 @@ console.log('PGUSER exists:', !!process.env.PGUSER);
 if (!process.env.DATABASE_URL) {
   console.error('Missing DATABASE_URL environment variable');
   throw new Error(
-    "DATABASE_URL environment variable is not set. Please ensure the database is properly provisioned.",
+    'DATABASE_URL environment variable is not set. Please ensure the database is properly provisioned.'
   );
 }
 

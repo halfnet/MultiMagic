@@ -1,7 +1,7 @@
-import { Brain, Clock, Star } from "lucide-react";
-import { motion } from "framer-motion";
-import { Card } from "@/components/ui/card";
-import { Achievement } from "@/lib/achievements";
+import { Brain, Clock, Star } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Card } from '@/components/ui/card';
+import { Achievement } from '@/lib/achievements';
 
 interface AchievementBadgeProps {
   achievement: Achievement;
@@ -22,7 +22,7 @@ export function AchievementBadge({ achievement, animate = false }: AchievementBa
       <motion.div
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: "spring", duration: 0.5 }}
+        transition={{ type: 'spring', duration: 0.5 }}
       >
         <Card className="p-4 flex flex-col items-center bg-gradient-to-br from-yellow-100 to-yellow-50 border-yellow-200">
           <Icon className="w-8 h-8 text-yellow-500 mb-2" />
