@@ -644,7 +644,7 @@ export function registerRoutes(app: Express): Server {
       const result = await db.execute(sql`
         SELECT *
         FROM problems
-        WHERE competition_type = 'amc8'
+        WHERE competition_type = 'AMC 8'
         ORDER BY RANDOM()
         LIMIT 1
       `);
