@@ -29,7 +29,7 @@ export default function AMC() {
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
       
-      // Get all problems first
+      // Fetch first problem
       const response = await fetch('/api/problems/amc8', {
         headers: {
           'CSRF-Token': csrfToken
@@ -37,18 +37,10 @@ export default function AMC() {
       });
       
       if (!response.ok) throw new Error('Failed to fetch problems');
-      const allProblems = await response.json();
+      const problem = await response.json();
       
-      // Randomly select 3 problems
-      const selected = [];
-      const used = new Set();
-      while (selected.length < 3 && used.size < allProblems.length) {
-        const idx = Math.floor(Math.random() * allProblems.length);
-        if (!used.has(idx)) {
-          used.add(idx);
-          selected.push(allProblems[idx]);
-        }
-      }
+      // Initialize with first problem
+      setSelectedProblems([problem]);
       
       setSelectedProblems(selected);
       setUserAnswers({});
@@ -62,10 +54,32 @@ export default function AMC() {
   };
 
   const handleAnswer = (value: string) => {
-    setUserAnswers(prev => ({
-      ...prev,
-      [currentIndex]: value
-    }));
+    if (currentProblem) {
+      setUserAnswers(prev => ({
+        ...prev,
+        [currentIndex]: value
+      }));
+      console.log('Problem:', currentProblem, 'Answer:', value);
+    }
+  };
+
+  const fetchNextProblem = async () => {
+    if (currentProblem) {
+      const csrfResponse = await fetch('/api/csrf-token');
+      const { csrfToken } = await csrfResponse.json();
+      
+      const response = await fetch(`/api/problems/amc8?year=${currentProblem.year}&problem=${currentProblem.problem_number}`, {
+        headers: {
+          'CSRF-Token': csrfToken
+        }
+      });
+      
+      if (response.ok) {
+        const nextProblem = await response.json();
+        setSelectedProblems(prev => [...prev, nextProblem]);
+        setCurrentIndex(prev => prev + 1);
+      }
+    }
   };
 
   const submitGame = () => {
