@@ -187,7 +187,7 @@ export default function AMC() {
 
             <div className="space-y-4">
               <div
-                className="prose max-w-none [&_p]:inline [&_img]:inline-block [&_img]:align-middle [&_img]:mx-1"
+                className="[&_img]:inline-block [&_img]:align-middle [&_img]:mx-1"
                 dangerouslySetInnerHTML={{ __html: currentProblem?.question_html || '' }}
               />
 
