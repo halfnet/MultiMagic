@@ -25,6 +25,8 @@ interface Problem {
   answer: string;
 }
 
+const TOTAL_PROBLEMS = 5;
+
 export default function AMC() {
   const [_, setLocation] = useLocation();
   const [showProblem, setShowProblem] = useState(false);
@@ -41,12 +43,12 @@ export default function AMC() {
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
 
-      // Fetch all 5 problems
+      // Fetch all problems
       let problems = [];
       let lastYear = 0;
       let lastProblem = 0;
       
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < TOTAL_PROBLEMS; i++) {
         const response = await fetch(`/api/problems/amc8?year=${lastYear}&problem=${lastProblem}`, {
           headers: {
             'CSRF-Token': csrfToken
@@ -128,7 +130,7 @@ export default function AMC() {
         ) : showResults ? (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-center">Game Complete!</h2>
-            <p className="text-xl text-center">Your score: {score} out of 5</p>
+            <p className="text-xl text-center">Your score: {score} out of {TOTAL_PROBLEMS}</p>
             <div className="space-y-4">
               {selectedProblems.map((problem, idx) => (
                 <div 
@@ -167,7 +169,7 @@ export default function AMC() {
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <div className="text-sm text-grey-500">
-                Problem {currentIndex + 1} of 5 | Answered: {answeredCount} of 5
+                Problem {currentIndex + 1} of {TOTAL_PROBLEMS} | Answered: {answeredCount} of {TOTAL_PROBLEMS}
               </div>
               {answeredCount > 0 && gameStatus === 'inProgress' && (
                 <AlertDialog>
@@ -183,7 +185,7 @@ export default function AMC() {
                       <AlertDialogTitle>Submit Answers?</AlertDialogTitle>
                       <AlertDialogDescription>
                         {answeredCount < 5 ? 
-                          `You have answered ${answeredCount} out of 5 questions. Are you sure you want to submit?` :
+                          `You have answered ${answeredCount} out of ${TOTAL_PROBLEMS} questions. Are you sure you want to submit?` :
                           'Are you ready to submit your answers?'}
                       </AlertDialogDescription>
                     </AlertDialogHeader>
@@ -232,7 +234,7 @@ export default function AMC() {
                 </Button>
                 <Button 
                   onClick={() => setCurrentIndex(prev => prev + 1)}
-                  disabled={currentIndex === 4}
+                  disabled={currentIndex === TOTAL_PROBLEMS - 1}
                 >
                   Next
                 </Button>
