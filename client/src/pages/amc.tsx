@@ -197,8 +197,14 @@ export default function AMC() {
                   Prev
                 </Button>
                 <Button 
-                  onClick={() => setCurrentIndex(prev => Math.min(selectedProblems.length - 1, prev + 1))}
-                  disabled={currentIndex === selectedProblems.length - 1}
+                  onClick={async () => {
+                    if (currentIndex === selectedProblems.length - 1 && selectedProblems.length < 3) {
+                      await fetchNextProblem();
+                    } else {
+                      setCurrentIndex(prev => prev + 1);
+                    }
+                  }}
+                  disabled={currentIndex === 2}
                 >
                   Next
                 </Button>
