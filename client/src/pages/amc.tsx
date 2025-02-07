@@ -30,12 +30,17 @@ export default function AMC() {
           'CSRF-Token': csrfToken
         }
       });
+      if (!response.ok) {
+        throw new Error('Failed to fetch problem');
+      }
       const data = await response.json();
       setCurrentYear(data.year);
       setCurrentProblem(data.problem_number);
       return data;
     },
-    enabled: showProblem
+    enabled: showProblem,
+    staleTime: 0,
+    cacheTime: 0
   });
 
   return (
