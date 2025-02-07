@@ -646,30 +646,15 @@ export function registerRoutes(app: Express): Server {
         SELECT *
         FROM problems
         WHERE competition_type = 'AMC 8'
-        AND (year > ${year}
-          OR (year = ${year} AND problem_number > ${problem}))
-        ORDER BY year, problem_number
+        ORDER BY RANDOM()
         LIMIT 1
       `);
       
       if (!result.rows[0]) {
-        // If no next problem found, get the first problem
-        const firstResult = await db.execute(sql`
-          SELECT *
-          FROM problems
-          WHERE competition_type = 'AMC 8'
-          ORDER BY year, problem_number
-          LIMIT 1
-        `);
-        
-        if (!firstResult.rows[0]) {
-          return res.status(404).json({ error: 'No AMC 8 problems found' });
-        }
-        
-        res.json(firstResult.rows[0]);
-      } else {
-        res.json(result.rows[0]);
+        return res.status(404).json({ error: 'No AMC 8 problems found' });
       }
+      
+      res.json(result.rows[0]);
     } catch (error) {
       console.error('Error fetching AMC 8 problem:', error);
       res.status(500).json({ error: 'Failed to fetch problem' });
