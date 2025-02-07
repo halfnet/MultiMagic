@@ -77,7 +77,6 @@ export default function AMC() {
               Year: {problem?.year} - Problem: {problem?.problem_number}
             </div>
             <div 
-              className="prose max-w-none [&_p]:inline [&_p]:mr-1 [&_img]:inline-block [&_img]:align-middle"
               dangerouslySetInnerHTML={{ __html: problem?.question_html || '' }}
             />
             <div className="flex justify-between">
