@@ -19,7 +19,7 @@ export default function AMC() {
   const [currentYear, setCurrentYear] = useState(0);
   const [currentProblem, setCurrentProblem] = useState(0);
   
-  const { data: problem, refetch } = useQuery<Problem>({
+  const { data: problem } = useQuery<Problem>({
     queryKey: ['amc8-problem', currentYear, currentProblem],
     queryFn: async () => {
       const csrfResponse = await fetch('/api/csrf-token');
@@ -33,14 +33,13 @@ export default function AMC() {
       if (!response.ok) {
         throw new Error('Failed to fetch problem');
       }
-      const data = await response.json();
+      return response.json();
+    },
+    onSuccess: (data) => {
       setCurrentYear(data.year);
       setCurrentProblem(data.problem_number);
-      return data;
     },
-    enabled: showProblem,
-    staleTime: 0,
-    cacheTime: 0
+    enabled: showProblem
   });
 
   return (
@@ -63,7 +62,6 @@ export default function AMC() {
               onClick={() => {
                 setCurrentYear(0);
                 setCurrentProblem(0);
-                refetch();
                 setShowProblem(true);
               }}
             >
@@ -88,7 +86,10 @@ export default function AMC() {
               </Button>
               <Button 
                 onClick={() => {
-                  refetch();
+                  if (problem) {
+                    setCurrentYear(problem.year);
+                    setCurrentProblem(problem.problem_number);
+                  }
                 }}
               >
                 Next Problem
