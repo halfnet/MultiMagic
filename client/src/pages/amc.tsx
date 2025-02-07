@@ -33,9 +33,11 @@ export default function AMC() {
   const [userAnswers, setUserAnswers] = useState<{[key: number]: string}>({});
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
+  const [gameStatus, setGameStatus] = useState<'inProgress' | 'complete'>('inProgress');
 
   const startGame = async () => {
     try {
+      setGameStatus('inProgress');
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
 
@@ -90,6 +92,7 @@ export default function AMC() {
     });
     setScore(correctAnswers);
     setShowResults(true);
+    setGameStatus('complete');
   };
 
   const currentProblem = selectedProblems[currentIndex];
@@ -166,7 +169,7 @@ export default function AMC() {
               <div className="text-sm text-grey-500">
                 Problem {currentIndex + 1} of 3 | Answered: {answeredCount} of 3
               </div>
-              {answeredCount > 0 && !showResults && !userAnswers.hasOwnProperty(currentIndex) && (
+              {answeredCount > 0 && gameStatus === 'inProgress' && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button 
@@ -203,7 +206,7 @@ export default function AMC() {
                 <Select
                   value={userAnswers[currentIndex] || ''}
                   onValueChange={handleAnswer}
-                  disabled={showResults || userAnswers.hasOwnProperty(currentIndex)}
+                  disabled={gameStatus === 'complete'}
                 >
                   <SelectTrigger className="w-[200px]">
                     <SelectValue placeholder="Select answer..." />
