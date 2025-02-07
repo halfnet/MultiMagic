@@ -648,6 +648,7 @@ export function registerRoutes(app: Express): Server {
         WHERE competition_type = 'AMC 8'
         AND (year > ${year}
           OR (year = ${year} AND problem_number > ${problem}))
+        AND (year >= 1999 AND problem_number >=14)
         ORDER BY year, problem_number
         LIMIT 1
       `);

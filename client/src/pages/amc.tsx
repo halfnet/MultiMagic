@@ -73,10 +73,10 @@ export default function AMC() {
           </div>
         ) : (
           <div className="space-y-6">
-            <div className="text-sm text-gray-500 mb-4">
+            <div className="text-sm text-grey-500 mb-4">
               Year: {problem?.year} - Problem: {problem?.problem_number}
             </div>
-            <div 
+            <div className="single-line-text"
               dangerouslySetInnerHTML={{ __html: problem?.question_html || '' }}
             />
             <div className="flex justify-between">
