@@ -41,8 +41,6 @@ export default function AMC() {
       
       // Initialize with first problem
       setSelectedProblems([problem]);
-      
-      setSelectedProblems(selected);
       setUserAnswers({});
       setCurrentIndex(0);
       setShowProblem(true);
