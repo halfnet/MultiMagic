@@ -4,6 +4,7 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Problem {
   id: number;
@@ -11,36 +12,75 @@ interface Problem {
   competition_type: string;
   problem_number: number;
   question_html: string;
+  answer: string;
 }
 
 export default function AMC() {
   const [_, setLocation] = useLocation();
   const [showProblem, setShowProblem] = useState(false);
-  const [currentYear, setCurrentYear] = useState(0);
-  const [currentProblem, setCurrentProblem] = useState(0);
-  
-  const { data: problem } = useQuery<Problem>({
-    queryKey: ['amc8-problem', currentYear, currentProblem],
-    queryFn: async () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedProblems, setSelectedProblems] = useState<Problem[]>([]);
+  const [userAnswers, setUserAnswers] = useState<{[key: number]: string}>({});
+  const [showResults, setShowResults] = useState(false);
+  const [score, setScore] = useState(0);
+
+  const startGame = async () => {
+    try {
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
       
-      const response = await fetch(`/api/problems/amc8?year=${currentYear}&problem=${currentProblem}`, {
+      // Get all problems first
+      const response = await fetch('/api/problems/amc8', {
         headers: {
           'CSRF-Token': csrfToken
         }
       });
-      if (!response.ok) {
-        throw new Error('Failed to fetch problem');
+      
+      if (!response.ok) throw new Error('Failed to fetch problems');
+      const allProblems = await response.json();
+      
+      // Randomly select 3 problems
+      const selected = [];
+      const used = new Set();
+      while (selected.length < 3 && used.size < allProblems.length) {
+        const idx = Math.floor(Math.random() * allProblems.length);
+        if (!used.has(idx)) {
+          used.add(idx);
+          selected.push(allProblems[idx]);
+        }
       }
-      return response.json();
-    },
-    onSuccess: (data) => {
-      setCurrentYear(data.year);
-      setCurrentProblem(data.problem_number);
-    },
-    enabled: showProblem
-  });
+      
+      setSelectedProblems(selected);
+      setUserAnswers({});
+      setCurrentIndex(0);
+      setShowProblem(true);
+      setShowResults(false);
+      setScore(0);
+    } catch (error) {
+      console.error('Error starting game:', error);
+    }
+  };
+
+  const handleAnswer = (value: string) => {
+    setUserAnswers(prev => ({
+      ...prev,
+      [currentIndex]: value
+    }));
+  };
+
+  const submitGame = () => {
+    let correctAnswers = 0;
+    selectedProblems.forEach((problem, index) => {
+      if (userAnswers[index] === problem.answer) {
+        correctAnswers++;
+      }
+    });
+    setScore(correctAnswers);
+    setShowResults(true);
+  };
+
+  const currentProblem = selectedProblems[currentIndex];
+  const answeredCount = Object.keys(userAnswers).length;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex flex-col items-center justify-center p-4">
@@ -59,11 +99,7 @@ export default function AMC() {
           <div className="flex gap-4 justify-center">
             <Button 
               size="lg" 
-              onClick={() => {
-                setCurrentYear(0);
-                setCurrentProblem(0);
-                setShowProblem(true);
-              }}
+              onClick={startGame}
             >
               AMC 8
             </Button>
@@ -71,38 +107,89 @@ export default function AMC() {
               AMC 10 (Coming Soon)
             </Button>
           </div>
+        ) : showResults ? (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-center">Game Complete!</h2>
+            <p className="text-xl text-center">Your score: {score} out of 3</p>
+            <div className="space-y-4">
+              {selectedProblems.map((problem, idx) => (
+                <div key={problem.id} className="p-4 border rounded">
+                  <p>Problem {idx + 1}: {userAnswers[idx] === problem.answer ? 
+                    <span className="text-green-600">Correct</span> : 
+                    <span className="text-red-600">Incorrect (Answer: {problem.answer})</span>}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-center gap-4">
+              <Button onClick={() => {
+                setShowProblem(false);
+                setShowResults(false);
+              }}>
+                Back to Selection
+              </Button>
+              <Button onClick={startGame}>
+                Play Again
+              </Button>
+            </div>
+          </div>
         ) : (
           <div className="space-y-6">
-            <div className="text-sm text-grey-500 mb-4">
-              Year: {problem?.year} - Problem: {problem?.problem_number}
+            <div className="flex justify-between items-center">
+              <div className="text-sm text-grey-500">
+                Problem {currentIndex + 1} of 3 | Answered: {answeredCount} of 3
+              </div>
+              {answeredCount === 3 && (
+                <Button 
+                  onClick={submitGame}
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                >
+                  Submit Answers
+                </Button>
+              )}
             </div>
-            <div className="[&_img]:inline-block [&_img]:align-middle [&_img]:mx-1"
-              dangerouslySetInnerHTML={{ __html: problem?.question_html || '' }}
-            />
+            
+            <div className="space-y-4">
+              <div
+                className="prose max-w-none [&_p]:inline [&_img]:inline-block [&_img]:align-middle [&_img]:mx-1"
+                dangerouslySetInnerHTML={{ __html: currentProblem?.question_html || '' }}
+              />
+              
+              <div className="mt-4">
+                <Select
+                  value={userAnswers[currentIndex] || ''}
+                  onValueChange={handleAnswer}
+                >
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Select answer..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {['A', 'B', 'C', 'D', 'E'].map((option) => (
+                      <SelectItem key={option} value={option}>
+                        Option {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
             <div className="flex justify-between">
               <Button onClick={() => setShowProblem(false)}>
                 Back to Selection
               </Button>
               <div className="flex gap-2">
                 <Button 
-                  onClick={() => {
-                    if (problem) {
-                      setCurrentYear(problem.year);
-                      setCurrentProblem(problem.problem_number - 2);
-                    }
-                  }}
+                  onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
+                  disabled={currentIndex === 0}
                 >
-                  Prev Problem
+                  Prev
                 </Button>
                 <Button 
-                  onClick={() => {
-                    if (problem) {
-                      setCurrentYear(problem.year);
-                      setCurrentProblem(problem.problem_number);
-                    }
-                  }}
+                  onClick={() => setCurrentIndex(prev => Math.min(selectedProblems.length - 1, prev + 1))}
+                  disabled={currentIndex === selectedProblems.length - 1}
                 >
-                  Next Problem
+                  Next
                 </Button>
               </div>
             </div>
