@@ -39,18 +39,26 @@ export default function AMC() {
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
 
-      // Fetch first problem
-      const response = await fetch('/api/problems/amc8', {
-        headers: {
-          'CSRF-Token': csrfToken
-        }
-      });
+      // Fetch all 3 problems
+      let problems = [];
+      let lastYear = 0;
+      let lastProblem = 0;
+      
+      for (let i = 0; i < 3; i++) {
+        const response = await fetch(`/api/problems/amc8?year=${lastYear}&problem=${lastProblem}`, {
+          headers: {
+            'CSRF-Token': csrfToken
+          }
+        });
 
-      if (!response.ok) throw new Error('Failed to fetch problems');
-      const problem = await response.json();
+        if (!response.ok) throw new Error('Failed to fetch problems');
+        const problem = await response.json();
+        problems.push(problem);
+        lastYear = problem.year;
+        lastProblem = problem.problem_number;
+      }
 
-      // Initialize with first problem
-      setSelectedProblems([problem]);
+      setSelectedProblems(problems);
       setUserAnswers({});
       setCurrentIndex(0);
       setShowProblem(true);
@@ -71,24 +79,7 @@ export default function AMC() {
     }
   };
 
-  const fetchNextProblem = async () => {
-    if (currentProblem) {
-      const csrfResponse = await fetch('/api/csrf-token');
-      const { csrfToken } = await csrfResponse.json();
-
-      const response = await fetch(`/api/problems/amc8?year=${currentProblem.year}&problem=${currentProblem.problem_number}`, {
-        headers: {
-          'CSRF-Token': csrfToken
-        }
-      });
-
-      if (response.ok) {
-        const nextProblem = await response.json();
-        setSelectedProblems(prev => [...prev, nextProblem]);
-        setCurrentIndex(prev => prev + 1);
-      }
-    }
-  };
+  // Removed fetchNextProblem as we now fetch all problems at start
 
   const submitGame = () => {
     let correctAnswers = 0;
@@ -229,13 +220,7 @@ export default function AMC() {
                   Prev
                 </Button>
                 <Button 
-                  onClick={async () => {
-                    if (currentIndex === selectedProblems.length - 1 && selectedProblems.length < 3) {
-                      await fetchNextProblem();
-                    } else {
-                      setCurrentIndex(prev => prev + 1);
-                    }
-                  }}
+                  onClick={() => setCurrentIndex(prev => prev + 1)}
                   disabled={currentIndex === 2}
                 >
                   Next
