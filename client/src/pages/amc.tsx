@@ -83,16 +83,28 @@ export default function AMC() {
               <Button onClick={() => setShowProblem(false)}>
                 Back to Selection
               </Button>
-              <Button 
-                onClick={() => {
-                  if (problem) {
-                    setCurrentYear(problem.year);
-                    setCurrentProblem(problem.problem_number);
-                  }
-                }}
-              >
-                Next Problem
-              </Button>
+              <div className="flex gap-2">
+                <Button 
+                  onClick={() => {
+                    if (problem) {
+                      setCurrentYear(problem.year);
+                      setCurrentProblem(problem.problem_number - 2);
+                    }
+                  }}
+                >
+                  Prev Problem
+                </Button>
+                <Button 
+                  onClick={() => {
+                    if (problem) {
+                      setCurrentYear(problem.year);
+                      setCurrentProblem(problem.problem_number);
+                    }
+                  }}
+                >
+                  Next Problem
+                </Button>
+              </div>
             </div>
           </div>
         )}
