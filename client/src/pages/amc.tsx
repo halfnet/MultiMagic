@@ -237,6 +237,14 @@ export default function AMC() {
                   Next
                 </Button>
               </div>
+              {gameStatus === 'complete' && (
+                <Button
+                  onClick={() => setShowResults(true)}
+                  className="bg-primary/90 hover:bg-primary text-primary-foreground"
+                >
+                  Back to Results
+                </Button>
+              )}
             </div>
           </div>
         )}
