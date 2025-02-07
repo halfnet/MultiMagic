@@ -128,7 +128,14 @@ export default function AMC() {
             <p className="text-xl text-center">Your score: {score} out of 3</p>
             <div className="space-y-4">
               {selectedProblems.map((problem, idx) => (
-                <div key={problem.id} className="p-4 border rounded">
+                <div 
+                  key={problem.id} 
+                  className="p-4 border rounded cursor-pointer hover:bg-gray-50 transition-colors"
+                  onClick={() => {
+                    setCurrentIndex(idx);
+                    setShowResults(false);
+                  }}
+                >
                   <p>Problem {idx + 1}: {
                     userAnswers[idx] ? 
                       (userAnswers[idx] === problem.answer ? 
@@ -137,6 +144,7 @@ export default function AMC() {
                       : <span className="text-gray-600">Not answered (Answer: {problem.answer})</span>
                   }
                   </p>
+                  <p className="text-sm text-gray-500 mt-1">Click to review</p>
                 </div>
               ))}
             </div>
@@ -158,7 +166,7 @@ export default function AMC() {
               <div className="text-sm text-grey-500">
                 Problem {currentIndex + 1} of 3 | Answered: {answeredCount} of 3
               </div>
-              {answeredCount > 0 && (
+              {answeredCount > 0 && !showResults && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button 
@@ -195,6 +203,7 @@ export default function AMC() {
                 <Select
                   value={userAnswers[currentIndex] || ''}
                   onValueChange={handleAnswer}
+                  disabled={showProblem && !showResults}
                 >
                   <SelectTrigger className="w-[200px]">
                     <SelectValue placeholder="Select answer..." />
