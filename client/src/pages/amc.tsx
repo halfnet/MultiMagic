@@ -136,9 +136,13 @@ export default function AMC() {
             <div className="space-y-4">
               {selectedProblems.map((problem, idx) => (
                 <div key={problem.id} className="p-4 border rounded">
-                  <p>Problem {idx + 1}: {userAnswers[idx] === problem.answer ? 
-                    <span className="text-green-600">Correct</span> : 
-                    <span className="text-red-600">Incorrect (Answer: {problem.answer})</span>}
+                  <p>Problem {idx + 1}: {
+                    userAnswers[idx] ? 
+                      (userAnswers[idx] === problem.answer ? 
+                        <span className="text-green-600">Correct</span> : 
+                        <span className="text-red-600">Incorrect (Answer: {problem.answer})</span>)
+                      : <span className="text-gray-600">Not answered (Answer: {problem.answer})</span>
+                  }
                   </p>
                 </div>
               ))}
