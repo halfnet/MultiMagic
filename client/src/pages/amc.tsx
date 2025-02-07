@@ -203,7 +203,7 @@ export default function AMC() {
                 <Select
                   value={userAnswers[currentIndex] || ''}
                   onValueChange={handleAnswer}
-                  disabled={showProblem && !showResults}
+                  disabled={showResults}
                 >
                   <SelectTrigger className="w-[200px]">
                     <SelectValue placeholder="Select answer..." />
