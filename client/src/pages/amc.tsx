@@ -16,19 +16,24 @@ interface Problem {
 export default function AMC() {
   const [_, setLocation] = useLocation();
   const [showProblem, setShowProblem] = useState(false);
+  const [currentYear, setCurrentYear] = useState(0);
+  const [currentProblem, setCurrentProblem] = useState(0);
   
   const { data: problem, refetch } = useQuery<Problem>({
-    queryKey: ['random-amc8-problem'],
+    queryKey: ['amc8-problem', currentYear, currentProblem],
     queryFn: async () => {
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
       
-      const response = await fetch('/api/problems/random/amc8', {
+      const response = await fetch(`/api/problems/amc8?year=${currentYear}&problem=${currentProblem}`, {
         headers: {
           'CSRF-Token': csrfToken
         }
       });
-      return response.json();
+      const data = await response.json();
+      setCurrentYear(data.year);
+      setCurrentProblem(data.problem_number);
+      return data;
     },
     enabled: showProblem
   });
@@ -51,6 +56,8 @@ export default function AMC() {
             <Button 
               size="lg" 
               onClick={() => {
+                setCurrentYear(0);
+                setCurrentProblem(0);
                 refetch();
                 setShowProblem(true);
               }}
@@ -63,6 +70,9 @@ export default function AMC() {
           </div>
         ) : (
           <div className="space-y-6">
+            <div className="text-sm text-gray-500 mb-4">
+              Year: {problem?.year} - Problem: {problem?.problem_number}
+            </div>
             <div 
               className="prose max-w-none"
               dangerouslySetInnerHTML={{ __html: problem?.question_html || '' }}
@@ -74,7 +84,6 @@ export default function AMC() {
               <Button 
                 onClick={() => {
                   refetch();
-                  setShowProblem(true);
                 }}
               >
                 Next Problem

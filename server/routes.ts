@@ -639,23 +639,39 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  app.get('/api/problems/random/amc8', async (req, res) => {
+  app.get('/api/problems/amc8', async (req, res) => {
     try {
+      const { year = 0, problem = 0 } = req.query;
       const result = await db.execute(sql`
         SELECT *
         FROM problems
         WHERE competition_type = 'AMC 8'
-        ORDER BY RANDOM()
+        AND (year > ${year}
+          OR (year = ${year} AND problem_number > ${problem}))
+        ORDER BY year, problem_number
         LIMIT 1
       `);
       
       if (!result.rows[0]) {
-        return res.status(404).json({ error: 'No AMC 8 problems found' });
+        // If no next problem found, get the first problem
+        const firstResult = await db.execute(sql`
+          SELECT *
+          FROM problems
+          WHERE competition_type = 'AMC 8'
+          ORDER BY year, problem_number
+          LIMIT 1
+        `);
+        
+        if (!firstResult.rows[0]) {
+          return res.status(404).json({ error: 'No AMC 8 problems found' });
+        }
+        
+        res.json(firstResult.rows[0]);
+      } else {
+        res.json(result.rows[0]);
       }
-      
-      res.json(result.rows[0]);
     } catch (error) {
-      console.error('Error fetching random AMC 8 problem:', error);
+      console.error('Error fetching AMC 8 problem:', error);
       res.status(500).json({ error: 'Failed to fetch problem' });
     }
   });
