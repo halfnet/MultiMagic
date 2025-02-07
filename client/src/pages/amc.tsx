@@ -166,7 +166,7 @@ export default function AMC() {
               <div className="text-sm text-grey-500">
                 Problem {currentIndex + 1} of 3 | Answered: {answeredCount} of 3
               </div>
-              {answeredCount > 0 && !showResults && (
+              {answeredCount > 0 && !showResults && !userAnswers.hasOwnProperty(currentIndex) && (
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button 
@@ -203,7 +203,7 @@ export default function AMC() {
                 <Select
                   value={userAnswers[currentIndex] || ''}
                   onValueChange={handleAnswer}
-                  disabled={showResults}
+                  disabled={showResults || userAnswers.hasOwnProperty(currentIndex)}
                 >
                   <SelectTrigger className="w-[200px]">
                     <SelectValue placeholder="Select answer..." />
