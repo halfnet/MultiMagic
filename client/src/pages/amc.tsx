@@ -4,6 +4,17 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface Problem {
   id: number;
@@ -150,13 +161,30 @@ export default function AMC() {
               <div className="text-sm text-grey-500">
                 Problem {currentIndex + 1} of 3 | Answered: {answeredCount} of 3
               </div>
-              {answeredCount === 3 && (
-                <Button 
-                  onClick={submitGame}
-                  className="bg-green-600 hover:bg-green-700 text-white"
-                >
-                  Submit Answers
-                </Button>
+              {answeredCount > 0 && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button 
+                      className="bg-green-600 hover:bg-green-700 text-white"
+                    >
+                      Submit Answers
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Submit Answers?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        {answeredCount < 3 ? 
+                          `You have answered ${answeredCount} out of 3 questions. Are you sure you want to submit?` :
+                          'Are you ready to submit your answers?'}
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={submitGame}>Submit</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               )}
             </div>
 
