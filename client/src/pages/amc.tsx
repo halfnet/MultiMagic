@@ -100,12 +100,14 @@ export default function AMC() {
       <Card className="p-8 max-w-4xl w-full">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-primary">AMC Problems</h1>
-          <Button
-            onClick={() => setLocation('/')}
-            className="bg-primary/90 hover:bg-primary text-primary-foreground"
-          >
-            Back to Main
-          </Button>
+          {showProblem && !showResults && (
+            <Button
+              onClick={() => setShowProblem(false)}
+              className="bg-primary/90 hover:bg-primary text-primary-foreground"
+            >
+              Back to Selection
+            </Button>
+          )}
         </div>
 
         {!showProblem ? (
@@ -209,9 +211,6 @@ export default function AMC() {
             </div>
 
             <div className="flex justify-between">
-              <Button onClick={() => setShowProblem(false)}>
-                Back to Selection
-              </Button>
               <div className="flex gap-2">
                 <Button 
                   onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
