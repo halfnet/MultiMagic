@@ -41,12 +41,12 @@ export default function AMC() {
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
 
-      // Fetch all 3 problems
+      // Fetch all 5 problems
       let problems = [];
       let lastYear = 0;
       let lastProblem = 0;
       
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 5; i++) {
         const response = await fetch(`/api/problems/amc8?year=${lastYear}&problem=${lastProblem}`, {
           headers: {
             'CSRF-Token': csrfToken
@@ -102,13 +102,13 @@ export default function AMC() {
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex flex-col items-center justify-center p-4">
       <Card className="p-8 max-w-4xl w-full">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-primary">AMC Problems</h1>
+          <h1 className="text-3xl font-bold text-primary">AMC Chanlleges</h1>
           {showProblem && !showResults && (
             <Button
               onClick={() => setShowProblem(false)}
               className="bg-primary/90 hover:bg-primary text-primary-foreground"
             >
-              Back to Selection
+              AMC Challenges
             </Button>
           )}
         </div>
@@ -128,7 +128,7 @@ export default function AMC() {
         ) : showResults ? (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-center">Game Complete!</h2>
-            <p className="text-xl text-center">Your score: {score} out of 3</p>
+            <p className="text-xl text-center">Your score: {score} out of 5</p>
             <div className="space-y-4">
               {selectedProblems.map((problem, idx) => (
                 <div 
@@ -167,7 +167,7 @@ export default function AMC() {
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <div className="text-sm text-grey-500">
-                Problem {currentIndex + 1} of 3 | Answered: {answeredCount} of 3
+                Problem {currentIndex + 1} of 5 | Answered: {answeredCount} of 5
               </div>
               {answeredCount > 0 && gameStatus === 'inProgress' && (
                 <AlertDialog>
@@ -182,8 +182,8 @@ export default function AMC() {
                     <AlertDialogHeader>
                       <AlertDialogTitle>Submit Answers?</AlertDialogTitle>
                       <AlertDialogDescription>
-                        {answeredCount < 3 ? 
-                          `You have answered ${answeredCount} out of 3 questions. Are you sure you want to submit?` :
+                        {answeredCount < 5 ? 
+                          `You have answered ${answeredCount} out of 5 questions. Are you sure you want to submit?` :
                           'Are you ready to submit your answers?'}
                       </AlertDialogDescription>
                     </AlertDialogHeader>
@@ -232,7 +232,7 @@ export default function AMC() {
                 </Button>
                 <Button 
                   onClick={() => setCurrentIndex(prev => prev + 1)}
-                  disabled={currentIndex === 2}
+                  disabled={currentIndex === 4}
                 >
                   Next
                 </Button>
@@ -242,7 +242,7 @@ export default function AMC() {
                   onClick={() => setShowResults(true)}
                   className="bg-primary/90 hover:bg-primary text-primary-foreground"
                 >
-                  Back to Results
+                  Go to Results
                 </Button>
               )}
             </div>
