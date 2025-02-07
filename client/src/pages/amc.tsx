@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
@@ -28,17 +27,17 @@ export default function AMC() {
     try {
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
-      
+
       // Fetch first problem
       const response = await fetch('/api/problems/amc8', {
         headers: {
           'CSRF-Token': csrfToken
         }
       });
-      
+
       if (!response.ok) throw new Error('Failed to fetch problems');
       const problem = await response.json();
-      
+
       // Initialize with first problem
       setSelectedProblems([problem]);
       setUserAnswers({});
@@ -65,13 +64,13 @@ export default function AMC() {
     if (currentProblem) {
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
-      
+
       const response = await fetch(`/api/problems/amc8?year=${currentProblem.year}&problem=${currentProblem.problem_number}`, {
         headers: {
           'CSRF-Token': csrfToken
         }
       });
-      
+
       if (response.ok) {
         const nextProblem = await response.json();
         setSelectedProblems(prev => [...prev, nextProblem]);
@@ -103,10 +102,10 @@ export default function AMC() {
             onClick={() => setLocation('/')}
             className="bg-primary/90 hover:bg-primary text-primary-foreground"
           >
-            Back to Game
+            Back to Main
           </Button>
         </div>
-        
+
         {!showProblem ? (
           <div className="flex gap-4 justify-center">
             <Button 
@@ -160,13 +159,13 @@ export default function AMC() {
                 </Button>
               )}
             </div>
-            
+
             <div className="space-y-4">
               <div
                 className="prose max-w-none [&_p]:inline [&_img]:inline-block [&_img]:align-middle [&_img]:mx-1"
                 dangerouslySetInnerHTML={{ __html: currentProblem?.question_html || '' }}
               />
-              
+
               <div className="mt-4">
                 <Select
                   value={userAnswers[currentIndex] || ''}
@@ -185,7 +184,7 @@ export default function AMC() {
                 </Select>
               </div>
             </div>
-            
+
             <div className="flex justify-between">
               <Button onClick={() => setShowProblem(false)}>
                 Back to Selection
