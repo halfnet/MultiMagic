@@ -163,12 +163,30 @@ export default function AMC() {
               ))}
             </div>
             <div className="flex justify-center gap-4">
-              <Button onClick={() => {
-                setShowProblem(false);
-                setShowResults(false);
-              }}>
-                Back to Selection
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button className="ml-auto">
+                    Exit Game
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Exit Game?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to exit? Your progress will be lost.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => {
+                      setShowProblem(false);
+                      setShowResults(false);
+                    }}>
+                      Exit
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
               <Button onClick={startGame}>
                 Play Again
               </Button>
