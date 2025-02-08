@@ -106,13 +106,14 @@ export default function AMC() {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-primary">AMC Challenges</h1>
           <div className="flex gap-2">
-            <Button
-              onClick={() => setLocation('/')}
-              className="bg-primary/90 hover:bg-primary text-primary-foreground"
-            >
-              Back to Main
-            </Button>
-            {showProblem && !showResults && (
+            {!showProblem ? (
+              <Button
+                onClick={() => setLocation('/')}
+                className="bg-primary/90 hover:bg-primary text-primary-foreground"
+              >
+                Back to Main
+              </Button>
+            ) : !showResults && (
               <Button
                 onClick={() => setShowProblem(false)}
                 className="bg-primary/90 hover:bg-primary text-primary-foreground"
