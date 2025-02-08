@@ -641,6 +641,21 @@ export function registerRoutes(app: Express): Server {
 
   app.post('/api/amc-game-results', async (req, res) => {
     try {
+      // Calculate screen time earned
+      let screenTimeEarned = req.body.correctAnswers * 0.5;
+      const isPerfectScore = req.body.correctAnswers === req.body.questionsCount;
+      const timeInMinutes = req.body.timeTakenInMs / (1000 * 60);
+
+      if (isPerfectScore) {
+        screenTimeEarned += 2.5; // AMC Scholar achievement
+        if (timeInMinutes < 8) {
+          screenTimeEarned += 4.5; // AMC Expert achievement
+          if (timeInMinutes < 5) {
+            screenTimeEarned += 6.5; // AMC Master achievement
+          }
+        }
+      }
+
       const [result] = await db
         .insert(amcGameResults)
         .values({
@@ -651,6 +666,7 @@ export function registerRoutes(app: Express): Server {
           incorrectAnswers: req.body.incorrectAnswers,
           noAnswers: req.body.noAnswers,
           timeTakenInMs: req.body.timeTakenInMs,
+          screenTimeEarned,
         })
         .returning();
 
