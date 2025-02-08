@@ -3,6 +3,8 @@ import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
+import { useToast } from '@/hooks/use-toast';
+import { useCookieAuth } from '@/hooks/use-cookie-auth';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   AlertDialog,
@@ -29,6 +31,8 @@ const TOTAL_PROBLEMS = 5;
 
 export default function AMC() {
   const [_, setLocation] = useLocation();
+  const { user } = useCookieAuth();
+  const { toast } = useToast();
   const [showProblem, setShowProblem] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedProblems, setSelectedProblems] = useState<Problem[]>([]);
@@ -146,6 +150,11 @@ export default function AMC() {
       setGameStatus('complete');
     } catch (error) {
       console.error('Error saving game results:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to save game results. Please try again.",
+      });
     }
   };
 
