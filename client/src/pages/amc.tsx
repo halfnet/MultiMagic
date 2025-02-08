@@ -114,12 +114,27 @@ export default function AMC() {
                 Back to Main
               </Button>
             ) : !showResults && (
-              <Button
-                onClick={() => setShowProblem(false)}
-                className="bg-primary/90 hover:bg-primary text-primary-foreground"
-              >
-                Back to Selection
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button className="bg-primary/90 hover:bg-primary text-primary-foreground">
+                    Exit Game
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Exit Game?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to exit? Your progress will be lost.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => setShowProblem(false)}>
+                      Exit
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             )}
           </div>
         </div>
