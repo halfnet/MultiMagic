@@ -27,17 +27,39 @@ export const ACHIEVEMENTS: Achievement[] = [
     },
   },
   {
-    id: 'perfect-score',
-    name: 'Perfect Score',
-    description: 'Complete the game without any mistakes',
+    id: 'amc-scholar',
+    name: 'AMC Scholar',
+    description: 'Perfect score on all AMC questions',
     icon: 'Star',
     condition: (gameState: GameState) => {
       return (
         gameState.endTime !== undefined &&
-        gameState.mode !== 'practice' &&
+        gameState.mode === 'amc' &&
         gameState.currentQuestion === gameState.questions.length &&
         gameState.incorrectAttempts === 0
       );
+    },
+  },
+  {
+    id: 'amc-expert',
+    name: 'AMC Expert',
+    description: 'Perfect score within 8 minutes',
+    icon: 'Star',
+    condition: (gameState: GameState) => {
+      if (!gameState.endTime || gameState.mode !== 'amc') return false;
+      const timeInMinutes = (gameState.endTime - gameState.startTime) / (1000 * 60);
+      return timeInMinutes < 8 && gameState.incorrectAttempts === 0;
+    },
+  },
+  {
+    id: 'amc-master',
+    name: 'AMC Master',
+    description: 'Perfect score within 5 minutes',
+    icon: 'Star',
+    condition: (gameState: GameState) => {
+      if (!gameState.endTime || gameState.mode !== 'amc') return false;
+      const timeInMinutes = (gameState.endTime - gameState.startTime) / (1000 * 60);
+      return timeInMinutes < 5 && gameState.incorrectAttempts === 0;
     },
   },
   {
