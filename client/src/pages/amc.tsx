@@ -5,6 +5,8 @@ import { Card } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { useCookieAuth } from '@/hooks/use-cookie-auth';
+import { AchievementBadge } from '@/components/game/AchievementBadge';
+import { ACHIEVEMENTS } from '@/lib/achievements';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   AlertDialog,
@@ -231,6 +233,29 @@ export default function AMC() {
             <h2 className="text-2xl font-bold text-center">Game Complete!</h2>
             <p className="text-xl text-center">Your score: {score} out of {TOTAL_PROBLEMS}</p>
             <p className="text-xl text-center">Time Taken: {formatTime(elapsedTime)}</p>
+            {score === TOTAL_PROBLEMS && (
+              <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-center">Achievements Earned</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <AchievementBadge
+                    achievement={ACHIEVEMENTS.find(a => a.id === 'amc-scholar')}
+                    animate={true}
+                  />
+                  {elapsedTime < 8 * 60 * 1000 && (
+                    <AchievementBadge
+                      achievement={ACHIEVEMENTS.find(a => a.id === 'amc-expert')}
+                      animate={true}
+                    />
+                  )}
+                  {elapsedTime < 5 * 60 * 1000 && (
+                    <AchievementBadge
+                      achievement={ACHIEVEMENTS.find(a => a.id === 'amc-master')}
+                      animate={true}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
             <div className="space-y-4">
               {selectedProblems.map((problem, idx) => (
                 <div 
