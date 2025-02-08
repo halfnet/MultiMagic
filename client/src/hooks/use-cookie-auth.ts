@@ -47,11 +47,7 @@ export function useCookieAuth() {
     },
     onSuccess: user => {
       queryClient.setQueryData(['user'], user);
-      toast({
-        title: 'Welcome!',
-        description: `Logged in as ${user.username}`,
-      });
-
+      //Removed toast message here
       // Apply saved theme color
       if (user.themeColor) {
         const color = user.themeColor;
