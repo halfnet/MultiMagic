@@ -104,15 +104,23 @@ export default function AMC() {
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex flex-col items-center justify-center p-4">
       <Card className="p-8 max-w-4xl w-full">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-primary">AMC Chanlleges</h1>
-          {showProblem && !showResults && (
+          <h1 className="text-3xl font-bold text-primary">AMC Challenges</h1>
+          <div className="flex gap-2">
             <Button
-              onClick={() => setShowProblem(false)}
+              onClick={() => setLocation('/')}
               className="bg-primary/90 hover:bg-primary text-primary-foreground"
             >
-              AMC Challenges
+              Back to Main
             </Button>
-          )}
+            {showProblem && !showResults && (
+              <Button
+                onClick={() => setShowProblem(false)}
+                className="bg-primary/90 hover:bg-primary text-primary-foreground"
+              >
+                AMC Challenges
+              </Button>
+            )}
+          </div>
         </div>
 
         {!showProblem ? (
