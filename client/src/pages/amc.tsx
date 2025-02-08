@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
@@ -47,7 +46,7 @@ export default function AMC() {
       let problems = [];
       let lastYear = 0;
       let lastProblem = 0;
-      
+
       for (let i = 0; i < TOTAL_PROBLEMS; i++) {
         const response = await fetch(`/api/problems/amc8?year=${lastYear}&problem=${lastProblem}`, {
           headers: {
@@ -209,7 +208,7 @@ export default function AMC() {
                     disabled={gameStatus === 'complete'}
                     className="[&_[data-radix-select-trigger]]:bg-primary [&_[data-radix-select-trigger]]:text-primary-foreground [&_[data-radix-select-trigger]]:hover:bg-primary/90"
                   >
-                    <SelectTrigger className="w-[200px]">
+                    <SelectTrigger className="w-[200px] bg-primary hover:bg-primary/90 text-primary-foreground">
                       <SelectValue placeholder="Select answer..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -248,7 +247,7 @@ export default function AMC() {
                   )}
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="outline">
+                      <Button variant="outline" className="bg-primary hover:bg-primary/90 text-primary-foreground">
                         Exit Game
                       </Button>
                     </AlertDialogTrigger>
@@ -261,7 +260,7 @@ export default function AMC() {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => setShowProblem(false)}>
+                        <AlertDialogAction onClick={() => setShowProblem(false)} className="bg-primary hover:bg-primary/90">
                           Exit
                         </AlertDialogAction>
                       </AlertDialogFooter>
