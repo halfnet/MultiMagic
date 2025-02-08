@@ -273,7 +273,7 @@ export default function AMC() {
                   Problem {currentIndex + 1} of {TOTAL_PROBLEMS} | Answered: {answeredCount} of {TOTAL_PROBLEMS}
                 </div>
                 <div className="flex items-center gap-4">
-                  <Timer startTime={startTime} />
+                  {gameStatus === 'inProgress' && <Timer startTime={startTime} />}
                   {gameStatus === 'inProgress' && (
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
