@@ -209,19 +209,20 @@ export default function AMC() {
           </div>
         ) : (
           <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <div className="text-sm text-grey-500">
-                Problem {currentIndex + 1} of {TOTAL_PROBLEMS} | Answered: {answeredCount} of {TOTAL_PROBLEMS}
-              </div>
-              {answeredCount > 0 && gameStatus === 'inProgress' && (
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button 
-                      className="bg-green-600 hover:bg-green-700 text-white"
-                    >
-                      Submit Answers
-                    </Button>
-                  </AlertDialogTrigger>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <div className="text-sm text-grey-500">
+                  Problem {currentIndex + 1} of {TOTAL_PROBLEMS} | Answered: {answeredCount} of {TOTAL_PROBLEMS}
+                </div>
+                {answeredCount > 0 && gameStatus === 'inProgress' && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button 
+                        className="bg-green-600 hover:bg-green-700 text-white"
+                      >
+                        Submit Answers
+                      </Button>
+                    </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
                       <AlertDialogTitle>Submit Answers?</AlertDialogTitle>
@@ -266,7 +267,7 @@ export default function AMC() {
               </div>
             </div>
 
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
               <div className="flex gap-2">
                 <Button 
                   onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
@@ -281,14 +282,37 @@ export default function AMC() {
                   Next
                 </Button>
               </div>
-              {gameStatus === 'complete' && (
-                <Button
-                  onClick={() => setShowResults(true)}
-                  className="bg-primary/90 hover:bg-primary text-primary-foreground"
-                >
-                  Go to Results
-                </Button>
-              )}
+              <div className="flex gap-2">
+                {gameStatus === 'complete' && (
+                  <Button
+                    onClick={() => setShowResults(true)}
+                    className="bg-primary/90 hover:bg-primary text-primary-foreground"
+                  >
+                    Go to Results
+                  </Button>
+                )}
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="outline">
+                      Exit Game
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Exit Game?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to exit? Your progress will be lost.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => setShowProblem(false)}>
+                        Exit
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             </div>
           </div>
         )}
