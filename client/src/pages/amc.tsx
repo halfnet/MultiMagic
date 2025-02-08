@@ -29,6 +29,39 @@ interface Problem {
 
 const TOTAL_PROBLEMS = 5;
 
+function formatTime(milliseconds: number): string {
+  const seconds = Math.floor((milliseconds / 1000) % 60);
+  const minutes = Math.floor((milliseconds / (1000 * 60)) % 60);
+  const hours = Math.floor((milliseconds / (1000 * 60 * 60)) % 24);
+
+  const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+  const formattedHours = hours > 0 ? `${hours}:` : '';
+
+  return `${formattedHours}${formattedMinutes}:${formattedSeconds}`;
+}
+
+function Timer({ startTime }: { startTime: number }) {
+  const [elapsedTime, setElapsedTime] = useState(0);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (startTime > 0) {
+        setElapsedTime(Date.now() - startTime);
+      }
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [startTime]);
+
+  return (
+    <div className="text-sm text-gray-500">
+      {startTime > 0 ? formatTime(elapsedTime) : '00:00'}
+    </div>
+  );
+}
+
+
 export default function AMC() {
   const [_, setLocation] = useLocation();
   const { user } = useCookieAuth();
@@ -41,6 +74,8 @@ export default function AMC() {
   const [score, setScore] = useState(0);
   const [gameStatus, setGameStatus] = useState<'inProgress' | 'complete'>('inProgress');
   const [startTime, setStartTime] = useState<number>(0);
+  const [elapsedTime, setElapsedTime] = useState(0);
+
 
   const startGame = async () => {
     try {
@@ -148,6 +183,7 @@ export default function AMC() {
       setScore(correctAnswers);
       setShowResults(true);
       setGameStatus('complete');
+      setElapsedTime(Date.now() - startTime);
     } catch (error) {
       console.error('Error saving game results:', error);
       toast({
@@ -194,6 +230,7 @@ export default function AMC() {
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-center">Game Complete!</h2>
             <p className="text-xl text-center">Your score: {score} out of {TOTAL_PROBLEMS}</p>
+            <p className="text-xl text-center">Time Taken: {formatTime(elapsedTime)}</p>
             <div className="space-y-4">
               {selectedProblems.map((problem, idx) => (
                 <div 
@@ -231,35 +268,11 @@ export default function AMC() {
         ) : (
           <div className="space-y-6">
             <div className="space-y-4">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center w-full">
                 <div className="text-sm text-grey-500">
                   Problem {currentIndex + 1} of {TOTAL_PROBLEMS} | Answered: {answeredCount} of {TOTAL_PROBLEMS}
                 </div>
-                {answeredCount > 0 && gameStatus === 'inProgress' && (
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button 
-                        className="bg-primary hover:bg-primary/90"
-                      >
-                        Submit Answers
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Submit Answers?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          {answeredCount < TOTAL_PROBLEMS ? 
-                            `You have answered ${answeredCount} out of ${TOTAL_PROBLEMS} questions. Are you sure you want to submit?` :
-                            'Are you ready to submit your answers?'}
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={submitGame} className="bg-primary hover:bg-primary/90">Submit</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                )}
+                <Timer startTime={startTime} />
               </div>
               <div className="space-y-4">
                 <div
