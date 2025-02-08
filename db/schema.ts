@@ -103,3 +103,20 @@ export const insertAmcGameResultSchema = createInsertSchema(amcGameResults);
 export const selectAmcGameResultSchema = createSelectSchema(amcGameResults);
 export type InsertAmcGameResult = typeof amcGameResults.$inferInsert;
 export type SelectAmcGameResult = typeof amcGameResults.$inferSelect;
+
+export const amcGameQuestionResults = pgTable('amc_game_question_results', {
+  id: serial('id').primaryKey(),
+  gameId: integer('game_id').references(() => amcGameResults.id),
+  userId: integer('user_id').references(() => users.id),
+  problemId: integer('problem_id').references(() => problems.id),
+  userAnswer: text('user_answer'),
+  userScore: integer('user_score').notNull(),
+  createdAt: text('created_at')
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
+
+export const insertAmcGameQuestionResultSchema = createInsertSchema(amcGameQuestionResults);
+export const selectAmcGameQuestionResultSchema = createSelectSchema(amcGameQuestionResults);
+export type InsertAmcGameQuestionResult = typeof amcGameQuestionResults.$inferInsert;
+export type SelectAmcGameQuestionResult = typeof amcGameQuestionResults.$inferSelect;
