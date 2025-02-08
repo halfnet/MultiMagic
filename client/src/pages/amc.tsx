@@ -175,7 +175,7 @@ export default function AMC() {
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button 
-                        className="bg-green-600 hover:bg-green-700 text-white"
+                        className="bg-primary hover:bg-primary/90"
                       >
                         Submit Answers
                       </Button>
@@ -191,7 +191,7 @@ export default function AMC() {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={submitGame}>Submit</AlertDialogAction>
+                        <AlertDialogAction onClick={submitGame} className="bg-primary hover:bg-primary/90">Submit</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
@@ -207,6 +207,7 @@ export default function AMC() {
                     value={userAnswers[currentIndex] || ''}
                     onValueChange={handleAnswer}
                     disabled={gameStatus === 'complete'}
+                    className="[&_[data-radix-select-trigger]]:bg-primary [&_[data-radix-select-trigger]]:text-primary-foreground [&_[data-radix-select-trigger]]:hover:bg-primary/90"
                   >
                     <SelectTrigger className="w-[200px]">
                       <SelectValue placeholder="Select answer..." />
