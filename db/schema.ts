@@ -83,3 +83,23 @@ export const insertProblemSchema = createInsertSchema(problems);
 export const selectProblemSchema = createSelectSchema(problems);
 export type InsertProblem = typeof problems.$inferInsert;
 export type SelectProblem = typeof problems.$inferSelect;
+
+export const amcGameResults = pgTable('amc_game_results', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').references(() => users.id),
+  competitionType: text('competition_type').notNull(),
+  questionsCount: integer('questions_count').notNull(),
+  correctAnswers: integer('correct_answers').notNull(),
+  incorrectAnswers: integer('incorrect_answers').notNull(),
+  noAnswers: integer('no_answers').notNull(),
+  timeTakenInMs: integer('time_taken_in_ms').notNull(),
+  screenTimeEarned: decimal('screen_time_earned', { precision: 10, scale: 2 }).default('0'),
+  createdAt: text('created_at')
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
+
+export const insertAmcGameResultSchema = createInsertSchema(amcGameResults);
+export const selectAmcGameResultSchema = createSelectSchema(amcGameResults);
+export type InsertAmcGameResult = typeof amcGameResults.$inferInsert;
+export type SelectAmcGameResult = typeof amcGameResults.$inferSelect;
