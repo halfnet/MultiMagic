@@ -23,7 +23,7 @@ export const gameResults = pgTable('game_results', {
   timeTakenInMs: integer('time_taken_in_ms').notNull(),
   bestStreak: integer('best_streak').notNull(),
   incorrectAttempts: integer('incorrect_attempts').notNull(),
-  screenTimeEarned: text('screen_time_earned'),
+  screenTimeEarned: text('screen_time_earned').type('float'),
   createdAt: text('created_at')
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
