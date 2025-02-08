@@ -175,30 +175,12 @@ export default function AMC() {
               ))}
             </div>
             <div className="flex justify-center gap-4">
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button>
-                    Exit Game
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Exit Game?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Are you sure you want to exit? Your progress will be lost.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => {
+                  <Button onClick={() => {
                       setShowProblem(false);
                       setShowResults(false);
                     }}>
-                      Exit
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+                    Exit Game
+                  </Button>
               <Button onClick={startGame}>
                 Play Again
               </Button>
