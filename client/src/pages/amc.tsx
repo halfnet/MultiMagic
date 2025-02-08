@@ -118,7 +118,7 @@ export default function AMC() {
                 onClick={() => setShowProblem(false)}
                 className="bg-primary/90 hover:bg-primary text-primary-foreground"
               >
-                AMC Challenges
+                Back to Selection
               </Button>
             )}
           </div>
