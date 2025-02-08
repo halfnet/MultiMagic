@@ -1,7 +1,6 @@
-import { pgTable, text, serial, integer, uniqueIndex } from 'drizzle-orm/pg-core';
+import { pgTable, text, serial, integer, uniqueIndex, decimal } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import { real } from 'drizzle-orm/mysql-core';
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
@@ -24,7 +23,7 @@ export const gameResults = pgTable('game_results', {
   timeTakenInMs: integer('time_taken_in_ms').notNull(),
   bestStreak: integer('best_streak').notNull(),
   incorrectAttempts: integer('incorrect_attempts').notNull(),
-  screenTimeEarned: real('screen_time_earned'),
+  screenTimeEarned: decimal('screen_time_earned', { precision: 10, scale: 2 }),
   createdAt: text('created_at')
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
