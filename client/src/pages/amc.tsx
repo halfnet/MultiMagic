@@ -268,11 +268,36 @@ export default function AMC() {
         ) : (
           <div className="space-y-6">
             <div className="space-y-4">
-              <div className="flex justify-between items-center w-full">
+              <div className="flex justify-between items-center w-full mb-4">
                 <div className="text-sm text-grey-500">
                   Problem {currentIndex + 1} of {TOTAL_PROBLEMS} | Answered: {answeredCount} of {TOTAL_PROBLEMS}
                 </div>
-                <Timer startTime={startTime} />
+                <div className="flex items-center gap-4">
+                  <Timer startTime={startTime} />
+                  {gameStatus === 'inProgress' && (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button className="bg-primary hover:bg-primary/90">
+                          Submit Answers
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Submit Answers?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            {answeredCount < TOTAL_PROBLEMS ? 
+                              `You have answered ${answeredCount} out of ${TOTAL_PROBLEMS} questions. Are you sure you want to submit?` :
+                              'Are you ready to submit your answers?'}
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={submitGame} className="bg-primary hover:bg-primary/90">Submit</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
+                </div>
               </div>
               <div className="space-y-4">
                 <div
