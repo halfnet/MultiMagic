@@ -36,6 +36,7 @@ export default function AMC() {
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
   const [gameStatus, setGameStatus] = useState<'inProgress' | 'complete'>('inProgress');
+  const [startTime, setStartTime] = useState<number>(0);
 
   const startGame = async () => {
     try {
@@ -67,6 +68,7 @@ export default function AMC() {
       setShowProblem(true);
       setShowResults(false);
       setScore(0);
+      setStartTime(Date.now());
     } catch (error) {
       console.error('Error starting game:', error);
     }
@@ -81,16 +83,70 @@ export default function AMC() {
     }
   };
 
-  const submitGame = () => {
+  const submitGame = async () => {
     let correctAnswers = 0;
+    let incorrectAnswers = 0;
+    let noAnswers = 0;
+
+    // Calculate totals
     selectedProblems.forEach((problem, index) => {
-      if (userAnswers[index] === problem.answer) {
+      if (!userAnswers[index]) {
+        noAnswers++;
+      } else if (userAnswers[index] === problem.answer) {
         correctAnswers++;
+      } else {
+        incorrectAnswers++;
       }
     });
-    setScore(correctAnswers);
-    setShowResults(true);
-    setGameStatus('complete');
+
+    try {
+      const csrfResponse = await fetch('/api/csrf-token');
+      const { csrfToken } = await csrfResponse.json();
+
+      // Save game results
+      const gameResultResponse = await fetch('/api/amc-game-results', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'CSRF-Token': csrfToken,
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          competitionType: 'AMC 8',
+          questionsCount: TOTAL_PROBLEMS,
+          correctAnswers,
+          incorrectAnswers,
+          noAnswers,
+          timeTakenInMs: Date.now() - startTime,
+        }),
+      });
+
+      const gameResult = await gameResultResponse.json();
+
+      // Save individual question results
+      await fetch('/api/amc-game-question-results', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'CSRF-Token': csrfToken,
+        },
+        body: JSON.stringify({
+          gameId: gameResult.id,
+          userId: user.id,
+          questionResults: selectedProblems.map((problem, index) => ({
+            problemId: problem.id,
+            userAnswer: userAnswers[index] || null,
+            userScore: userAnswers[index] === problem.answer ? 1 : 0,
+          })),
+        }),
+      });
+
+      setScore(correctAnswers);
+      setShowResults(true);
+      setGameStatus('complete');
+    } catch (error) {
+      console.error('Error saving game results:', error);
+    }
   };
 
   const currentProblem = selectedProblems[currentIndex];

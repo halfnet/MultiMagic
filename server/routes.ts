@@ -639,6 +639,46 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  app.post('/api/amc-game-results', async (req, res) => {
+    try {
+      const [result] = await db
+        .insert(amcGameResults)
+        .values({
+          userId: req.body.userId,
+          competitionType: req.body.competitionType,
+          questionsCount: req.body.questionsCount,
+          correctAnswers: req.body.correctAnswers,
+          incorrectAnswers: req.body.incorrectAnswers,
+          noAnswers: req.body.noAnswers,
+          timeTakenInMs: req.body.timeTakenInMs,
+        })
+        .returning();
+
+      res.json(result);
+    } catch (error) {
+      console.error('Error saving AMC game result:', error);
+      res.status(500).json({ error: 'Failed to save AMC game result' });
+    }
+  });
+
+  app.post('/api/amc-game-question-results', async (req, res) => {
+    try {
+      const results = await db.insert(amcGameQuestionResults).values(
+        req.body.questionResults.map((q: any) => ({
+          gameId: req.body.gameId,
+          userId: req.body.userId,
+          problemId: q.problemId,
+          userAnswer: q.userAnswer,
+          userScore: q.userScore,
+        }))
+      );
+      res.json(results);
+    } catch (error) {
+      console.error('Error saving AMC question results:', error);
+      res.status(500).json({ error: 'Failed to save AMC question results' });
+    }
+  });
+
   app.get('/api/problems/amc8', async (req, res) => {
     try {
       const { year = 0, problem = 0 } = req.query;
