@@ -402,12 +402,12 @@ export default function Game() {
                     onClick={() => setLocation('/amc')}
                     className="w-full text-sm bg-primary/90 hover:bg-primary text-primary-foreground py-1"
                   >
-                    AMC
                     <img 
                       src="/amc-logo.png" 
                       alt="AMC Logo" 
                       className="w-4 h-4 ml-1 inline-block"
                     />
+AMC
                   </Button>
                 </div>
               </div>
