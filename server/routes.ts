@@ -1,7 +1,7 @@
 import type { Express } from 'express';
 import { createServer, type Server } from 'http';
 import { db } from '../db';
-import { users, gameResults, gameQuestionResults } from '../db/schema';
+import { users, gameResults, gameQuestionResults, amcGameResults, amcGameQuestionResults } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { sql } from 'drizzle-orm';
 import csrf from 'csurf';
