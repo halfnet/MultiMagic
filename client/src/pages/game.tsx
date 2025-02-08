@@ -403,9 +403,9 @@ export default function Game() {
                     className="w-full text-sm bg-primary/90 hover:bg-primary text-primary-foreground py-1"
                   >
                     <img 
-                      src="/amc-logo.png" 
+                      src="/amc_logo.JPG" 
                       alt="AMC Logo" 
-                      className="w-4 h-4 ml-1 inline-block"
+                      className="w-6 h-5 ml-1 inline-block"
                     />
 AMC
                   </Button>
