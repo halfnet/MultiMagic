@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
@@ -43,7 +44,6 @@ export default function AMC() {
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
 
-      // Fetch all problems
       let problems = [];
       let lastYear = 0;
       let lastProblem = 0;
@@ -79,11 +79,8 @@ export default function AMC() {
         ...prev,
         [currentIndex]: value
       }));
-      console.log('Problem:', currentProblem, 'Answer:', value);
     }
   };
-
-  // Removed fetchNextProblem as we now fetch all problems at start
 
   const submitGame = () => {
     let correctAnswers = 0;
@@ -180,7 +177,7 @@ export default function AMC() {
             <div className="flex justify-center gap-4">
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button className="ml-auto">
+                  <Button>
                     Exit Game
                   </Button>
                 </AlertDialogTrigger>
@@ -223,95 +220,93 @@ export default function AMC() {
                         Submit Answers
                       </Button>
                     </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Submit Answers?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        {answeredCount < TOTAL_PROBLEMS ? 
-                          `You have answered ${answeredCount} out of ${TOTAL_PROBLEMS} questions. Are you sure you want to submit?` :
-                          'Are you ready to submit your answers?'}
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={submitGame}>Submit</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              )}
-            </div>
-
-            <div className="space-y-4">
-              <div
-                className="[&_img]:inline-block [&_img]:align-middle [&_img]:mx-1"
-                dangerouslySetInnerHTML={{ __html: currentProblem?.question_html || '' }}
-              />
-
-              <div className="mt-4">
-                <Select
-                  value={userAnswers[currentIndex] || ''}
-                  onValueChange={handleAnswer}
-                  disabled={gameStatus === 'complete'}
-                >
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="Select answer..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {['A', 'B', 'C', 'D', 'E'].map((option) => (
-                      <SelectItem key={option} value={option}>
-                        Option {option}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="flex justify-between items-center">
-              <div className="flex gap-2">
-                <Button 
-                  onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
-                  disabled={currentIndex === 0}
-                >
-                  Prev
-                </Button>
-                <Button 
-                  onClick={() => setCurrentIndex(prev => prev + 1)}
-                  disabled={currentIndex === TOTAL_PROBLEMS - 1}
-                >
-                  Next
-                </Button>
-              </div>
-              <div className="flex gap-2">
-                {gameStatus === 'complete' && (
-                  <Button
-                    onClick={() => setShowResults(true)}
-                    className="bg-primary/90 hover:bg-primary text-primary-foreground"
-                  >
-                    Go to Results
-                  </Button>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Submit Answers?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          {answeredCount < TOTAL_PROBLEMS ? 
+                            `You have answered ${answeredCount} out of ${TOTAL_PROBLEMS} questions. Are you sure you want to submit?` :
+                            'Are you ready to submit your answers?'}
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={submitGame}>Submit</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 )}
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="outline">
-                      Exit Game
+              </div>
+              <div className="space-y-4">
+                <div
+                  className="[&_img]:inline-block [&_img]:align-middle [&_img]:mx-1"
+                  dangerouslySetInnerHTML={{ __html: currentProblem?.question_html || '' }}
+                />
+                <div className="mt-4">
+                  <Select
+                    value={userAnswers[currentIndex] || ''}
+                    onValueChange={handleAnswer}
+                    disabled={gameStatus === 'complete'}
+                  >
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue placeholder="Select answer..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {['A', 'B', 'C', 'D', 'E'].map((option) => (
+                        <SelectItem key={option} value={option}>
+                          Option {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="flex justify-between items-center">
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
+                    disabled={currentIndex === 0}
+                  >
+                    Prev
+                  </Button>
+                  <Button 
+                    onClick={() => setCurrentIndex(prev => prev + 1)}
+                    disabled={currentIndex === TOTAL_PROBLEMS - 1}
+                  >
+                    Next
+                  </Button>
+                </div>
+                <div className="flex gap-2">
+                  {gameStatus === 'complete' && (
+                    <Button
+                      onClick={() => setShowResults(true)}
+                      className="bg-primary/90 hover:bg-primary text-primary-foreground"
+                    >
+                      Go to Results
                     </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Exit Game?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Are you sure you want to exit? Your progress will be lost.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => setShowProblem(false)}>
-                        Exit
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                  )}
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="outline">
+                        Exit Game
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Exit Game?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to exit? Your progress will be lost.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => setShowProblem(false)}>
+                          Exit
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </div>
             </div>
           </div>
