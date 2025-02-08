@@ -103,35 +103,13 @@ export default function AMC() {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-primary">AMC Challenges</h1>
           <div className="flex gap-2">
-            {!showProblem ? (
+            {!showProblem && (
               <Button
                 onClick={() => setLocation('/')}
-                className="bg-primary/90 hover:bg-primary text-primary-foreground"
+                className="bg-primary hover:bg-primary/90"
               >
                 Back to Main
               </Button>
-            ) : !showResults && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button className="bg-primary/90 hover:bg-primary text-primary-foreground">
-                    Exit Game
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Exit Game?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Are you sure you want to exit? Your progress will be lost.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => setShowProblem(false)}>
-                      Exit
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
             )}
           </div>
         </div>
