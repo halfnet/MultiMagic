@@ -184,7 +184,7 @@ export default function AMC() {
                     <AlertDialogHeader>
                       <AlertDialogTitle>Submit Answers?</AlertDialogTitle>
                       <AlertDialogDescription>
-                        {answeredCount < 5 ? 
+                        {answeredCount < TOTAL_PROBLEMS ? 
                           `You have answered ${answeredCount} out of ${TOTAL_PROBLEMS} questions. Are you sure you want to submit?` :
                           'Are you ready to submit your answers?'}
                       </AlertDialogDescription>
