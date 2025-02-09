@@ -733,8 +733,10 @@ export function registerRoutes(app: Express): Server {
         SELECT *
         FROM problems
         WHERE competition_type = 'AMC 8'
+        ${excludedIdsList.length > 0 
+          ? sql`AND id NOT IN (${excludedIdsList.join(',')})` 
+          : sql``}
         ${sql.raw(problemRangeQuery)}
-        ${excludedIdsList.length > 0 ? sql`AND id NOT IN (${sql.join(excludedIdsList, ',')})` : sql``}
         ORDER BY RANDOM()
         LIMIT 1
       `);
