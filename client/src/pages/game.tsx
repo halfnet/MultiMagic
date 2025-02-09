@@ -334,11 +334,6 @@ export default function Game() {
 
   const handleQuit = () => {
     setGameState(null);
-    toast({
-      title: 'Game ended',
-      description: 'You can start a new game anytime!',
-      variant: 'default',
-    });
   };
 
   const handleLogout = () => {
