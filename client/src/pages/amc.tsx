@@ -43,10 +43,6 @@ function formatTime(milliseconds: number): string {
   return `${formattedHours}${formattedMinutes}:${formattedSeconds}`;
 }
 
-function Timer({ startTime }: { startTime: number }) {
-  const [elapsedTime, setElapsedTime] = useState(0);
-
-
 function AmcGamesPlayed({ userId, competitionType }: { userId: number, competitionType: string }) {
   const [gamesPlayed, setGamesPlayed] = useState<number>(0);
 
@@ -65,6 +61,8 @@ function AmcGamesPlayed({ userId, competitionType }: { userId: number, competiti
   );
 }
 
+function Timer({ startTime }: { startTime: number }) {
+  const [elapsedTime, setElapsedTime] = useState(0);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
