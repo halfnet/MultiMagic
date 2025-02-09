@@ -757,7 +757,7 @@ app.get('/api/amc-screen-time', async (req, res) => {
       
       let problemRangeQuery = '';
       if (amc_lite) {
-        problemRangeQuery = 'AND problem_number BETWEEN 1 AND 15';
+        problemRangeQuery = 'AND problem_number BETWEEN 1 AND 12';
       } else {
         if (problemRange === '1-10') {
           problemRangeQuery = 'AND problem_number BETWEEN 1 AND 10';
