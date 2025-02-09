@@ -2,7 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 export function AmcScreenTime({ userId }: { userId: number }) {
-  const { data } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ['amcScreenTime', userId],
     queryFn: async () => {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -12,9 +12,12 @@ export function AmcScreenTime({ userId }: { userId: number }) {
     },
   });
 
+  if (isLoading) return <div className="text-sm text-muted-foreground">Loading...</div>;
+  if (error) return <div className="text-sm text-muted-foreground">Error loading screen time</div>;
+
   return (
     <div className="text-sm text-muted-foreground">
-      {data?.screenTime ?? 0} mins earned this wk
+      {(data?.screenTime || 0).toFixed(1)} mins earned this wk
     </div>
   );
 }
