@@ -376,25 +376,30 @@ export default function AMC() {
                   className="[&_img]:inline-block [&_img]:align-middle [&_img]:mx-1"
                   dangerouslySetInnerHTML={{ __html: currentProblem?.question_html || '' }}
                 />
-                <div className="mt-4">
-                  <Select
-                    value={userAnswers[currentIndex] || ''}
-                    onValueChange={handleAnswer}
-                    disabled={gameStatus === 'complete'}
-                    className="[&_[data-radix-select-trigger]]:bg-primary [&_[data-radix-select-trigger]]:text-primary-foreground [&_[data-radix-select-trigger]]:hover:bg-primary/90"
-                  >
-                    <SelectTrigger className="w-[200px] bg-primary hover:bg-primary/90 text-primary-foreground">
-                      <SelectValue placeholder="Select answer..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {['A', 'B', 'C', 'D', 'E'].map((option) => (
-                        <SelectItem key={option} value={option}>
-                          Option {option}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <div className="mt-4 w-4/5 mx-auto">
+                <div className="flex justify-between items-center">
+                  {['A', 'B', 'C', 'D', 'E'].map((option) => (
+                    <div key={option} className="flex items-center">
+                      <input
+                        type="radio"
+                        id={`option-${option}`}
+                        name="answer"
+                        value={option}
+                        checked={userAnswers[currentIndex] === option}
+                        onChange={(e) => handleAnswer(e.target.value)}
+                        disabled={gameStatus === 'complete'}
+                        className="w-4 h-4 text-primary border-gray-300 focus:ring-primary"
+                      />
+                      <label
+                        htmlFor={`option-${option}`}
+                        className="ml-2 text-lg font-medium text-gray-700 cursor-pointer"
+                      >
+                        {option}
+                      </label>
+                    </div>
+                  ))}
                 </div>
+              </div>
               </div>
               <div className="flex justify-between items-center">
                 <div className="flex gap-2">
