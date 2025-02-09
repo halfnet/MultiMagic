@@ -381,7 +381,7 @@ export default function AMC() {
                     }}>
                     Exit Game
                   </Button>
-              <Button onClick={startGame(currentCompetitionType)}>
+              <Button onClick={() => startGame(currentCompetitionType)}>
                 Play Again
               </Button>
             </div>
