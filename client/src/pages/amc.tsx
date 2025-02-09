@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
-import { ScreenTime } from '@/components/game/ScreenTime';
 import { Card } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
@@ -59,7 +58,7 @@ function Timer({ startTime }: { startTime: number }) {
 
   return (
     <div className="text-base text-gray-500 text-[1.15rem]">
-      Timer: {startTime > 0 ? formatTime(elapsedTime) : '00:00'}
+      {startTime > 0 ? formatTime(elapsedTime) : '00:00'}
     </div>
   );
 }
@@ -204,19 +203,16 @@ export default function AMC() {
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex flex-col items-center justify-center p-4">
       <Card className="p-8 max-w-4xl w-full">
         <div className="flex justify-between items-center mb-6">
-          <div className="flex justify-between items-center w-full">
-            <h1 className="text-3xl font-bold text-primary">AMC Challenges</h1>
-            <div className="flex items-center gap-4">
-              {user && <ScreenTime userId={user.id} />}
-              {!showProblem && (
-                <Button
-                  onClick={() => setLocation('/')}
-                  className="bg-primary hover:bg-primary/90"
-                >
-                  Back to Main
-                </Button>
-              )}
-            </div>
+          <h1 className="text-3xl font-bold text-primary">AMC Challenges</h1>
+          <div className="flex gap-2">
+            {!showProblem && (
+              <Button
+                onClick={() => setLocation('/')}
+                className="bg-primary hover:bg-primary/90"
+              >
+                Back to Main
+              </Button>
+            )}
           </div>
         </div>
 

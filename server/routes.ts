@@ -462,12 +462,8 @@ export function registerRoutes(app: Express): Server {
 
       const result = await db.execute(sql`
         SELECT COALESCE(SUM(screen_time_earned::float), 0) as total_screen_time
-        FROM (
-          SELECT screen_time_earned, created_at, "userId" FROM game_results
-          UNION ALL
-          SELECT screen_time_earned, created_at, "userId" FROM amc_game_results
-        ) combined
-        WHERE "userId" = ${userId}
+        FROM game_results
+        WHERE user_id = ${userId}
         AND created_at::timestamp >= TIMEZONE(${userTimezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone} + INTERVAL '1 day') - INTERVAL '1 day')
         AND created_at::timestamp < TIMEZONE(${userTimezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone} + INTERVAL '1 day') + INTERVAL '1 week' - INTERVAL '1 day')
       `);
