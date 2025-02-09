@@ -649,9 +649,9 @@ export function registerRoutes(app: Express): Server {
       if (isPerfectScore) {
         screenTimeEarned += 2.5; // AMC Scholar achievement
         if (timeInMinutes < 8) {
-          screenTimeEarned += 4.5; // AMC Expert achievement
+          screenTimeEarned += 2; // AMC Expert achievement
           if (timeInMinutes < 5) {
-            screenTimeEarned += 6.5; // AMC Master achievement
+            screenTimeEarned += 2; // AMC Master achievement
           }
         }
       }
