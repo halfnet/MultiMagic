@@ -58,7 +58,7 @@ function Timer({ startTime }: { startTime: number }) {
 
   return (
     <div className="text-base text-gray-500 text-[1.15rem]">
-      {startTime > 0 ? formatTime(elapsedTime) : '00:00'}
+      Timer: {startTime > 0 ? formatTime(elapsedTime) : '00:00'}
     </div>
   );
 }
