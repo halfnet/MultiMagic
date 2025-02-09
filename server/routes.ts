@@ -695,6 +695,26 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  app.get('/api/amc-screen-time', async (req, res) => {
+    try {
+      const userId = parseInt(req.query.userId as string);
+      const userTimezone = (req.query.timezone as string) || 'UTC';
+
+      const result = await db.execute(sql`
+        SELECT COALESCE(SUM(screen_time_earned::float), 0) as total_screen_time
+        FROM amc_game_results
+        WHERE user_id = ${userId}
+        AND created_at::timestamp >= TIMEZONE(${userTimezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone} + INTERVAL '1 day') - INTERVAL '1 day')
+        AND created_at::timestamp < TIMEZONE(${userTimezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone} + INTERVAL '1 day') + INTERVAL '1 week' - INTERVAL '1 day')
+      `);
+
+      res.json({ screenTime: Number(result.rows[0].total_screen_time) });
+    } catch (error) {
+      console.error('Error fetching AMC screen time:', error);
+      res.status(500).json({ error: 'Failed to fetch AMC screen time' });
+    }
+  });
+
   app.get('/api/problems/amc8', async (req, res) => {
     try {
       const { year = 0, problem = 0 } = req.query;

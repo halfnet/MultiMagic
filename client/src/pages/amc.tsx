@@ -63,6 +63,31 @@ function Timer({ startTime }: { startTime: number }) {
   );
 }
 
+async function getAmcScreenTime(userId: number): Promise<number | null> {
+  try {
+    const response = await fetch(`/api/amc-screen-time?userId=${userId}`);
+    if (!response.ok) {
+      return null;
+    }
+    const data = await response.json();
+    return data.screenTimeEarned;
+  } catch (error) {
+    console.error("Error fetching AMC screen time:", error);
+    return null;
+  }
+}
+
+
+function AmcScreenTime({ userId }: { userId: number }) {
+  const { data: screenTime } = useQuery(['amc-screen-time', userId], () => getAmcScreenTime(userId));
+
+  return (
+    <p className="text-center">
+      {screenTime !== null ? `${screenTime} mins earned this wk` : 'Loading...'}
+    </p>
+  );
+}
+
 
 export default function AMC() {
   const [_, setLocation] = useLocation();
@@ -217,16 +242,19 @@ export default function AMC() {
         </div>
 
         {!showProblem ? (
-          <div className="flex gap-4 justify-center">
-            <Button 
-              size="lg" 
-              onClick={startGame}
-            >
-              AMC 8
-            </Button>
-            <Button size="lg" disabled>
-              AMC 10 (Coming Soon)
-            </Button>
+          <div className="space-y-4">
+            {user && <AmcScreenTime userId={user.id} />}
+            <div className="flex gap-4 justify-center">
+              <Button 
+                size="lg" 
+                onClick={startGame}
+              >
+                AMC 8
+              </Button>
+              <Button size="lg" disabled>
+                AMC 10 (Coming Soon)
+              </Button>
+            </div>
           </div>
         ) : showResults ? (
           <div className="space-y-6">
