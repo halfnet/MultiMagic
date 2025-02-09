@@ -118,10 +118,12 @@ export default function AMC() {
   const [gameStatus, setGameStatus] = useState<'inProgress' | 'complete'>('inProgress');
   const [startTime, setStartTime] = useState<number>(0);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [currentCompetitionType, setCurrentCompetitionType] = useState<string>('AMC 8');
 
 
   const startGame = async (competitionType: string = "AMC 8") => {
     try {
+      setCurrentCompetitionType(competitionType);
       setGameStatus('inProgress');
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
@@ -216,7 +218,7 @@ export default function AMC() {
         },
         body: JSON.stringify({
           userId: user.id,
-          competitionType: selectedProblems[0].competition_type, // Use competition type from fetched problems
+          competitionType: currentCompetitionType,
           questionsCount: TOTAL_PROBLEMS,
           correctAnswers,
           incorrectAnswers,
