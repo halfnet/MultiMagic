@@ -648,10 +648,12 @@ export function registerRoutes(app: Express): Server {
 
       if (isPerfectScore) {
         screenTimeEarned += 2.5; // AMC Scholar achievement
-        if (timeInMinutes < 8) {
-          screenTimeEarned += 2; // AMC Expert achievement
-          if (timeInMinutes < 5) {
-            screenTimeEarned += 2; // AMC Master achievement
+        if (!req.body.competitionType.includes('Lite')) {
+          if (timeInMinutes < 8) {
+            screenTimeEarned += 2; // AMC Expert achievement
+            if (timeInMinutes < 5) {
+              screenTimeEarned += 2; // AMC Master achievement
+            }
           }
         }
       }
