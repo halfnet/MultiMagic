@@ -376,7 +376,7 @@ export default function AMC() {
                   className="[&_img]:inline-block [&_img]:align-middle [&_img]:mx-1"
                   dangerouslySetInnerHTML={{ __html: currentProblem?.question_html || '' }}
                 />
-                <div className="mt-4 w-4/5 mx-auto">
+                <div className="mt-4 w-1/2 mx-auto">
                 <div className="flex justify-between items-center">
                   {['A', 'B', 'C', 'D', 'E'].map((option) => (
                     <div key={option} className="flex items-center">
