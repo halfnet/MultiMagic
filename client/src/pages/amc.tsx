@@ -375,13 +375,7 @@ export default function AMC() {
         ) : (
           <div className="space-y-6">
             <div className="space-y-4">
-              <div className="flex justify-between items-center w-full mb-4">
-                <div className="text-sm text-grey-500 space-y-1">
-                  <div>Year {currentProblem?.year}</div>
-                  <div>Problem {currentProblem?.problem_number}</div>
-                  <div>Problem {currentIndex + 1} of {TOTAL_PROBLEMS}</div>
-                  <div>Answered: {answeredCount} of {TOTAL_PROBLEMS}</div>
-                </div>
+              <div className="flex justify-end items-center w-full mb-4">
                 <div className="flex items-center gap-4">
                   {gameStatus === 'inProgress' && <Timer startTime={startTime} />}
                   {gameStatus === 'inProgress' && (
@@ -440,13 +434,20 @@ export default function AMC() {
               </div>
               </div>
               <div className="flex justify-between items-center">
-                <div className="flex gap-2">
-                  <Button 
-                    onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
-                    disabled={currentIndex === 0}
-                  >
-                    Prev
-                  </Button>
+                <div className="space-y-4">
+                  <div className="text-sm text-grey-500 space-y-1">
+                    <div>Year {currentProblem?.year}</div>
+                    <div>Problem {currentProblem?.problem_number}</div>
+                    <div>Problem {currentIndex + 1} of {TOTAL_PROBLEMS}</div>
+                    <div>Answered: {answeredCount} of {TOTAL_PROBLEMS}</div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
+                      disabled={currentIndex === 0}
+                    >
+                      Prev
+                    </Button>
                   <Button 
                     onClick={() => setCurrentIndex(prev => prev + 1)}
                     disabled={currentIndex === TOTAL_PROBLEMS - 1}
