@@ -289,22 +289,22 @@ export default function AMC() {
                   <div className="flex items-center justify-between w-full gap-4">
                     <Button 
                       size="lg" 
-                      onClick={startGame}
-                      className="w-48"
-                    >
-                      AMC 8
-                    </Button>
-                    <AmcGamesPlayed userId={user.id} competitionType="AMC 8" />
-                  </div>
-                  <div className="flex items-center justify-between w-full gap-4">
-                    <Button 
-                      size="lg" 
                       onClick={() => startGame("AMC 8 Lite")}
                       className="w-48"
                     >
                       AMC 8 Lite
                     </Button>
                     <AmcGamesPlayed userId={user.id} competitionType="AMC 8 Lite" />
+                  </div>
+                  <div className="flex items-center justify-between w-full gap-4">
+                    <Button 
+                      size="lg" 
+                      onClick={() => startGame("AMC 8")}
+                      className="w-48"
+                    >
+                      AMC 8
+                    </Button>
+                    <AmcGamesPlayed userId={user.id} competitionType="AMC 8" />
                   </div>
                 </div>
                 <div className="flex items-center justify-between w-full gap-4">
