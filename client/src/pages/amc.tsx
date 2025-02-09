@@ -404,14 +404,19 @@ export default function AMC() {
                   </Button>
                 </div>
                 <div className="flex gap-2">
-                  {gameStatus === 'complete' && (
-                    <Button
-                      onClick={() => setShowResults(true)}
-                      className="bg-primary/90 hover:bg-primary text-primary-foreground"
-                    >
-                      Go to Results
-                    </Button>
-                  )}
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm text-muted-foreground">
+                      Year {currentProblem?.year} - Problem {currentProblem?.problemNumber}
+                    </span>
+                    {gameStatus === 'complete' && (
+                      <Button
+                        onClick={() => setShowResults(true)}
+                        className="bg-primary/90 hover:bg-primary text-primary-foreground"
+                      >
+                        Go to Results
+                      </Button>
+                    )}
+                  </div>
                   {gameStatus === 'inProgress' ? (
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
