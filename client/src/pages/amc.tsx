@@ -46,6 +46,26 @@ function formatTime(milliseconds: number): string {
 function Timer({ startTime }: { startTime: number }) {
   const [elapsedTime, setElapsedTime] = useState(0);
 
+
+function AmcGamesPlayed({ userId, competitionType }: { userId: number, competitionType: string }) {
+  const [gamesPlayed, setGamesPlayed] = useState<number>(0);
+
+  useEffect(() => {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    fetch(`/api/amc-games-played?userId=${userId}&timezone=${timezone}`)
+      .then(res => res.json())
+      .then(data => setGamesPlayed(data[competitionType] || 0))
+      .catch(console.error);
+  }, [userId, competitionType]);
+
+  return (
+    <div className="text-sm text-gray-500">
+      {gamesPlayed} games played
+    </div>
+  );
+}
+
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       if (startTime > 0) {
@@ -263,16 +283,30 @@ export default function AMC() {
         {!showProblem ? (
           <div className="space-y-4">
             {user && <AmcScreenTime userId={user.id} />}
-            <div className="flex gap-4 justify-center">
-              <Button 
-                size="lg" 
-                onClick={startGame}
-              >
-                AMC 8
-              </Button>
-              <Button size="lg" disabled>
-                AMC 10 (Coming Soon)
-              </Button>
+            <div className="space-y-6">
+              <div className="flex gap-4 justify-center">
+                <div className="flex flex-col items-center gap-2">
+                  <Button 
+                    size="lg" 
+                    onClick={startGame}
+                  >
+                    AMC 8
+                  </Button>
+                  <AmcGamesPlayed userId={user.id} competitionType="AMC 8" />
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <Button size="lg" disabled>
+                    AMC 10 (Coming Soon)
+                  </Button>
+                  <div className="text-sm text-gray-500">0 games played</div>
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <Button size="lg" disabled>
+                    AMC 12 (Coming Soon)
+                  </Button>
+                  <div className="text-sm text-gray-500">0 games played</div>
+                </div>
+              </div>
             </div>
           </div>
         ) : showResults ? (

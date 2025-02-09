@@ -695,7 +695,31 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  app.get('/api/amc-screen-time', async (req, res) => {
+  app.get('/api/amc-games-played', async (req, res) => {
+    try {
+      const userId = parseInt(req.query.userId as string);
+      const userTimezone = (req.query.timezone as string) || 'UTC';
+
+      const result = await db.execute(sql`
+        SELECT competition_type, COUNT(*) as games_played
+        FROM amc_game_results
+        WHERE user_id = ${userId}
+        AND created_at::timestamp >= TIMEZONE(${userTimezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone} + INTERVAL '1 day') - INTERVAL '1 day')
+        AND created_at::timestamp < TIMEZONE(${userTimezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone} + INTERVAL '1 day') + INTERVAL '1 week' - INTERVAL '1 day')
+        GROUP BY competition_type
+      `);
+
+      res.json(result.rows.reduce((acc: Record<string, number>, row: any) => {
+        acc[row.competition_type] = Number(row.games_played);
+        return acc;
+      }, {}));
+    } catch (error) {
+      console.error('Error fetching AMC games played:', error);
+      res.status(500).json({ error: 'Failed to fetch AMC games played' });
+    }
+});
+
+app.get('/api/amc-screen-time', async (req, res) => {
     try {
       const userId = parseInt(req.query.userId as string);
       const userTimezone = (req.query.timezone as string) || 'UTC';
