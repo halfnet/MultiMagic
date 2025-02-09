@@ -113,7 +113,7 @@ export default function AMC() {
 
       // Fetch first two problems (1-10)
       for (let i = 0; i < 2; i++) {
-        const response = await fetch(`/api/amc_problems?competitionType=AMC%208&problemRange=1-10&excludeIds=${selectedProblemIds.join(',')}`, {
+        const response = await fetch(`/api/amc_problems?userId=${user.id}&competitionType=AMC%208&problemRange=1-10&excludeIds=${selectedProblemIds.join(',')}`, {
           headers: {
             'CSRF-Token': csrfToken
           }
@@ -126,7 +126,7 @@ export default function AMC() {
 
       // Fetch next two problems (11-20)
       for (let i = 0; i < 2; i++) {
-        const response = await fetch(`/api/amc_problems?competitionType=AMC%208&problemRange=11-20&excludeIds=${selectedProblemIds.join(',')}`, {
+        const response = await fetch(`/api/amc_problems?userId=${user.id}&competitionType=AMC%208&problemRange=11-20&excludeIds=${selectedProblemIds.join(',')}`, {
           headers: {
             'CSRF-Token': csrfToken
           }
@@ -138,7 +138,7 @@ export default function AMC() {
       }
 
       // Fetch last problem (21-25)
-      const response = await fetch(`/api/amc_problems?competitionType=AMC%208&problemRange=21-25&excludeIds=${selectedProblemIds.join(',')}`, {
+      const response = await fetch(`/api/amc_problems?userId=${user.id}&competitionType=AMC%208&problemRange=21-25&excludeIds=${selectedProblemIds.join(',')}`, {
         headers: {
           'CSRF-Token': csrfToken
         }
@@ -376,8 +376,8 @@ export default function AMC() {
                   className="[&_img]:inline-block [&_img]:align-middle [&_img]:mx-1"
                   dangerouslySetInnerHTML={{ __html: currentProblem?.question_html || '' }}
                 />
-                <div className="mt-4 w-1/2 mx-auto">
-                <div className="flex justify-between items-center">
+                <div className="mt-4 mx-auto">
+                <div className="flex w-1/2 justify-between items-center">
                   {['A', 'B', 'C', 'D', 'E'].map((option) => (
                     <div key={option} className="flex items-center">
                       <input

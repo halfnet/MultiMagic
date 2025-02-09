@@ -717,10 +717,11 @@ export function registerRoutes(app: Express): Server {
 
   app.get('/api/amc_problems', async (req, res) => {
     try {
-      const { competitionType = '', problemRange = '', excludeIds = '' } = req.query;
+      const { competitionType = '', problemRange = '', excludeIds = '', userId = '' } = req.query;
       //console.info('excludeIds: ', excludeIds)
 
       const compTypeQuery = "WHERE competition_type = '" + competitionType + "'"
+      const pastProbQuery = "AND id NOT IN (SELECT DISTINCT id FROM amc_game_question_results WHERE user_id = " + userId + " AND user_score = 1)"
       
       let problemRangeQuery = '';
       if (problemRange === '1-10') {
@@ -737,6 +738,7 @@ export function registerRoutes(app: Express): Server {
         SELECT *
         FROM problems
         ${sql.raw(compTypeQuery)}
+        ${sql.raw(pastProbQuery)}
         ${sql.raw(problemRangeQuery)}
         ${excludeIds ? sql.raw(idNotInQuery) : sql``}
         ORDER BY RANDOM()
