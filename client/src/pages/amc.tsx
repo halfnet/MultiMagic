@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import { Card } from '@/components/ui/card';
 import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
@@ -277,6 +278,7 @@ export default function AMC() {
             )}
           </div>
         </div>
+        <Separator className="my-4" />
 
         {!showProblem ? (
           <div className="space-y-4">
