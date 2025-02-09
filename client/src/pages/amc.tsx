@@ -120,7 +120,7 @@ export default function AMC() {
   const [elapsedTime, setElapsedTime] = useState(0);
 
 
-  const startGame = async () => {
+  const startGame = async (competitionType: string = "AMC 8") => {
     try {
       setGameStatus('inProgress');
       const csrfResponse = await fetch('/api/csrf-token');
@@ -132,7 +132,7 @@ export default function AMC() {
 
       // Fetch first two problems (1-10)
       for (let i = 0; i < 2; i++) {
-        const response = await fetch(`/api/amc_problems?userId=${user.id}&competitionType=AMC%208&problemRange=1-10&excludeIds=${selectedProblemIds.join(',')}`, {
+        const response = await fetch(`/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=1-10&excludeIds=${selectedProblemIds.join(',')}`, {
           headers: {
             'CSRF-Token': csrfToken
           }
@@ -145,7 +145,7 @@ export default function AMC() {
 
       // Fetch next two problems (11-20)
       for (let i = 0; i < 2; i++) {
-        const response = await fetch(`/api/amc_problems?userId=${user.id}&competitionType=AMC%208&problemRange=11-20&excludeIds=${selectedProblemIds.join(',')}`, {
+        const response = await fetch(`/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=11-20&excludeIds=${selectedProblemIds.join(',')}`, {
           headers: {
             'CSRF-Token': csrfToken
           }
@@ -157,7 +157,7 @@ export default function AMC() {
       }
 
       // Fetch last problem (21-25)
-      const response = await fetch(`/api/amc_problems?userId=${user.id}&competitionType=AMC%208&problemRange=21-25&excludeIds=${selectedProblemIds.join(',')}`, {
+      const response = await fetch(`/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=21-25&excludeIds=${selectedProblemIds.join(',')}`, {
         headers: {
           'CSRF-Token': csrfToken
         }
@@ -216,7 +216,7 @@ export default function AMC() {
         },
         body: JSON.stringify({
           userId: user.id,
-          competitionType: 'AMC 8',
+          competitionType: selectedProblems[0].competition_type, // Use competition type from fetched problems
           questionsCount: TOTAL_PROBLEMS,
           correctAnswers,
           incorrectAnswers,
@@ -285,15 +285,27 @@ export default function AMC() {
             {user && <AmcScreenTime userId={user.id} />}
             <div className="space-y-4">
               <div className="flex flex-col gap-4 items-center max-w-md mx-auto">
-                <div className="flex items-center justify-between w-full gap-4">
-                  <Button 
-                    size="lg" 
-                    onClick={startGame}
-                    className="w-48"
-                  >
-                    AMC 8
-                  </Button>
-                  <AmcGamesPlayed userId={user.id} competitionType="AMC 8" />
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between w-full gap-4">
+                    <Button 
+                      size="lg" 
+                      onClick={startGame}
+                      className="w-48"
+                    >
+                      AMC 8
+                    </Button>
+                    <AmcGamesPlayed userId={user.id} competitionType="AMC 8" />
+                  </div>
+                  <div className="flex items-center justify-between w-full gap-4">
+                    <Button 
+                      size="lg" 
+                      onClick={() => startGame("AMC 8 Lite")}
+                      className="w-48"
+                    >
+                      AMC 8 Lite
+                    </Button>
+                    <AmcGamesPlayed userId={user.id} competitionType="AMC 8 Lite" />
+                  </div>
                 </div>
                 <div className="flex items-center justify-between w-full gap-4">
                   <Button size="lg" disabled className="w-48">
