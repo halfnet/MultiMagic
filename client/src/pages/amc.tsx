@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useCookieAuth } from '@/hooks/use-cookie-auth';
 import { AchievementBadge } from '@/components/game/AchievementBadge';
 import { ACHIEVEMENTS } from '@/lib/achievements';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Clock } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -377,13 +377,17 @@ export default function AMC() {
             <div className="space-y-4">
               <div className="flex justify-between items-center w-full mb-4">
                 <div className="text-sm text-grey-500 space-y-1">
-                  <div>Year {currentProblem?.year}</div>
-                  <div>Problem {currentProblem?.problem_number}</div>
-                  <div>Problem {currentIndex + 1} of {TOTAL_PROBLEMS}</div>
-                  <div>Answered: {answeredCount} of {TOTAL_PROBLEMS}</div>
+                  <div>Year {currentProblem?.year} - Problem {currentProblem?.problem_number}</div>
+                  <div>Problem {currentIndex + 1} of {TOTAL_PROBLEMS}</div>                  
                 </div>
                 <div className="flex items-center gap-4">
-                  {gameStatus === 'inProgress' && <Timer startTime={startTime} />}
+                  <div className="text-sm text-grey-500 space-y-1">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 shrink-0" />
+                      {gameStatus === 'inProgress' && <Timer startTime={startTime} />}
+                    </div>
+                    <div>Answered: {answeredCount}</div>
+                  </div>
                   {gameStatus === 'inProgress' && (
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
