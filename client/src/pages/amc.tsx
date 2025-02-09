@@ -406,7 +406,7 @@ export default function AMC() {
                 <div className="flex gap-2">
                   <div className="flex items-center gap-4">
                     <span className="text-sm text-muted-foreground">
-                      Year {currentProblem?.year} - Problem {currentProblem?.problemNumber}
+                      Year {currentProblem?.year} - Problem {currentProblem?.problem_number}
                     </span>
                     {gameStatus === 'complete' && (
                       <Button
