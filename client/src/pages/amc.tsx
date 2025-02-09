@@ -284,7 +284,19 @@ export default function AMC() {
 
         {!showProblem ? (
           <div className="space-y-4">
-            {user && <AmcScreenTime userId={user.id} />}
+            {user && (
+              <div className="relative p-3 bg-gradient-to-r from-purple-100 to-purple-50 rounded-lg shadow-sm border border-purple-200 mb-4">
+                <div className="flex items-center justify-center gap-3">
+                  <div className="relative">
+                    <Clock className="w-6 h-6 text-purple-600 animate-pulse" />
+                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full animate-ping" />
+                  </div>
+                  <div className="text-lg font-semibold bg-gradient-to-r from-purple-700 to-purple-500 bg-clip-text text-transparent">
+                    <AmcScreenTime userId={user.id} />
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="space-y-4">
               <div className="flex flex-col gap-4 items-center max-w-md mx-auto">
                 <div className="space-y-4">
