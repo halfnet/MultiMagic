@@ -376,8 +376,11 @@ export default function AMC() {
           <div className="space-y-6">
             <div className="space-y-4">
               <div className="flex justify-between items-center w-full mb-4">
-                <div className="text-sm text-grey-500">
-                  Problem {currentIndex + 1} of {TOTAL_PROBLEMS} | Answered: {answeredCount} of {TOTAL_PROBLEMS}
+                <div className="text-sm text-grey-500 space-y-1">
+                  <div>Year {currentProblem?.year}</div>
+                  <div>Problem {currentProblem?.problem_number}</div>
+                  <div>Problem {currentIndex + 1} of {TOTAL_PROBLEMS}</div>
+                  <div>Answered: {answeredCount} of {TOTAL_PROBLEMS}</div>
                 </div>
                 <div className="flex items-center gap-4">
                   {gameStatus === 'inProgress' && <Timer startTime={startTime} />}
@@ -453,9 +456,6 @@ export default function AMC() {
                 </div>
                 <div className="flex gap-2">
                   <div className="flex items-center gap-4">
-                    <span className="text-sm text-muted-foreground">
-                      Year {currentProblem?.year} - Problem {currentProblem?.problem_number}
-                    </span>
                     {gameStatus === 'complete' && (
                       <Button
                         onClick={() => setShowResults(true)}
