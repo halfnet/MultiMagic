@@ -718,12 +718,8 @@ export function registerRoutes(app: Express): Server {
   app.get('/api/problems/amc8', async (req, res) => {
     try {
       const { problemRange = '', excludeIds = '' } = req.query;
-      console.info('excluded ids:', excludeIds)
-      const excludedIdsList = (excludeIds as string)
-        .split(',')
-        .map(id => parseInt(id, 10))
-        .filter(id => !isNaN(id)); // Ensure valid numbers
-
+      const excludedIdsList = (excludeIds as string).split(',').filter(Boolean);
+      
       let problemRangeQuery = '';
       if (problemRange === '1-10') {
         problemRangeQuery = 'AND problem_number BETWEEN 1 AND 10';
@@ -733,30 +729,15 @@ export function registerRoutes(app: Express): Server {
         problemRangeQuery = 'AND problem_number BETWEEN 21 AND 25';
       }
 
-      // Construct the base query
-      let query = sql`
+      const result = await db.execute(sql`
         SELECT *
         FROM problems
         WHERE competition_type = 'AMC 8'
-      `;
-      console.info('Initial query:', query.queryChunks.join(' '), 'params:', query.params);
-
-      // Append problem range condition safely
-      if (problemRangeQuery) {
-        query = sql`${query} ${sql.raw(problemRangeQuery)}`;
-      }
-
-      // Append exclusion condition
-      if (excludedIdsList.length > 0) {
-        query = sql`${query} AND id NOT IN (${sql.join(excludedIdsList)})`;
-      }
-
-      // Finalize the query
-      query = sql`${query} ORDER BY RANDOM() LIMIT 1`;
-      console.info('query to execute:', query.sql, query.params)
-      // Execute the query
-      const result = await db.execute(query);
-
+        ${sql.raw(problemRangeQuery)}
+        ${excludedIdsList.length > 0 ? sql`AND id NOT IN (${sql.join(excludedIdsList, ',')})` : sql``}
+        ORDER BY RANDOM()
+        LIMIT 1
+      `);
       
       if (!result.rows[0]) {
         return res.status(404).json({ error: 'No AMC 8 problems found' });
