@@ -17,7 +17,7 @@ export function AmcScreenTime({ userId }: { userId: number }) {
 
   return (
     <div className="text-sm text-muted-foreground">
-      {(data?.screenTime || 0).toFixed(1)} mins earned this wk
+      {(data?.screenTime || 0).toFixed(1)} mins of AMC screen time earned this week
     </div>
   );
 }

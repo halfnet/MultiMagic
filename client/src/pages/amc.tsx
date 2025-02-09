@@ -63,20 +63,6 @@ function Timer({ startTime }: { startTime: number }) {
   );
 }
 
-async function getAmcScreenTime(userId: number): Promise<number | null> {
-  try {
-    const response = await fetch(`/api/amc-screen-time?userId=${userId}`);
-    if (!response.ok) {
-      return null;
-    }
-    const data = await response.json();
-    return data.screenTimeEarned;
-  } catch (error) {
-    console.error("Error fetching AMC screen time:", error);
-    return null;
-  }
-}
-
 
 function AmcScreenTime({ userId }: { userId: number }) {
   const { data, isLoading, error } = useQuery({
@@ -94,7 +80,7 @@ function AmcScreenTime({ userId }: { userId: number }) {
 
   return (
     <p className="text-center">
-      {(data?.screenTime || 0).toFixed(1)} mins earned this wk
+      {(data?.screenTime || 0).toFixed(1)} mins of screen time earned this week
     </p>
   );
 }
@@ -122,14 +108,12 @@ export default function AMC() {
       const { csrfToken } = await csrfResponse.json();
 
       let problems = [];
-      let lastYear = 0;
-      let lastProblem = 0;
 
       const selectedProblemIds: string[] = [];
 
       // Fetch first two problems (1-10)
       for (let i = 0; i < 2; i++) {
-        const response = await fetch(`/api/problems/amc8?problemRange=1-10&excludeIds=${selectedProblemIds.join(',')}`, {
+        const response = await fetch(`/api/amc_problems?competitionType=AMC%208&problemRange=1-10&excludeIds=${selectedProblemIds.join(',')}`, {
           headers: {
             'CSRF-Token': csrfToken
           }
@@ -142,7 +126,7 @@ export default function AMC() {
 
       // Fetch next two problems (11-20)
       for (let i = 0; i < 2; i++) {
-        const response = await fetch(`/api/problems/amc8?problemRange=11-20&excludeIds=${selectedProblemIds.join(',')}`, {
+        const response = await fetch(`/api/amc_problems?competitionType=AMC%208&problemRange=11-20&excludeIds=${selectedProblemIds.join(',')}`, {
           headers: {
             'CSRF-Token': csrfToken
           }
@@ -154,7 +138,7 @@ export default function AMC() {
       }
 
       // Fetch last problem (21-25)
-      const response = await fetch(`/api/problems/amc8?problemRange=21-25&excludeIds=${selectedProblemIds.join(',')}`, {
+      const response = await fetch(`/api/amc_problems?competitionType=AMC%208&problemRange=21-25&excludeIds=${selectedProblemIds.join(',')}`, {
         headers: {
           'CSRF-Token': csrfToken
         }

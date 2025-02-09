@@ -715,10 +715,12 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  app.get('/api/problems/amc8', async (req, res) => {
+  app.get('/api/amc_problems', async (req, res) => {
     try {
-      const { problemRange = '', excludeIds = '' } = req.query;
-      const excludedIdsList = (excludeIds as string).split(',').filter(Boolean);
+      const { competitionType = '', problemRange = '', excludeIds = '' } = req.query;
+      //console.info('excludeIds: ', excludeIds)
+
+      const compTypeQuery = "WHERE competition_type = '" + competitionType + "'"
       
       let problemRangeQuery = '';
       if (problemRange === '1-10') {
@@ -729,12 +731,14 @@ export function registerRoutes(app: Express): Server {
         problemRangeQuery = 'AND problem_number BETWEEN 21 AND 25';
       }
 
+      const idNotInQuery = 'AND id NOT IN (' + excludeIds + ')'
+      
       const result = await db.execute(sql`
         SELECT *
         FROM problems
-        WHERE competition_type = 'AMC 8'
+        ${sql.raw(compTypeQuery)}
         ${sql.raw(problemRangeQuery)}
-        ${excludedIdsList.length > 0 ? sql`AND id NOT IN (${sql.join(excludedIdsList, ',')})` : sql``}
+        ${excludeIds ? sql.raw(idNotInQuery) : sql``}
         ORDER BY RANDOM()
         LIMIT 1
       `);
