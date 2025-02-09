@@ -744,18 +744,29 @@ app.get('/api/amc-screen-time', async (req, res) => {
       const { competitionType = '', problemRange = '', excludeIds = '', userId = '' } = req.query;
       //console.info('excludeIds: ', excludeIds)
 
-      const compTypeQuery = "WHERE competition_type = '" + competitionType + "'"
+      let compType = '';
+      let amc_lite = false;
+      if (competitionType === 'AMC 8 Lite') {
+        amc_lite = true
+        compType = 'AMC 8'
+      } else {
+        compType = competitionType.toString()
+      }
+      const compTypeQuery = "WHERE competition_type = '" + compType + "'"
       const pastProbQuery = "AND id NOT IN (SELECT DISTINCT id FROM amc_game_question_results WHERE user_id = " + userId + " AND user_score = 1)"
       
       let problemRangeQuery = '';
-      if (problemRange === '1-10') {
-        problemRangeQuery = 'AND problem_number BETWEEN 1 AND 10';
-      } else if (problemRange === '11-20') {
-        problemRangeQuery = 'AND problem_number BETWEEN 11 AND 20';
-      } else if (problemRange === '21-25') {
-        problemRangeQuery = 'AND problem_number BETWEEN 21 AND 25';
+      if (amc_lite) {
+        problemRangeQuery = 'AND problem_number BETWEEN 1 AND 15';
+      } else {
+        if (problemRange === '1-10') {
+          problemRangeQuery = 'AND problem_number BETWEEN 1 AND 10';
+        } else if (problemRange === '11-20') {
+          problemRangeQuery = 'AND problem_number BETWEEN 11 AND 20';
+        } else if (problemRange === '21-25') {
+          problemRangeQuery = 'AND problem_number BETWEEN 21 AND 25';
+        }
       }
-
       const idNotInQuery = 'AND id NOT IN (' + excludeIds + ')'
       
       const result = await db.execute(sql`
