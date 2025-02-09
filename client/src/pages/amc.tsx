@@ -281,25 +281,26 @@ export default function AMC() {
         {!showProblem ? (
           <div className="space-y-4">
             {user && <AmcScreenTime userId={user.id} />}
-            <div className="space-y-6">
-              <div className="flex gap-4 justify-center">
-                <div className="flex flex-col items-center gap-2">
+            <div className="space-y-4">
+              <div className="flex flex-col gap-4 items-center max-w-md mx-auto">
+                <div className="flex items-center justify-between w-full gap-4">
                   <Button 
                     size="lg" 
                     onClick={startGame}
+                    className="w-48"
                   >
                     AMC 8
                   </Button>
                   <AmcGamesPlayed userId={user.id} competitionType="AMC 8" />
                 </div>
-                <div className="flex flex-col items-center gap-2">
-                  <Button size="lg" disabled>
+                <div className="flex items-center justify-between w-full gap-4">
+                  <Button size="lg" disabled className="w-48">
                     AMC 10 (Coming Soon)
                   </Button>
                   <div className="text-sm text-gray-500">0 games played</div>
                 </div>
-                <div className="flex flex-col items-center gap-2">
-                  <Button size="lg" disabled>
+                <div className="flex items-center justify-between w-full gap-4">
+                  <Button size="lg" disabled className="w-48">
                     AMC 12 (Coming Soon)
                   </Button>
                   <div className="text-sm text-gray-500">0 games played</div>
