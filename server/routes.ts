@@ -739,7 +739,7 @@ export function registerRoutes(app: Express): Server {
         FROM problems
         WHERE competition_type = 'AMC 8'
       `;
-      console.info('query:', query.sql, 'params:', query.params);
+      console.info('Initial query:', query.queryChunks.join(' '), 'params:', query.params);
 
       // Append problem range condition safely
       if (problemRangeQuery) {
