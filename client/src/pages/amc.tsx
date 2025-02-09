@@ -79,7 +79,10 @@ async function getAmcScreenTime(userId: number): Promise<number | null> {
 
 
 function AmcScreenTime({ userId }: { userId: number }) {
-  const { data: screenTime } = useQuery(['amc-screen-time', userId], () => getAmcScreenTime(userId));
+  const { data: screenTime } = useQuery({
+    queryKey: ['amc-screen-time', userId],
+    queryFn: () => getAmcScreenTime(userId)
+  });
 
   return (
     <p className="text-center">
