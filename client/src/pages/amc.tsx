@@ -125,19 +125,43 @@ export default function AMC() {
       let lastYear = 0;
       let lastProblem = 0;
 
-      for (let i = 0; i < TOTAL_PROBLEMS; i++) {
-        const response = await fetch(`/api/problems/amc8?year=${lastYear}&problem=${lastProblem}`, {
+      const selectedProblemIds: string[] = [];
+
+      // Fetch first two problems (1-10)
+      for (let i = 0; i < 2; i++) {
+        const response = await fetch(`/api/problems/amc8?problemRange=1-10&excludeIds=${selectedProblemIds.join(',')}`, {
           headers: {
             'CSRF-Token': csrfToken
           }
         });
-
         if (!response.ok) throw new Error('Failed to fetch problems');
         const problem = await response.json();
         problems.push(problem);
-        lastYear = problem.year;
-        lastProblem = problem.problem_number;
+        selectedProblemIds.push(problem.id);
       }
+
+      // Fetch next two problems (11-20)
+      for (let i = 0; i < 2; i++) {
+        const response = await fetch(`/api/problems/amc8?problemRange=11-20&excludeIds=${selectedProblemIds.join(',')}`, {
+          headers: {
+            'CSRF-Token': csrfToken
+          }
+        });
+        if (!response.ok) throw new Error('Failed to fetch problems');
+        const problem = await response.json();
+        problems.push(problem);
+        selectedProblemIds.push(problem.id);
+      }
+
+      // Fetch last problem (21-25)
+      const response = await fetch(`/api/problems/amc8?problemRange=21-25&excludeIds=${selectedProblemIds.join(',')}`, {
+        headers: {
+          'CSRF-Token': csrfToken
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch problems');
+      const problem = await response.json();
+      problems.push(problem);
 
       setSelectedProblems(problems);
       setUserAnswers({});

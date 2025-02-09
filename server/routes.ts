@@ -717,11 +717,24 @@ export function registerRoutes(app: Express): Server {
 
   app.get('/api/problems/amc8', async (req, res) => {
     try {
-      const { year = 0, problem = 0 } = req.query;
+      const { problemRange = '', excludeIds = '' } = req.query;
+      const excludedIdsList = (excludeIds as string).split(',').filter(Boolean);
+      
+      let problemRangeQuery = '';
+      if (problemRange === '1-10') {
+        problemRangeQuery = 'AND problem_number BETWEEN 1 AND 10';
+      } else if (problemRange === '11-20') {
+        problemRangeQuery = 'AND problem_number BETWEEN 11 AND 20';
+      } else if (problemRange === '21-25') {
+        problemRangeQuery = 'AND problem_number BETWEEN 21 AND 25';
+      }
+
       const result = await db.execute(sql`
         SELECT *
         FROM problems
         WHERE competition_type = 'AMC 8'
+        ${sql.raw(problemRangeQuery)}
+        ${excludedIdsList.length > 0 ? sql`AND id NOT IN (${sql.join(excludedIdsList, ',')})` : sql``}
         ORDER BY RANDOM()
         LIMIT 1
       `);
