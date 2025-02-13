@@ -1,5 +1,6 @@
+
 //npx tsx scripts/backup_db.ts
-import { db } from '../db';
+import { db, sql } from '../db';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
 
