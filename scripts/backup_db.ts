@@ -1,6 +1,7 @@
 
 //npx tsx scripts/backup_db.ts
-import { db, sql } from '../db';
+import { db } from '../db';
+import { sql } from 'drizzle-orm';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
 
