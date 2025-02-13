@@ -1,3 +1,5 @@
+// use the following sytax to run this script in shell
+//npx tsx scripts/import_problems.ts scripts/amc_problems_20250210.csv
 
 import { parse } from 'csv-parse';
 import { createReadStream } from 'fs';
