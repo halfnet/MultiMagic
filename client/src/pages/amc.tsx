@@ -344,7 +344,6 @@ export default function AMC() {
                   </div>
               </div>
             </div>
-          </div>
         ) : showResults ? (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-center">Game Complete!</h2>
