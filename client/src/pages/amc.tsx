@@ -299,7 +299,7 @@ export default function AMC() {
             )}
             <div className="space-y-4">
               <div className="flex flex-col gap-4 items-center max-w-md mx-auto">
-                <div className="w-full space-y-4">
+                <div className="space-y-4">
                   <div className="flex items-center justify-between w-full gap-4">
                     <Button 
                       size="lg" 
@@ -320,6 +320,8 @@ export default function AMC() {
                     </Button>
                     <AmcGamesPlayed userId={user.id} competitionType="AMC 8" />
                   </div>
+                </div>
+                </div>
                   <div className="flex items-center justify-between w-full gap-4">
                     <Button 
                       size="lg" 
@@ -340,7 +342,6 @@ export default function AMC() {
                     </Button>
                     <AmcGamesPlayed userId={user.id} competitionType="AMC 12" />
                   </div>
-                </div>
               </div>
             </div>
         ) : showResults ? (
