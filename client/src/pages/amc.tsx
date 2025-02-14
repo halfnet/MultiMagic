@@ -321,26 +321,27 @@ export default function AMC() {
                     <AmcGamesPlayed userId={user.id} competitionType="AMC 8" />
                   </div>
                 </div>
-                <div className="flex items-center justify-between w-full gap-4">
-                  <Button 
-                    size="lg" 
-                    onClick={() => startGame("AMC 10")}
-                    className="w-48"
-                  >
-                    AMC 10
-                  </Button>
-                  <AmcGamesPlayed userId={user.id} competitionType="AMC 10" />
                 </div>
-                <div className="flex items-center justify-between w-full gap-4">
-                  <Button 
-                    size="lg" 
-                    onClick={() => startGame("AMC 12")}
-                    className="w-48"
-                  >
-                    AMC 12
-                  </Button>
-                  <AmcGamesPlayed userId={user.id} competitionType="AMC 12" />
-                </div>
+                  <div className="flex items-center justify-between w-full gap-4">
+                    <Button 
+                      size="lg" 
+                      onClick={() => startGame("AMC 10")}
+                      className="w-48"
+                    >
+                      AMC 10
+                    </Button>
+                    <AmcGamesPlayed userId={user.id} competitionType="AMC 10" />
+                  </div>
+                  <div className="flex items-center justify-between w-full gap-4">
+                    <Button 
+                      size="lg" 
+                      onClick={() => startGame("AMC 12")}
+                      className="w-48"
+                    >
+                      AMC 12
+                    </Button>
+                    <AmcGamesPlayed userId={user.id} competitionType="AMC 12" />
+                  </div>
               </div>
             </div>
           </div>
