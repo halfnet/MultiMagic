@@ -433,7 +433,7 @@ AMC
           </div>
           <div className="space-y-4">
             <Button size="lg" className="w-full text-lg" onClick={() => startGame('easy')}>
-              Easy Mode (1-9)
+              Easy Mode (3-12)
             </Button>
             <Button size="lg" className="w-full text-lg" onClick={() => startGame('hard')}>
               Hard Mode (5-19)
