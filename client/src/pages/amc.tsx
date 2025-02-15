@@ -19,7 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 
 interface Problem {
   id: number;
@@ -44,7 +44,7 @@ function formatTime(milliseconds: number): string {
   return `${formattedHours}${formattedMinutes}:${formattedSeconds}`;
 }
 
-function AmcGamesPlayed({ userId, competitionType }: { userId: number, competitionType: string }) {
+function AmcGamesPlayed({ userId, competitionType }: { userId: number; competitionType: string }) {
   const [gamesPlayed, setGamesPlayed] = useState<number>(0);
 
   useEffect(() => {
@@ -55,11 +55,7 @@ function AmcGamesPlayed({ userId, competitionType }: { userId: number, competiti
       .catch(console.error);
   }, [userId, competitionType]);
 
-  return (
-    <div className="text-sm text-gray-500">
-      {gamesPlayed} games played
-    </div>
-  );
+  return <div className="text-sm text-gray-500">{gamesPlayed} games played</div>;
 }
 
 function Timer({ startTime }: { startTime: number }) {
@@ -82,7 +78,6 @@ function Timer({ startTime }: { startTime: number }) {
   );
 }
 
-
 function AmcScreenTime({ userId }: { userId: number }) {
   const { data, isLoading, error } = useQuery({
     queryKey: ['amc-screen-time', userId],
@@ -91,7 +86,7 @@ function AmcScreenTime({ userId }: { userId: number }) {
       const response = await fetch(`/api/amc-screen-time?userId=${userId}&timezone=${timezone}`);
       if (!response.ok) throw new Error('Failed to fetch AMC screen time');
       return response.json();
-    }
+    },
   });
 
   if (isLoading) return <p className="text-center">Loading...</p>;
@@ -104,7 +99,6 @@ function AmcScreenTime({ userId }: { userId: number }) {
   );
 }
 
-
 export default function AMC() {
   const [_, setLocation] = useLocation();
   const { user } = useCookieAuth();
@@ -112,7 +106,7 @@ export default function AMC() {
   const [showProblem, setShowProblem] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedProblems, setSelectedProblems] = useState<Problem[]>([]);
-  const [userAnswers, setUserAnswers] = useState<{[key: number]: string}>({});
+  const [userAnswers, setUserAnswers] = useState<{ [key: number]: string }>({});
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
   const [gameStatus, setGameStatus] = useState<'inProgress' | 'complete'>('inProgress');
@@ -120,8 +114,7 @@ export default function AMC() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [currentCompetitionType, setCurrentCompetitionType] = useState<string>('AMC 8');
 
-
-  const startGame = async (competitionType: string = "AMC 8") => {
+  const startGame = async (competitionType: string = 'AMC 8') => {
     try {
       setCurrentCompetitionType(competitionType);
       setGameStatus('inProgress');
@@ -134,11 +127,14 @@ export default function AMC() {
 
       // Fetch first two problems (1-10)
       for (let i = 0; i < 2; i++) {
-        const response = await fetch(`/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=1-10&excludeIds=${selectedProblemIds.join(',')}`, {
-          headers: {
-            'CSRF-Token': csrfToken
+        const response = await fetch(
+          `/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=1-10&excludeIds=${selectedProblemIds.join(',')}`,
+          {
+            headers: {
+              'CSRF-Token': csrfToken,
+            },
           }
-        });
+        );
         if (!response.ok) throw new Error('Failed to fetch problems');
         const problem = await response.json();
         problems.push(problem);
@@ -147,11 +143,14 @@ export default function AMC() {
 
       // Fetch next two problems (11-20)
       for (let i = 0; i < 2; i++) {
-        const response = await fetch(`/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=11-20&excludeIds=${selectedProblemIds.join(',')}`, {
-          headers: {
-            'CSRF-Token': csrfToken
+        const response = await fetch(
+          `/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=11-20&excludeIds=${selectedProblemIds.join(',')}`,
+          {
+            headers: {
+              'CSRF-Token': csrfToken,
+            },
           }
-        });
+        );
         if (!response.ok) throw new Error('Failed to fetch problems');
         const problem = await response.json();
         problems.push(problem);
@@ -159,11 +158,14 @@ export default function AMC() {
       }
 
       // Fetch last problem (21-25)
-      const response = await fetch(`/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=21-25&excludeIds=${selectedProblemIds.join(',')}`, {
-        headers: {
-          'CSRF-Token': csrfToken
+      const response = await fetch(
+        `/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=21-25&excludeIds=${selectedProblemIds.join(',')}`,
+        {
+          headers: {
+            'CSRF-Token': csrfToken,
+          },
         }
-      });
+      );
       if (!response.ok) throw new Error('Failed to fetch problems');
       const problem = await response.json();
       problems.push(problem);
@@ -184,7 +186,7 @@ export default function AMC() {
     if (currentProblem) {
       setUserAnswers(prev => ({
         ...prev,
-        [currentIndex]: value
+        [currentIndex]: value,
       }));
     }
   };
@@ -254,9 +256,9 @@ export default function AMC() {
     } catch (error) {
       console.error('Error saving game results:', error);
       toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to save game results. Please try again.",
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to save game results. Please try again.',
       });
     }
   };
@@ -271,10 +273,7 @@ export default function AMC() {
           <h1 className="text-3xl font-bold text-primary">AMC Challenges</h1>
           <div className="flex gap-2">
             {!showProblem && (
-              <Button
-                onClick={() => setLocation('/')}
-                className="bg-primary hover:bg-primary/90"
-              >
+              <Button onClick={() => setLocation('/')} className="bg-primary hover:bg-primary/90">
                 Back to Main
               </Button>
             )}
@@ -301,53 +300,39 @@ export default function AMC() {
               <div className="flex flex-col gap-4 items-center max-w-md mx-auto">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between w-full gap-4">
-                    <Button 
-                      size="lg" 
-                      onClick={() => startGame("AMC 8 Lite")}
-                      className="w-48"
-                    >
+                    <Button size="lg" onClick={() => startGame('AMC 8 Lite')} className="w-48">
                       AMC 8 Lite
                     </Button>
                     <AmcGamesPlayed userId={user.id} competitionType="AMC 8 Lite" />
                   </div>
                   <div className="flex items-center justify-between w-full gap-4">
-                    <Button 
-                      size="lg" 
-                      onClick={() => startGame("AMC 8")}
-                      className="w-48"
-                    >
+                    <Button size="lg" onClick={() => startGame('AMC 8')} className="w-48">
                       AMC 8
                     </Button>
                     <AmcGamesPlayed userId={user.id} competitionType="AMC 8" />
                   </div>
-                </div>
-                </div>
                   <div className="flex items-center justify-between w-full gap-4">
-                    <Button 
-                      size="lg" 
-                      onClick={() => startGame("AMC 10")}
-                      className="w-48"
-                    >
+                    <Button size="lg" onClick={() => startGame('AMC 10')} className="w-48">
                       AMC 10
                     </Button>
                     <AmcGamesPlayed userId={user.id} competitionType="AMC 10" />
                   </div>
                   <div className="flex items-center justify-between w-full gap-4">
-                    <Button 
-                      size="lg" 
-                      onClick={() => startGame("AMC 12")}
-                      className="w-48"
-                    >
+                    <Button size="lg" onClick={() => startGame('AMC 12')} className="w-48">
                       AMC 12
                     </Button>
                     <AmcGamesPlayed userId={user.id} competitionType="AMC 12" />
                   </div>
+                </div>
               </div>
             </div>
+          </div>
         ) : showResults ? (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-center">Game Complete!</h2>
-            <p className="text-xl text-center">Your score: {score} out of {TOTAL_PROBLEMS}</p>
+            <p className="text-xl text-center">
+              Your score: {score} out of {TOTAL_PROBLEMS}
+            </p>
             <p className="text-xl text-center">Time Taken: {formatTime(elapsedTime)}</p>
             {score === TOTAL_PROBLEMS && (
               <div className="space-y-4">
@@ -374,36 +359,40 @@ export default function AMC() {
             )}
             <div className="space-y-4">
               {selectedProblems.map((problem, idx) => (
-                <div 
-                  key={problem.id} 
+                <div
+                  key={problem.id}
                   className="p-4 border rounded cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => {
                     setCurrentIndex(idx);
                     setShowResults(false);
                   }}
                 >
-                  <p>Problem {idx + 1}: {
-                    userAnswers[idx] ? 
-                      (userAnswers[idx] === problem.answer ? 
-                        <span className="text-green-600">Correct</span> : 
-                        <span className="text-red-600">Incorrect (Answer: {problem.answer})</span>)
-                      : <span className="text-gray-600">Not answered (Answer: {problem.answer})</span>
-                  }
+                  <p>
+                    Problem {idx + 1}:{' '}
+                    {userAnswers[idx] ? (
+                      userAnswers[idx] === problem.answer ? (
+                        <span className="text-green-600">Correct</span>
+                      ) : (
+                        <span className="text-red-600">Incorrect (Answer: {problem.answer})</span>
+                      )
+                    ) : (
+                      <span className="text-gray-600">Not answered (Answer: {problem.answer})</span>
+                    )}
                   </p>
                   <p className="text-sm text-gray-500 mt-1">Click to review</p>
                 </div>
               ))}
             </div>
             <div className="flex justify-center gap-4">
-                  <Button onClick={() => {
-                      setShowProblem(false);
-                      setShowResults(false);
-                    }}>
-                    Exit Game
-                  </Button>
-              <Button onClick={() => startGame(currentCompetitionType)}>
-                Play Again
+              <Button
+                onClick={() => {
+                  setShowProblem(false);
+                  setShowResults(false);
+                }}
+              >
+                Exit Game
               </Button>
+              <Button onClick={() => startGame(currentCompetitionType)}>Play Again</Button>
             </div>
           </div>
         ) : (
@@ -411,8 +400,12 @@ export default function AMC() {
             <div className="space-y-4">
               <div className="flex justify-between items-center w-full mb-4">
                 <div className="text-sm text-grey-500 space-y-1">
-                  <div>Year {currentProblem?.year} - Problem {currentProblem?.problem_number}</div>
-                  <div>Problem {currentIndex + 1} of {TOTAL_PROBLEMS}</div>                  
+                  <div>
+                    Year {currentProblem?.year} - Problem {currentProblem?.problem_number}
+                  </div>
+                  <div>
+                    Problem {currentIndex + 1} of {TOTAL_PROBLEMS}
+                  </div>
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="text-sm text-grey-500 space-y-1">
@@ -425,22 +418,25 @@ export default function AMC() {
                   {gameStatus === 'inProgress' && (
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button className="bg-primary hover:bg-primary/90">
-                          Submit Answers
-                        </Button>
+                        <Button className="bg-primary hover:bg-primary/90">Submit Answers</Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
                           <AlertDialogTitle>Submit Answers?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            {answeredCount < TOTAL_PROBLEMS ? 
-                              `You have answered ${answeredCount} out of ${TOTAL_PROBLEMS} questions. Are you sure you want to submit?` :
-                              'Are you ready to submit your answers?'}
+                            {answeredCount < TOTAL_PROBLEMS
+                              ? `You have answered ${answeredCount} out of ${TOTAL_PROBLEMS} questions. Are you sure you want to submit?`
+                              : 'Are you ready to submit your answers?'}
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={submitGame} className="bg-primary hover:bg-primary/90">Submit</AlertDialogAction>
+                          <AlertDialogAction
+                            onClick={submitGame}
+                            className="bg-primary hover:bg-primary/90"
+                          >
+                            Submit
+                          </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
@@ -453,39 +449,39 @@ export default function AMC() {
                   dangerouslySetInnerHTML={{ __html: currentProblem?.question_html || '' }}
                 />
                 <div className="mt-4 mx-auto">
-                <div className="flex w-1/2 justify-between items-center">
-                  {['A', 'B', 'C', 'D', 'E'].map((option) => (
-                    <div key={option} className="flex items-center">
-                      <input
-                        type="radio"
-                        id={`option-${option}`}
-                        name="answer"
-                        value={option}
-                        checked={userAnswers[currentIndex] === option}
-                        onChange={(e) => handleAnswer(e.target.value)}
-                        disabled={gameStatus === 'complete'}
-                        className="w-4 h-4 text-primary border-gray-300 focus:ring-primary"
-                      />
-                      <label
-                        htmlFor={`option-${option}`}
-                        className="ml-2 text-lg font-medium text-gray-700 cursor-pointer"
-                      >
-                        {option}
-                      </label>
-                    </div>
-                  ))}
+                  <div className="flex w-1/2 justify-between items-center">
+                    {['A', 'B', 'C', 'D', 'E'].map(option => (
+                      <div key={option} className="flex items-center">
+                        <input
+                          type="radio"
+                          id={`option-${option}`}
+                          name="answer"
+                          value={option}
+                          checked={userAnswers[currentIndex] === option}
+                          onChange={e => handleAnswer(e.target.value)}
+                          disabled={gameStatus === 'complete'}
+                          className="w-4 h-4 text-primary border-gray-300 focus:ring-primary"
+                        />
+                        <label
+                          htmlFor={`option-${option}`}
+                          className="ml-2 text-lg font-medium text-gray-700 cursor-pointer"
+                        >
+                          {option}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
               </div>
               <div className="flex justify-between items-center">
                 <div className="flex gap-2">
-                  <Button 
+                  <Button
                     onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
                     disabled={currentIndex === 0}
                   >
                     Prev
                   </Button>
-                  <Button 
+                  <Button
                     onClick={() => setCurrentIndex(prev => prev + 1)}
                     disabled={currentIndex === TOTAL_PROBLEMS - 1}
                   >
@@ -506,7 +502,10 @@ export default function AMC() {
                   {gameStatus === 'inProgress' ? (
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button variant="outline" className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                        <Button
+                          variant="outline"
+                          className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                        >
                           Exit Game
                         </Button>
                       </AlertDialogTrigger>
@@ -519,15 +518,18 @@ export default function AMC() {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => setShowProblem(false)} className="bg-primary hover:bg-primary/90">
+                          <AlertDialogAction
+                            onClick={() => setShowProblem(false)}
+                            className="bg-primary hover:bg-primary/90"
+                          >
                             Exit
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
                   ) : (
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       className="bg-primary hover:bg-primary/90 text-primary-foreground"
                       onClick={() => setShowProblem(false)}
                     >
