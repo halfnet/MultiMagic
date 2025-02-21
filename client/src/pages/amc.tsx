@@ -285,7 +285,7 @@ const fetchProblems = async (competitionType: string, csrfToken: string): Promis
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-center">Game Complete!</h2>
             <p className="text-xl text-center">
-              Your score: {score} out of {TOTAL_PROBLEMS}
+              Your score: {score} out of {selectedProblems.length}
             </p>
             <p className="text-xl text-center">Time Taken: {formatTime(elapsedTime)}</p>
             {score === TOTAL_PROBLEMS && <AchievementsDisplay elapsedTime={elapsedTime} />}
