@@ -50,12 +50,14 @@ export default function AMC() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [currentCompetitionType, setCurrentCompetitionType] = useState<string>('AMC 8');
   const [tutorMode, setTutorMode] = useState(false); // Added tutorMode state
+  const [gameCompleted, setGameCompleted] = useState(false); // Added gameCompleted state
 
   const startGame = async (competitionType: string = 'AMC 8', isTutor: boolean = false) => {
     try {
       setCurrentCompetitionType(competitionType);
       setGameStatus('inProgress');
       setTutorMode(isTutor); // Set tutorMode based on button click
+      setGameCompleted(false); // Reset gameCompleted flag on new game start
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
 
@@ -154,6 +156,7 @@ export default function AMC() {
       setShowResults(true);
       setGameStatus('complete');
       setElapsedTime(Date.now() - startTime);
+      setGameCompleted(true); // Set gameCompleted flag to true after submission
     } catch (error) {
       console.error('Error saving game results:', error);
       toast({
@@ -265,7 +268,7 @@ export default function AMC() {
                     <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full animate-ping" />
                   </div>
                   <div className="text-lg font-semibold bg-gradient-to-r from-purple-700 to-purple-500 bg-clip-text text-transparent">
-                    <AmcScreenTime userId={user.id} />
+                    <AmcScreenTime userId={user.id} key={gameCompleted} />
                   </div>
                 </div>
               </div>
