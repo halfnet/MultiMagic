@@ -419,21 +419,17 @@ function GameContent({
     <div className="space-y-6">
       <div className="space-y-4">
         <div className="flex justify-between items-center w-full mb-4">
-          <div className="text-sm text-grey-500 space-y-1">
+          <div className="text-sm text-grey-500">
             <div>
               Year {currentProblem?.year} - Problem {currentProblem?.problem_number}
             </div>
-            <div>
-              Problem {currentIndex + 1} of {totalProblems}
-            </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className="text-sm text-grey-500 space-y-1">
+            <div className="text-sm text-grey-500">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 shrink-0" />
                 {gameStatus === 'inProgress' && <Timer startTime={startTime} />}
               </div>
-              <div>Answered: {answeredCount}</div>
             </div>
             {gameStatus === 'inProgress' && <SubmitButton onSubmit={onSubmit} answeredCount={answeredCount} totalProblems={totalProblems} />}
           </div>
@@ -468,15 +464,7 @@ function GameContent({
             </div>
           </div>
         </div>
-        <div className="flex justify-between items-center">
-          <div className="flex gap-2">
-            <Button onClick={onPrevious} disabled={currentIndex === 0}>
-              Prev
-            </Button>
-            <Button onClick={onNext} disabled={currentIndex === totalProblems - 1}>
-              Next
-            </Button>
-          </div>
+        <div className="flex justify-end items-center">
           <div className="flex gap-2">
             <div className="flex items-center gap-4">
               {gameStatus === 'complete' && (
