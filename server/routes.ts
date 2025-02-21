@@ -663,6 +663,8 @@ export function registerRoutes(app: Express): Server {
         }
       }
 
+      const tutorMode = req.body.tutorMode || false; // Added tutorMode to the request body
+
       const [result] = await db
         .insert(amcGameResults)
         .values({
@@ -674,7 +676,7 @@ export function registerRoutes(app: Express): Server {
           noAnswers: req.body.noAnswers,
           timeTakenInMs: req.body.timeTakenInMs,
           screenTimeEarned,
-          tutorMode: req.body.tutorMode || false,
+          tutorMode,
         })
         .returning();
 
@@ -714,6 +716,7 @@ export function registerRoutes(app: Express): Server {
         WHERE user_id = ${userId}
         AND created_at::timestamp >= TIMEZONE(${userTimezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone} + INTERVAL '1 day') - INTERVAL '1 day')
         AND created_at::timestamp < TIMEZONE(${userTimezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone} + INTERVAL '1 day') + INTERVAL '1 week' - INTERVAL '1 day')
+        AND tutor_mode = FALSE
         GROUP BY competition_type
       `);
 
@@ -725,9 +728,9 @@ export function registerRoutes(app: Express): Server {
       console.error('Error fetching AMC games played:', error);
       res.status(500).json({ error: 'Failed to fetch AMC games played' });
     }
-});
+  });
 
-app.get('/api/amc-screen-time', async (req, res) => {
+  app.get('/api/amc-screen-time', async (req, res) => {
     try {
       const userId = parseInt(req.query.userId as string);
       const userTimezone = (req.query.timezone as string) || 'UTC';
@@ -762,7 +765,7 @@ app.get('/api/amc-screen-time', async (req, res) => {
       }
       const compTypeQuery = "WHERE competition_type = '" + compType + "'"
       const pastProbQuery = "AND id NOT IN (SELECT DISTINCT id FROM amc_game_question_results WHERE user_id = " + userId + " AND user_score = 1)"
-      
+
       let problemRangeQuery = '';
       if (amc_lite) {
         problemRangeQuery = 'AND problem_number BETWEEN 1 AND 12';
@@ -776,7 +779,7 @@ app.get('/api/amc-screen-time', async (req, res) => {
         }
       }
       const idNotInQuery = 'AND id NOT IN (' + excludeIds + ')'
-      
+
       const result = await db.execute(sql`
         SELECT *
         FROM problems
@@ -787,11 +790,11 @@ app.get('/api/amc-screen-time', async (req, res) => {
         ORDER BY RANDOM()
         LIMIT 1
       `);
-      
+
       if (!result.rows[0]) {
         return res.status(404).json({ error: 'No AMC 8 problems found' });
       }
-      
+
       res.json(result.rows[0]);
     } catch (error) {
       console.error('Error fetching AMC 8 problem:', error);

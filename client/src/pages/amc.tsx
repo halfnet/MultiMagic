@@ -49,11 +49,13 @@ export default function AMC() {
   const [startTime, setStartTime] = useState<number>(0);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [currentCompetitionType, setCurrentCompetitionType] = useState<string>('AMC 8');
+  const [tutorMode, setTutorMode] = useState(false); // Added tutorMode state
 
   const startGame = async (competitionType: string = 'AMC 8', isTutor: boolean = false) => {
     try {
       setCurrentCompetitionType(competitionType);
       setGameStatus('inProgress');
+      setTutorMode(isTutor); // Set tutorMode based on button click
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
 
@@ -200,6 +202,7 @@ export default function AMC() {
         questionsCount: TOTAL_PROBLEMS,
         ...results,
         timeTakenInMs: Date.now() - startTime,
+        tutorMode: tutorMode, // Added tutorMode to the request body
       }),
     });
 
@@ -274,7 +277,7 @@ export default function AMC() {
                     <Button size="lg" onClick={() => startGame(type)} className="w-48">
                       {type}
                     </Button>
-                    <AmcGamesPlayed userId={user.id} competitionType={type} />
+                    <AmcGamesPlayed userId={user.id} competitionType={type} excludeTutorMode={true} /> {/* Added excludeTutorMode prop */}
                   </div>
                 ))}
               </div>
