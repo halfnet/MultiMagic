@@ -674,6 +674,7 @@ export function registerRoutes(app: Express): Server {
           noAnswers: req.body.noAnswers,
           timeTakenInMs: req.body.timeTakenInMs,
           screenTimeEarned,
+          tutorMode: req.body.tutorMode || false,
         })
         .returning();
 

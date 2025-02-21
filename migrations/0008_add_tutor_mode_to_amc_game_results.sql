@@ -1,0 +1,2 @@
+
+ALTER TABLE amc_game_results ADD COLUMN tutor_mode BOOLEAN DEFAULT FALSE;

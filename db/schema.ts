@@ -94,6 +94,7 @@ export const amcGameResults = pgTable('amc_game_results', {
   noAnswers: integer('no_answers').notNull(),
   timeTakenInMs: integer('time_taken_in_ms').notNull(),
   screenTimeEarned: decimal('screen_time_earned', { precision: 10, scale: 2 }).default('0'),
+  tutorMode: boolean('tutor_mode').default(false),
   createdAt: text('created_at')
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
