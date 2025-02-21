@@ -51,14 +51,16 @@ export default function AMC() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [currentCompetitionType, setCurrentCompetitionType] = useState<string>('AMC 8');
 
-  const startGame = async (competitionType: string = 'AMC 8') => {
+  const startGame = async (competitionType: string = 'AMC 8', isTutor: boolean = false) => {
     try {
       setCurrentCompetitionType(competitionType);
       setGameStatus('inProgress');
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
 
-      const problems = await fetchProblems(competitionType, csrfToken);
+      const problems = isTutor ? 
+        [await fetchSingleProblem(competitionType, csrfToken)] :
+        await fetchProblems(competitionType, csrfToken);
       setSelectedProblems(problems);
       setUserAnswers({});
       setCurrentIndex(0);
@@ -76,7 +78,20 @@ export default function AMC() {
     }
   };
 
-  const fetchProblems = async (competitionType: string, csrfToken: string): Promise<Problem[]> => {
+  const fetchSingleProblem = async (competitionType: string, csrfToken: string): Promise<Problem> => {
+  const response = await fetch(
+    `/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=1-25`,
+    {
+      headers: {
+        'CSRF-Token': csrfToken,
+      },
+    }
+  );
+  if (!response.ok) throw new Error('Failed to fetch problem');
+  return response.json();
+};
+
+const fetchProblems = async (competitionType: string, csrfToken: string): Promise<Problem[]> => {
     const problems = [];
     const selectedProblemIds: string[] = [];
 
@@ -224,9 +239,14 @@ export default function AMC() {
           <h1 className="text-3xl font-bold text-primary">AMC Challenges</h1>
           <div className="flex gap-2">
             {!showProblem && (
-              <Button onClick={() => setLocation('/')} className="bg-primary hover:bg-primary/90">
-                Back to Main
-              </Button>
+              <>
+                <Button onClick={() => startGame('AMC 8', true)} className="bg-primary hover:bg-primary/90">
+                  AMC Tutor
+                </Button>
+                <Button onClick={() => setLocation('/')} className="bg-primary hover:bg-primary/90">
+                  Back to Main
+                </Button>
+              </>
             )}
           </div>
         </div>
