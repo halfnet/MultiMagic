@@ -431,7 +431,7 @@ function GameContent({
                 {gameStatus === 'inProgress' && <Timer startTime={startTime} />}
               </div>
             </div>
-            {gameStatus === 'inProgress' && <SubmitButton onSubmit={onSubmit} answeredCount={answeredCount} totalProblems={totalProblems} />}
+            {gameStatus === 'inProgress' && <SubmitButton onSubmit={onSubmit} answeredCount={answeredCount} totalProblems={selectedProblems.length} selectedProblems={selectedProblems} />}
           </div>
         </div>
         <div className="space-y-4">
@@ -488,10 +488,12 @@ function SubmitButton({
   onSubmit,
   answeredCount,
   totalProblems,
+  selectedProblems,
 }: {
   onSubmit: () => void;
   answeredCount: number;
   totalProblems: number;
+  selectedProblems: Problem[];
 }) {
   return (
     <AlertDialog>
