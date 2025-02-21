@@ -1,14 +1,18 @@
+
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Card } from '@/components/ui/card';
-import { useQuery } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { useCookieAuth } from '@/hooks/use-cookie-auth';
 import { AchievementBadge } from '@/components/game/AchievementBadge';
 import { ACHIEVEMENTS } from '@/lib/achievements';
 import { Clock } from 'lucide-react';
+import { AmcScreenTime } from '@/components/amc/AmcScreenTime';
+import { AmcGamesPlayed } from '@/components/amc/AmcGamesPlayed';
+import { Timer } from '@/components/amc/Timer';
+import { formatTime } from '@/components/amc/utils';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,73 +36,6 @@ interface Problem {
 
 const TOTAL_PROBLEMS = 5;
 
-function formatTime(milliseconds: number): string {
-  const seconds = Math.floor((milliseconds / 1000) % 60);
-  const minutes = Math.floor((milliseconds / (1000 * 60)) % 60);
-  const hours = Math.floor((milliseconds / (1000 * 60 * 60)) % 24);
-
-  const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
-  const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-  const formattedHours = hours > 0 ? `${hours}:` : '';
-
-  return `${formattedHours}${formattedMinutes}:${formattedSeconds}`;
-}
-
-function AmcGamesPlayed({ userId, competitionType }: { userId: number; competitionType: string }) {
-  const [gamesPlayed, setGamesPlayed] = useState<number>(0);
-
-  useEffect(() => {
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    fetch(`/api/amc-games-played?userId=${userId}&timezone=${timezone}`)
-      .then(res => res.json())
-      .then(data => setGamesPlayed(data[competitionType] || 0))
-      .catch(console.error);
-  }, [userId, competitionType]);
-
-  return <div className="text-sm text-gray-500">{gamesPlayed} games played</div>;
-}
-
-function Timer({ startTime }: { startTime: number }) {
-  const [elapsedTime, setElapsedTime] = useState(0);
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (startTime > 0) {
-        setElapsedTime(Date.now() - startTime);
-      }
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-  }, [startTime]);
-
-  return (
-    <div className="text-base text-gray-500 text-[1.15rem]">
-      {startTime > 0 ? formatTime(elapsedTime) : '00:00'}
-    </div>
-  );
-}
-
-function AmcScreenTime({ userId }: { userId: number }) {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['amc-screen-time', userId],
-    queryFn: async () => {
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const response = await fetch(`/api/amc-screen-time?userId=${userId}&timezone=${timezone}`);
-      if (!response.ok) throw new Error('Failed to fetch AMC screen time');
-      return response.json();
-    },
-  });
-
-  if (isLoading) return <p className="text-center">Loading...</p>;
-  if (error) return <p className="text-center">Error loading screen time</p>;
-
-  return (
-    <p className="text-center">
-      {(data?.screenTime || 0).toFixed(1)} mins of screen time earned this week
-    </p>
-  );
-}
-
 export default function AMC() {
   const [_, setLocation] = useLocation();
   const { user } = useCookieAuth();
@@ -121,55 +58,7 @@ export default function AMC() {
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
 
-      let problems = [];
-
-      const selectedProblemIds: string[] = [];
-
-      // Fetch first two problems (1-10)
-      for (let i = 0; i < 2; i++) {
-        const response = await fetch(
-          `/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=1-10&excludeIds=${selectedProblemIds.join(',')}`,
-          {
-            headers: {
-              'CSRF-Token': csrfToken,
-            },
-          }
-        );
-        if (!response.ok) throw new Error('Failed to fetch problems');
-        const problem = await response.json();
-        problems.push(problem);
-        selectedProblemIds.push(problem.id);
-      }
-
-      // Fetch next two problems (11-20)
-      for (let i = 0; i < 2; i++) {
-        const response = await fetch(
-          `/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=11-20&excludeIds=${selectedProblemIds.join(',')}`,
-          {
-            headers: {
-              'CSRF-Token': csrfToken,
-            },
-          }
-        );
-        if (!response.ok) throw new Error('Failed to fetch problems');
-        const problem = await response.json();
-        problems.push(problem);
-        selectedProblemIds.push(problem.id);
-      }
-
-      // Fetch last problem (21-25)
-      const response = await fetch(
-        `/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=21-25&excludeIds=${selectedProblemIds.join(',')}`,
-        {
-          headers: {
-            'CSRF-Token': csrfToken,
-          },
-        }
-      );
-      if (!response.ok) throw new Error('Failed to fetch problems');
-      const problem = await response.json();
-      problems.push(problem);
-
+      const problems = await fetchProblems(competitionType, csrfToken);
       setSelectedProblems(problems);
       setUserAnswers({});
       setCurrentIndex(0);
@@ -179,7 +68,55 @@ export default function AMC() {
       setStartTime(Date.now());
     } catch (error) {
       console.error('Error starting game:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to start game. Please try again.',
+      });
     }
+  };
+
+  const fetchProblems = async (competitionType: string, csrfToken: string): Promise<Problem[]> => {
+    const problems = [];
+    const selectedProblemIds: string[] = [];
+
+    // Fetch first two problems (1-10)
+    for (let i = 0; i < 2; i++) {
+      const problem = await fetchProblem('1-10', competitionType, selectedProblemIds, csrfToken);
+      problems.push(problem);
+      selectedProblemIds.push(problem.id);
+    }
+
+    // Fetch next two problems (11-20)
+    for (let i = 0; i < 2; i++) {
+      const problem = await fetchProblem('11-20', competitionType, selectedProblemIds, csrfToken);
+      problems.push(problem);
+      selectedProblemIds.push(problem.id);
+    }
+
+    // Fetch last problem (21-25)
+    const problem = await fetchProblem('21-25', competitionType, selectedProblemIds, csrfToken);
+    problems.push(problem);
+
+    return problems;
+  };
+
+  const fetchProblem = async (
+    problemRange: string,
+    competitionType: string,
+    excludeIds: string[],
+    csrfToken: string
+  ): Promise<Problem> => {
+    const response = await fetch(
+      `/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=${problemRange}&excludeIds=${excludeIds.join(',')}`,
+      {
+        headers: {
+          'CSRF-Token': csrfToken,
+        },
+      }
+    );
+    if (!response.ok) throw new Error('Failed to fetch problems');
+    return response.json();
   };
 
   const handleAnswer = (value: string) => {
@@ -192,64 +129,12 @@ export default function AMC() {
   };
 
   const submitGame = async () => {
-    let correctAnswers = 0;
-    let incorrectAnswers = 0;
-    let noAnswers = 0;
+    if (!user) return;
 
-    // Calculate totals
-    selectedProblems.forEach((problem, index) => {
-      if (!userAnswers[index]) {
-        noAnswers++;
-      } else if (userAnswers[index] === problem.answer) {
-        correctAnswers++;
-      } else {
-        incorrectAnswers++;
-      }
-    });
-
+    const results = calculateResults();
     try {
-      const csrfResponse = await fetch('/api/csrf-token');
-      const { csrfToken } = await csrfResponse.json();
-
-      // Save game results
-      const gameResultResponse = await fetch('/api/amc-game-results', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'CSRF-Token': csrfToken,
-        },
-        body: JSON.stringify({
-          userId: user.id,
-          competitionType: currentCompetitionType,
-          questionsCount: TOTAL_PROBLEMS,
-          correctAnswers,
-          incorrectAnswers,
-          noAnswers,
-          timeTakenInMs: Date.now() - startTime,
-        }),
-      });
-
-      const gameResult = await gameResultResponse.json();
-
-      // Save individual question results
-      await fetch('/api/amc-game-question-results', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'CSRF-Token': csrfToken,
-        },
-        body: JSON.stringify({
-          gameId: gameResult.id,
-          userId: user.id,
-          questionResults: selectedProblems.map((problem, index) => ({
-            problemId: problem.id,
-            userAnswer: userAnswers[index] || null,
-            userScore: userAnswers[index] === problem.answer ? 1 : 0,
-          })),
-        }),
-      });
-
-      setScore(correctAnswers);
+      await saveGameResults(results);
+      setScore(results.correctAnswers);
       setShowResults(true);
       setGameStatus('complete');
       setElapsedTime(Date.now() - startTime);
@@ -263,12 +148,78 @@ export default function AMC() {
     }
   };
 
+  const calculateResults = () => {
+    let correctAnswers = 0;
+    let incorrectAnswers = 0;
+    let noAnswers = 0;
+
+    selectedProblems.forEach((problem, index) => {
+      if (!userAnswers[index]) {
+        noAnswers++;
+      } else if (userAnswers[index] === problem.answer) {
+        correctAnswers++;
+      } else {
+        incorrectAnswers++;
+      }
+    });
+
+    return { correctAnswers, incorrectAnswers, noAnswers };
+  };
+
+  const saveGameResults = async (results: {
+    correctAnswers: number;
+    incorrectAnswers: number;
+    noAnswers: number;
+  }) => {
+    const csrfResponse = await fetch('/api/csrf-token');
+    const { csrfToken } = await csrfResponse.json();
+
+    const gameResultResponse = await fetch('/api/amc-game-results', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'CSRF-Token': csrfToken,
+      },
+      body: JSON.stringify({
+        userId: user.id,
+        competitionType: currentCompetitionType,
+        questionsCount: TOTAL_PROBLEMS,
+        ...results,
+        timeTakenInMs: Date.now() - startTime,
+      }),
+    });
+
+    const gameResult = await gameResultResponse.json();
+
+    await saveQuestionResults(gameResult.id, csrfToken);
+  };
+
+  const saveQuestionResults = async (gameId: string, csrfToken: string) => {
+    await fetch('/api/amc-game-question-results', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'CSRF-Token': csrfToken,
+      },
+      body: JSON.stringify({
+        gameId,
+        userId: user.id,
+        questionResults: selectedProblems.map((problem, index) => ({
+          problemId: problem.id,
+          userAnswer: userAnswers[index] || null,
+          userScore: userAnswers[index] === problem.answer ? 1 : 0,
+        })),
+      }),
+    });
+  };
+
   const currentProblem = selectedProblems[currentIndex];
   const answeredCount = Object.keys(userAnswers).length;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex flex-col items-center justify-center p-4">
       <Card className="p-8 max-w-4xl w-full">
+        {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-primary">AMC Challenges</h1>
           <div className="flex gap-2">
@@ -281,6 +232,7 @@ export default function AMC() {
         </div>
         <Separator className="my-4" />
 
+        {/* Main Content */}
         {!showProblem ? (
           <div className="space-y-4">
             {user && (
@@ -298,32 +250,14 @@ export default function AMC() {
             )}
             <div className="space-y-4">
               <div className="flex flex-col gap-4 items-center max-w-md mx-auto">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between w-full gap-4">
-                    <Button size="lg" onClick={() => startGame('AMC 8 Lite')} className="w-48">
-                      AMC 8 Lite
+                {['AMC 8 Lite', 'AMC 8', 'AMC 10', 'AMC 12'].map(type => (
+                  <div key={type} className="flex items-center justify-between w-full gap-4">
+                    <Button size="lg" onClick={() => startGame(type)} className="w-48">
+                      {type}
                     </Button>
-                    <AmcGamesPlayed userId={user.id} competitionType="AMC 8 Lite" />
+                    <AmcGamesPlayed userId={user.id} competitionType={type} />
                   </div>
-                  <div className="flex items-center justify-between w-full gap-4">
-                    <Button size="lg" onClick={() => startGame('AMC 8')} className="w-48">
-                      AMC 8
-                    </Button>
-                    <AmcGamesPlayed userId={user.id} competitionType="AMC 8" />
-                  </div>
-                  <div className="flex items-center justify-between w-full gap-4">
-                    <Button size="lg" onClick={() => startGame('AMC 10')} className="w-48">
-                      AMC 10
-                    </Button>
-                    <AmcGamesPlayed userId={user.id} competitionType="AMC 10" />
-                  </div>
-                  <div className="flex items-center justify-between w-full gap-4">
-                    <Button size="lg" onClick={() => startGame('AMC 12')} className="w-48">
-                      AMC 12
-                    </Button>
-                    <AmcGamesPlayed userId={user.id} competitionType="AMC 12" />
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
@@ -334,214 +268,285 @@ export default function AMC() {
               Your score: {score} out of {TOTAL_PROBLEMS}
             </p>
             <p className="text-xl text-center">Time Taken: {formatTime(elapsedTime)}</p>
-            {score === TOTAL_PROBLEMS && (
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-center">Achievements Earned</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <AchievementBadge
-                    achievement={ACHIEVEMENTS.find(a => a.id === 'amc-scholar')}
-                    animate={true}
-                  />
-                  {elapsedTime < 8 * 60 * 1000 && (
-                    <AchievementBadge
-                      achievement={ACHIEVEMENTS.find(a => a.id === 'amc-expert')}
-                      animate={true}
-                    />
-                  )}
-                  {elapsedTime < 5 * 60 * 1000 && (
-                    <AchievementBadge
-                      achievement={ACHIEVEMENTS.find(a => a.id === 'amc-master')}
-                      animate={true}
-                    />
-                  )}
-                </div>
-              </div>
-            )}
-            <div className="space-y-4">
-              {selectedProblems.map((problem, idx) => (
-                <div
-                  key={problem.id}
-                  className="p-4 border rounded cursor-pointer hover:bg-gray-50 transition-colors"
-                  onClick={() => {
-                    setCurrentIndex(idx);
-                    setShowResults(false);
-                  }}
-                >
-                  <p>
-                    Problem {idx + 1}:{' '}
-                    {userAnswers[idx] ? (
-                      userAnswers[idx] === problem.answer ? (
-                        <span className="text-green-600">Correct</span>
-                      ) : (
-                        <span className="text-red-600">Incorrect (Answer: {problem.answer})</span>
-                      )
-                    ) : (
-                      <span className="text-gray-600">Not answered (Answer: {problem.answer})</span>
-                    )}
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">Click to review</p>
-                </div>
-              ))}
-            </div>
+            {score === TOTAL_PROBLEMS && <AchievementsDisplay elapsedTime={elapsedTime} />}
+            <ProblemResults
+              problems={selectedProblems}
+              userAnswers={userAnswers}
+              onReview={index => {
+                setCurrentIndex(index);
+                setShowResults(false);
+              }}
+            />
             <div className="flex justify-center gap-4">
-              <Button
-                onClick={() => {
-                  setShowProblem(false);
-                  setShowResults(false);
-                }}
-              >
-                Exit Game
-              </Button>
+              <Button onClick={() => setShowProblem(false)}>Exit Game</Button>
               <Button onClick={() => startGame(currentCompetitionType)}>Play Again</Button>
             </div>
           </div>
         ) : (
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <div className="flex justify-between items-center w-full mb-4">
-                <div className="text-sm text-grey-500 space-y-1">
-                  <div>
-                    Year {currentProblem?.year} - Problem {currentProblem?.problem_number}
-                  </div>
-                  <div>
-                    Problem {currentIndex + 1} of {TOTAL_PROBLEMS}
-                  </div>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="text-sm text-grey-500 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 shrink-0" />
-                      {gameStatus === 'inProgress' && <Timer startTime={startTime} />}
-                    </div>
-                    <div>Answered: {answeredCount}</div>
-                  </div>
-                  {gameStatus === 'inProgress' && (
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button className="bg-primary hover:bg-primary/90">Submit Answers</Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Submit Answers?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            {answeredCount < TOTAL_PROBLEMS
-                              ? `You have answered ${answeredCount} out of ${TOTAL_PROBLEMS} questions. Are you sure you want to submit?`
-                              : 'Are you ready to submit your answers?'}
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={submitGame}
-                            className="bg-primary hover:bg-primary/90"
-                          >
-                            Submit
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  )}
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div
-                  className="[&_img]:inline-block [&_img]:align-middle [&_img]:mx-1"
-                  dangerouslySetInnerHTML={{ __html: currentProblem?.question_html || '' }}
-                />
-                <div className="mt-4 mx-auto">
-                  <div className="flex w-1/2 justify-between items-center">
-                    {['A', 'B', 'C', 'D', 'E'].map(option => (
-                      <div key={option} className="flex items-center">
-                        <input
-                          type="radio"
-                          id={`option-${option}`}
-                          name="answer"
-                          value={option}
-                          checked={userAnswers[currentIndex] === option}
-                          onChange={e => handleAnswer(e.target.value)}
-                          disabled={gameStatus === 'complete'}
-                          className="w-4 h-4 text-primary border-gray-300 focus:ring-primary"
-                        />
-                        <label
-                          htmlFor={`option-${option}`}
-                          className="ml-2 text-lg font-medium text-gray-700 cursor-pointer"
-                        >
-                          {option}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-between items-center">
-                <div className="flex gap-2">
-                  <Button
-                    onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
-                    disabled={currentIndex === 0}
-                  >
-                    Prev
-                  </Button>
-                  <Button
-                    onClick={() => setCurrentIndex(prev => prev + 1)}
-                    disabled={currentIndex === TOTAL_PROBLEMS - 1}
-                  >
-                    Next
-                  </Button>
-                </div>
-                <div className="flex gap-2">
-                  <div className="flex items-center gap-4">
-                    {gameStatus === 'complete' && (
-                      <Button
-                        onClick={() => setShowResults(true)}
-                        className="bg-primary/90 hover:bg-primary text-primary-foreground"
-                      >
-                        Go to Results
-                      </Button>
-                    )}
-                  </div>
-                  {gameStatus === 'inProgress' ? (
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className="bg-primary hover:bg-primary/90 text-primary-foreground"
-                        >
-                          Exit Game
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Exit Game?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Are you sure you want to exit? Your progress will be lost.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => setShowProblem(false)}
-                            className="bg-primary hover:bg-primary/90"
-                          >
-                            Exit
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      className="bg-primary hover:bg-primary/90 text-primary-foreground"
-                      onClick={() => setShowProblem(false)}
-                    >
-                      Exit Game
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+          <GameContent
+            currentProblem={currentProblem}
+            currentIndex={currentIndex}
+            totalProblems={TOTAL_PROBLEMS}
+            gameStatus={gameStatus}
+            startTime={startTime}
+            answeredCount={answeredCount}
+            onPrevious={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
+            onNext={() => setCurrentIndex(prev => prev + 1)}
+            onAnswer={handleAnswer}
+            userAnswers={userAnswers}
+            onSubmit={submitGame}
+            onExit={() => setShowProblem(false)}
+            onShowResults={() => setShowResults(true)}
+          />
         )}
       </Card>
     </div>
+  );
+}
+
+function AchievementsDisplay({ elapsedTime }: { elapsedTime: number }) {
+  return (
+    <div className="space-y-4">
+      <h3 className="text-xl font-semibold text-center">Achievements Earned</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <AchievementBadge
+          achievement={ACHIEVEMENTS.find(a => a.id === 'amc-scholar')}
+          animate={true}
+        />
+        {elapsedTime < 8 * 60 * 1000 && (
+          <AchievementBadge
+            achievement={ACHIEVEMENTS.find(a => a.id === 'amc-expert')}
+            animate={true}
+          />
+        )}
+        {elapsedTime < 5 * 60 * 1000 && (
+          <AchievementBadge
+            achievement={ACHIEVEMENTS.find(a => a.id === 'amc-master')}
+            animate={true}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ProblemResults({
+  problems,
+  userAnswers,
+  onReview,
+}: {
+  problems: Problem[];
+  userAnswers: { [key: number]: string };
+  onReview: (index: number) => void;
+}) {
+  return (
+    <div className="space-y-4">
+      {problems.map((problem, idx) => (
+        <div
+          key={problem.id}
+          className="p-4 border rounded cursor-pointer hover:bg-gray-50 transition-colors"
+          onClick={() => onReview(idx)}
+        >
+          <p>
+            Problem {idx + 1}:{' '}
+            {userAnswers[idx] ? (
+              userAnswers[idx] === problem.answer ? (
+                <span className="text-green-600">Correct</span>
+              ) : (
+                <span className="text-red-600">Incorrect (Answer: {problem.answer})</span>
+              )
+            ) : (
+              <span className="text-gray-600">Not answered (Answer: {problem.answer})</span>
+            )}
+          </p>
+          <p className="text-sm text-gray-500 mt-1">Click to review</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function GameContent({
+  currentProblem,
+  currentIndex,
+  totalProblems,
+  gameStatus,
+  startTime,
+  answeredCount,
+  onPrevious,
+  onNext,
+  onAnswer,
+  userAnswers,
+  onSubmit,
+  onExit,
+  onShowResults,
+}: {
+  currentProblem: Problem;
+  currentIndex: number;
+  totalProblems: number;
+  gameStatus: 'inProgress' | 'complete';
+  startTime: number;
+  answeredCount: number;
+  onPrevious: () => void;
+  onNext: () => void;
+  onAnswer: (value: string) => void;
+  userAnswers: { [key: number]: string };
+  onSubmit: () => void;
+  onExit: () => void;
+  onShowResults: () => void;
+}) {
+  return (
+    <div className="space-y-6">
+      <div className="space-y-4">
+        <div className="flex justify-between items-center w-full mb-4">
+          <div className="text-sm text-grey-500 space-y-1">
+            <div>
+              Year {currentProblem?.year} - Problem {currentProblem?.problem_number}
+            </div>
+            <div>
+              Problem {currentIndex + 1} of {totalProblems}
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="text-sm text-grey-500 space-y-1">
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 shrink-0" />
+                {gameStatus === 'inProgress' && <Timer startTime={startTime} />}
+              </div>
+              <div>Answered: {answeredCount}</div>
+            </div>
+            {gameStatus === 'inProgress' && <SubmitButton onSubmit={onSubmit} answeredCount={answeredCount} totalProblems={totalProblems} />}
+          </div>
+        </div>
+        <div className="space-y-4">
+          <div
+            className="[&_img]:inline-block [&_img]:align-middle [&_img]:mx-1"
+            dangerouslySetInnerHTML={{ __html: currentProblem?.question_html || '' }}
+          />
+          <div className="mt-4 mx-auto">
+            <div className="flex w-1/2 justify-between items-center">
+              {['A', 'B', 'C', 'D', 'E'].map(option => (
+                <div key={option} className="flex items-center">
+                  <input
+                    type="radio"
+                    id={`option-${option}`}
+                    name="answer"
+                    value={option}
+                    checked={userAnswers[currentIndex] === option}
+                    onChange={e => onAnswer(e.target.value)}
+                    disabled={gameStatus === 'complete'}
+                    className="w-4 h-4 text-primary border-gray-300 focus:ring-primary"
+                  />
+                  <label
+                    htmlFor={`option-${option}`}
+                    className="ml-2 text-lg font-medium text-gray-700 cursor-pointer"
+                  >
+                    {option}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-between items-center">
+          <div className="flex gap-2">
+            <Button onClick={onPrevious} disabled={currentIndex === 0}>
+              Prev
+            </Button>
+            <Button onClick={onNext} disabled={currentIndex === totalProblems - 1}>
+              Next
+            </Button>
+          </div>
+          <div className="flex gap-2">
+            <div className="flex items-center gap-4">
+              {gameStatus === 'complete' && (
+                <Button
+                  onClick={onShowResults}
+                  className="bg-primary/90 hover:bg-primary text-primary-foreground"
+                >
+                  Go to Results
+                </Button>
+              )}
+            </div>
+            <ExitButton gameStatus={gameStatus} onExit={onExit} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SubmitButton({
+  onSubmit,
+  answeredCount,
+  totalProblems,
+}: {
+  onSubmit: () => void;
+  answeredCount: number;
+  totalProblems: number;
+}) {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button className="bg-primary hover:bg-primary/90">Submit Answers</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Submit Answers?</AlertDialogTitle>
+          <AlertDialogDescription>
+            {answeredCount < totalProblems
+              ? `You have answered ${answeredCount} out of ${totalProblems} questions. Are you sure you want to submit?`
+              : 'Are you ready to submit your answers?'}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={onSubmit} className="bg-primary hover:bg-primary/90">
+            Submit
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
+function ExitButton({ gameStatus, onExit }: { gameStatus: string; onExit: () => void }) {
+  if (gameStatus === 'inProgress') {
+    return (
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button
+            variant="outline"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
+            Exit Game
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Exit Game?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to exit? Your progress will be lost.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={onExit} className="bg-primary hover:bg-primary/90">
+              Exit
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    );
+  }
+
+  return (
+    <Button
+      variant="outline"
+      className="bg-primary hover:bg-primary/90 text-primary-foreground"
+      onClick={onExit}
+    >
+      Exit Game
+    </Button>
   );
 }
