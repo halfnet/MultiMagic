@@ -502,8 +502,8 @@ function SubmitButton({
         <AlertDialogHeader>
           <AlertDialogTitle>Submit Answers?</AlertDialogTitle>
           <AlertDialogDescription>
-            {answeredCount < totalProblems
-              ? `You have answered ${answeredCount} out of ${totalProblems} questions. Are you sure you want to submit?`
+            {answeredCount < selectedProblems.length
+              ? `You have answered ${answeredCount} out of ${selectedProblems.length} questions. Are you sure you want to submit?`
               : 'Are you ready to submit your answers?'}
           </AlertDialogDescription>
         </AlertDialogHeader>
