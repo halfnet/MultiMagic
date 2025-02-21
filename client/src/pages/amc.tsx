@@ -317,6 +317,7 @@ const fetchProblems = async (competitionType: string, csrfToken: string): Promis
             onSubmit={submitGame}
             onExit={() => setShowProblem(false)}
             onShowResults={() => setShowResults(true)}
+            selectedProblems={selectedProblems}
           />
         )}
       </Card>
@@ -400,6 +401,7 @@ function GameContent({
   onSubmit,
   onExit,
   onShowResults,
+  selectedProblems,
 }: {
   currentProblem: Problem;
   currentIndex: number;
@@ -414,6 +416,7 @@ function GameContent({
   onSubmit: () => void;
   onExit: () => void;
   onShowResults: () => void;
+  selectedProblems: Problem[];
 }) {
   return (
     <div className="space-y-6">
