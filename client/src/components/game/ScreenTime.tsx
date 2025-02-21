@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { Clock } from 'lucide-react';
 
@@ -12,7 +13,11 @@ export function ScreenTime({ userId }: ScreenTimeProps) {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     fetch(`/api/screen-time?userId=${userId}&timezone=${timezone}`)
       .then(res => res.json())
-      .then(data => setScreenTime(data.screenTime))
+      .then(data => {
+        const { easyTime = 0, hardTime = 0 } = data;
+        const cappedEasyTime = Math.min(easyTime, 10); // Cap easy mode at 10 minutes
+        setScreenTime(cappedEasyTime + hardTime);
+      })
       .catch(console.error);
   }, [userId]);
 

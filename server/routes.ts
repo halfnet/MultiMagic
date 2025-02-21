@@ -461,14 +461,19 @@ export function registerRoutes(app: Express): Server {
       const userTimezone = (req.query.timezone as string) || 'UTC';
 
       const result = await db.execute(sql`
-        SELECT COALESCE(SUM(screen_time_earned::float), 0) as total_screen_time
+        SELECT 
+          COALESCE(SUM(CASE WHEN difficulty = 'easy' THEN screen_time_earned::float ELSE 0 END), 0) as easy_time,
+          COALESCE(SUM(CASE WHEN difficulty = 'hard' THEN screen_time_earned::float ELSE 0 END), 0) as hard_time
         FROM game_results
         WHERE user_id = ${userId}
         AND created_at::timestamp >= TIMEZONE(${userTimezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone} + INTERVAL '1 day') - INTERVAL '1 day')
         AND created_at::timestamp < TIMEZONE(${userTimezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone} + INTERVAL '1 day') + INTERVAL '1 week' - INTERVAL '1 day')
       `);
 
-      res.json({ screenTime: Number(result.rows[0].total_screen_time) });
+      const easyTime = Number(result.rows[0].easy_time);
+      const hardTime = Number(result.rows[0].hard_time);
+
+      res.json({ easyTime, hardTime });
     } catch (error) {
       console.error('Error fetching screen time:', error);
       res.status(500).json({ error: 'Failed to fetch screen time' });
