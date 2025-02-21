@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
@@ -58,7 +57,7 @@ export default function AMC() {
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
 
-      const problems = isTutor ? 
+      const problems = isTutor ?
         [await fetchSingleProblem(competitionType, csrfToken)] :
         await fetchProblems(competitionType, csrfToken);
       setSelectedProblems(problems);
@@ -79,19 +78,19 @@ export default function AMC() {
   };
 
   const fetchSingleProblem = async (competitionType: string, csrfToken: string): Promise<Problem> => {
-  const response = await fetch(
-    `/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=1-25`,
-    {
-      headers: {
-        'CSRF-Token': csrfToken,
-      },
-    }
-  );
-  if (!response.ok) throw new Error('Failed to fetch problem');
-  return response.json();
-};
+    const response = await fetch(
+      `/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=1-25`,
+      {
+        headers: {
+          'CSRF-Token': csrfToken,
+        },
+      }
+    );
+    if (!response.ok) throw new Error('Failed to fetch problem');
+    return response.json();
+  };
 
-const fetchProblems = async (competitionType: string, csrfToken: string): Promise<Problem[]> => {
+  const fetchProblems = async (competitionType: string, csrfToken: string): Promise<Problem[]> => {
     const problems = [];
     const selectedProblemIds: string[] = [];
 
@@ -299,7 +298,7 @@ const fetchProblems = async (competitionType: string, csrfToken: string): Promis
             />
             <div className="flex justify-center gap-4">
               <Button onClick={() => setShowProblem(false)}>Exit Game</Button>
-              <Button onClick={() => startGame(currentCompetitionType)}>Play Again</Button>
+              <Button onClick={() => startGame(currentCompetitionType, true)}>Play Again</Button>
             </div>
           </div>
         ) : (
