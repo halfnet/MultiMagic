@@ -268,7 +268,7 @@ export default function AMC() {
                     <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full animate-ping" />
                   </div>
                   <div className="text-lg font-semibold bg-gradient-to-r from-purple-700 to-purple-500 bg-clip-text text-transparent">
-                    <AmcScreenTime userId={user.id} key={gameCompleted} />
+                    <AmcScreenTime userId={user.id} key={`${user.id}-${gameCompleted}`} />
                   </div>
                 </div>
               </div>
