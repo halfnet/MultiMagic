@@ -436,7 +436,7 @@ AMC
               Easy Mode (3-12)
             </Button>
             <Button size="lg" className="w-full text-lg" onClick={() => startGame('hard')}>
-              Hard Mode (5-19)
+              Hard Mode (3-19)
             </Button>
 
             <div className="relative">
