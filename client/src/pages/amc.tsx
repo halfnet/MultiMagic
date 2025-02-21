@@ -81,7 +81,7 @@ export default function AMC() {
 
   const fetchSingleProblem = async (competitionType: string, csrfToken: string): Promise<Problem> => {
     const response = await fetch(
-      `/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=1-25`,
+      `/api/amc_problems?userId=${user.id}&competitionType=${competitionType}&problemRange=fixed`,
       {
         headers: {
           'CSRF-Token': csrfToken,

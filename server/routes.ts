@@ -776,9 +776,15 @@ export function registerRoutes(app: Express): Server {
           problemRangeQuery = 'AND problem_number BETWEEN 11 AND 20';
         } else if (problemRange === '21-25') {
           problemRangeQuery = 'AND problem_number BETWEEN 21 AND 25';
+        } else if (problemRange === 'fixed') {
+          problemRangeQuery = 'AND problem_number = 9 AND year = 2007';
         }
       }
-      const idNotInQuery = 'AND id NOT IN (' + excludeIds + ')'
+
+      let idNotInQuery = '';
+      if (problemRange !== 'fixed') {
+        idNotInQuery = 'AND id NOT IN (' + excludeIds + ')'
+      }
 
       const result = await db.execute(sql`
         SELECT *
@@ -792,12 +798,12 @@ export function registerRoutes(app: Express): Server {
       `);
 
       if (!result.rows[0]) {
-        return res.status(404).json({ error: 'No AMC 8 problems found' });
+        return res.status(404).json({ error: 'No ' + competitionType + 'problems found' });
       }
 
       res.json(result.rows[0]);
     } catch (error) {
-      console.error('Error fetching AMC 8 problem:', error);
+      console.error('Error fetching problem:', error);
       res.status(500).json({ error: 'Failed to fetch problem' });
     }
   });
