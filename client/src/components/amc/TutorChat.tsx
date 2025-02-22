@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ChevronDown, ChevronUp, Send } from 'lucide-react';
-import MathJax from 'react-mathjax';
+import 'katex/dist/katex.min.css';
+import { InlineMath, BlockMath } from 'react-katex';
 
 interface TutorChatProps {
   problemId: number;
@@ -86,18 +87,16 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
           </div>
 
           <div className="h-64 overflow-y-auto mb-4 space-y-4">
-            <MathJax.Provider>
-              {messages.map((msg, i) => (
-                <div
-                  key={i}
-                  className={`p-2 rounded ${
-                    msg.role === 'user' ? 'bg-blue-100 ml-8' : 'bg-gray-100 mr-8'
-                  }`}
-                >
-                  <MathJax.Node formula={msg.content} />
-                </div>
-              ))}
-            </MathJax.Provider>
+            {messages.map((msg, i) => (
+              <div
+                key={i}
+                className={`p-2 rounded ${
+                  msg.role === 'user' ? 'bg-blue-100 ml-8' : 'bg-gray-100 mr-8'
+                }`}
+              >
+                <BlockMath math={msg.content} />
+              </div>
+            ))}
           </div>
 
           <div className="flex gap-2">
