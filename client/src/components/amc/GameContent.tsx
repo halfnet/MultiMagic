@@ -46,36 +46,39 @@ export function GameContent({
     <div className="space-y-2">
       <div className="space-y-1">
         <div className="flex justify-between items-center w-full mb-1">
-          <div className="text-sm text-grey-500">
-            <div>
-              Year {currentProblem?.year} - Problem {currentProblem?.problem_number}
-            </div>
-            {!tutorMode && (
-              <div className="mt-1">
-                Problem {currentIndex + 1} of {totalProblems}
+            <div className="text-sm text-grey-500">
+              <div>
+                Year {currentProblem?.year} - Problem {currentProblem?.problem_number}
               </div>
-            )}
-          </div>
-          <div className="flex flex-col items-end gap-1">
-            <div className="text-sm text-grey-500 flex items-center gap-2">
-              <Clock className="w-4 h-4 shrink-0" />
-              {gameStatus === 'inProgress' && <Timer startTime={startTime} />}
+              {!tutorMode && (
+                <div className="mt-1">
+                  Problem {currentIndex + 1} of {totalProblems}
+                </div>
+              )}
             </div>
-            {!tutorMode && (
-              <div className="text-sm text-grey-500">
-                Answered: {answeredCount}
+            <div className="flex items-center gap-4">
+              <div className="flex flex-col items-end gap-1">
+                <div className="text-sm text-grey-500 flex items-center gap-2">
+                  <Clock className="w-4 h-4 shrink-0" />
+                  {gameStatus === 'inProgress' && <Timer startTime={startTime} />}
+                </div>
+                {!tutorMode && (
+                  <div className="text-sm text-grey-500">
+                    Answered: {answeredCount}
+                  </div>
+                )}
               </div>
-            )}
+              {gameStatus === 'inProgress' && (
+                <SubmitButton
+                  onSubmit={onSubmit}
+                  answeredCount={answeredCount}
+                  totalProblems={selectedProblems.length}
+                  selectedProblems={selectedProblems}
+                />
+              )}
+              <ExitButton gameStatus={gameStatus} onExit={onExit} />
+            </div>
           </div>
-          {gameStatus === 'inProgress' && (
-            <SubmitButton
-              onSubmit={onSubmit}
-              answeredCount={answeredCount}
-              totalProblems={selectedProblems.length}
-              selectedProblems={selectedProblems}
-            />
-          )}
-        </div>
         <div className="space-y-2">
           <div
             className="[&_img]:inline-block [&_img]:align-middle [&_img]:mx-1"
@@ -136,7 +139,6 @@ export function GameContent({
                 </Button>
               )}
             </div>
-            <ExitButton gameStatus={gameStatus} onExit={onExit} />
           </div>
         </div>
       </div>
