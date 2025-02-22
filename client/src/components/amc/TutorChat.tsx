@@ -98,20 +98,18 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
             {messages.map((msg, i) => (
               <div
                 key={i}
-                className={`p-3 rounded-lg ${
+                className={`p-3 rounded-lg whitespace-pre-wrap ${
                   msg.role === 'user' ? 'bg-blue-100 ml-8' : 'bg-gray-100 mr-8'
                 }`}
               >
-                {msg.content.includes('$') ? (
-                  msg.content.split(/(\$.*?\$)/).map((part, index) => {
-                    if (part.startsWith('$') && part.endsWith('$')) {
-                      return <InlineMath key={index} math={escapeLaTeX(part.slice(1, -1))} />;
-                    }
-                    return <span key={index}>{part}</span>;
-                  })
-                ) : (
-                  <span>{msg.content}</span>
-                )}
+                {msg.content.split(/(\$[^$]+\$|\n)/).map((part, index) => {
+                  if (part.startsWith('$') && part.endsWith('$')) {
+                    return <InlineMath key={index} math={escapeLaTeX(part.slice(1, -1))} />;
+                  } else if (part === '\n') {
+                    return <br key={index} />;
+                  }
+                  return <span key={index}>{part}</span>;
+                })}
               </div>
             ))}
           </div>
