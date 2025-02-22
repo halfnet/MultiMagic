@@ -17,8 +17,7 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
 
   const presetQuestions = [
     "What concept does this problem involve?",
-    "Can you explain the first step?",
-    "I'm stuck on..."
+    "Can you explain the first step?"
   ];
 
   const sendMessage = async (content: string) => {
