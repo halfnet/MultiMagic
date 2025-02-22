@@ -5,7 +5,7 @@ import { Timer } from '@/components/amc/Timer';
 import { SubmitButton } from './SubmitButton';
 import { ExitButton } from './ExitButton';
 import { Problem } from './types';
-import { TutorChat } from './TutorChat';
+import {TutorChat} from './TutorChat'; // Assuming TutorChat.tsx exists in the same directory
 
 interface GameContentProps {
   currentProblem: Problem;
@@ -44,7 +44,6 @@ export function GameContent({
 }: GameContentProps) {
   return (
     <div className="space-y-6">
-      {tutorMode && <TutorChat />}
       <div className="space-y-4">
         <div className="flex justify-between items-center w-full mb-4">
           <div className="text-sm text-grey-500">
@@ -141,6 +140,12 @@ export function GameContent({
           </div>
         </div>
       </div>
+      {tutorMode && (
+        <TutorChat
+          problemId={currentProblem.id}
+          currentQuestion={currentProblem.question_html}
+        />
+      )}
     </div>
   );
 }
