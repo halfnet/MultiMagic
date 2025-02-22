@@ -803,6 +803,11 @@ export function registerRoutes(app: Express): Server {
         return res.status(404).json({ error: 'No ' + competitionType + 'problems found' });
       }
 
+      console.info('Loaded AMC problem:', {
+        year: result.rows[0].year,
+        competitionType: result.rows[0].competition_type,
+        problemNumber: result.rows[0].problem_number
+      });
       res.json(result.rows[0]);
     } catch (error) {
       console.error('Error fetching problem:', error);
