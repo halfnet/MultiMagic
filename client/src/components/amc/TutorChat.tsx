@@ -57,19 +57,7 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
     return data.csrfToken;
   };
 
-  const escapeLaTeX = (text: string) => {
-    let result = text;
-
-    // Handle currency notation ($X.XX)
-    result = result.replace(/\$\d+(?:\.\d{2})?/g, (match) => {
-      return `\\text{${match}}`;
-    });
-
-    // Handle newlines
-    result = result.replace(/\n/g, '\\\\');
-
-    return result;
-  };
+  
 
   const renderMessageContent = (content: string) => {
     // Split on math expressions
