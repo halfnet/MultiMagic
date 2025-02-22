@@ -78,25 +78,16 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
   };
 
   const renderMessageContent = (content: string) => {
-    // Split on math expressions while preserving currency
-    const parts = content.split(/(\$(?!\d+(?:\.\d{2})?)[^$]+\$)/);
+    // Split on math expressions
+    const parts = content.split(/(\$[^$]+\$)/);
 
     return parts.map((part, index) => {
       if (part.startsWith('$') && part.endsWith('$')) {
-        const mathContent = part.slice(1, -1).trim();
-        if (mathContent && !/^\d+\.?\d*$/.test(mathContent)) { // Skip numbers/decimals
-          return (
-            <MathJax key={index} inline>{`\\(${escapeLaTeX(mathContent)}\\)`}</MathJax>
-          );
-        }
-        return <span key={index}>{`$${mathContent}$`}</span>;
-      } else if (part.startsWith('\\') && part.includes('{')) {
-          return <MathJax key={index} inline>{`\\(${escapeLaTeX(part)}\\)`}</MathJax>;
-      } else if (part === '\\\\') {
-        return <br key={index} />;
-      } else {
-        return <span key={index}>{part}</span>;
+        return (
+          <MathJax key={index} inline>{`\\(${part.slice(1, -1)}\\)`}</MathJax>
+        );
       }
+      return <span key={index}>{part}</span>;
     });
   };
 
