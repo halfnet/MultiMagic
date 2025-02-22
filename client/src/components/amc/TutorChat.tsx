@@ -92,12 +92,7 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
         }
         return <span key={index}>{`$${mathContent}$`}</span>;
       } else if (part.startsWith('\\') && part.includes('{')) {
-        try {
-          return <MathJax.Node key={index} inline formula={escapeLaTeX(part)} />;
-        } catch (error) {
-          console.warn('Failed to render LaTeX command:', part, error);
-          return <span key={index}>{part}</span>;
-        }
+          return <MathJax key={index} inline>{`\\(${escapeLaTeX(part)}\\)`}</MathJax>;
       } else if (part === '\\\\') {
         return <br key={index} />;
       } else {
