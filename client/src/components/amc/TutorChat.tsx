@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -60,6 +59,11 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
     return data.csrfToken;
   };
 
+  const escapeLaTeX = (text: string) => {
+    //Escape special characters in LaTeX
+    return text.replace(/[\\$]/g, '\\$&');
+  };
+
   return (
     <div className={`
       fixed lg:static lg:w-full lg:rounded-lg lg:mt-6
@@ -101,7 +105,7 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
                 {msg.content.includes('$') ? (
                   msg.content.split(/(\$.*?\$)/).map((part, index) => {
                     if (part.startsWith('$') && part.endsWith('$')) {
-                      return <InlineMath key={index} math={part.slice(1, -1)} />;
+                      return <InlineMath key={index} math={escapeLaTeX(part.slice(1, -1))} />;
                     }
                     return <span key={index}>{part}</span>;
                   })
