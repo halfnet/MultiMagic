@@ -17,7 +17,8 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
 
   const presetQuestions = [
     "What concept does this problem involve?",
-    "Can you explain the first step?"
+    "Can you explain the first step?",
+    "I'm stuck on..."
   ];
 
   const sendMessage = async (content: string) => {
@@ -57,19 +58,46 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
     return data.csrfToken;
   };
 
-  
+  const escapeLaTeX = (text: string) => {
+    let result = text;
+
+    // Replace \(...\) with $...$ for inline math (MathJax supports this natively)
+    result = result.replace(/\\\((.*?)\\\)/g, '$$$1$$');
+
+    // Handle currency notation ($X.XX)
+    result = result.replace(/\$\d+(?:\.\d{2})?/g, (match) => {
+      return `\\text{${match}}`;
+    });
+
+    // Handle LaTeX commands (MathJax handles \underline natively, no need for extra escaping here)
+    result = result.replace(/\\underline\{([^}]+)\}/g, '\\underline{$1}');
+
+    // Handle newlines
+    result = result.replace(/\n/g, '\\\\');
+
+    return result;
+  };
 
   const renderMessageContent = (content: string) => {
-    // Split on math expressions
-    const parts = content.split(/(\$[^$]+\$)/);
+    // Split on math expressions while preserving currency
+    const parts = content.split(/(\$(?!\d+(?:\.\d{2})?)[^$]+\$)/);
 
     return parts.map((part, index) => {
       if (part.startsWith('$') && part.endsWith('$')) {
-        return (
-          <MathJax key={index} inline>{`\\(${part.slice(1, -1)}\\)`}</MathJax>
-        );
+        const mathContent = part.slice(1, -1).trim();
+        if (mathContent && !/^\d+\.?\d*$/.test(mathContent)) { // Skip numbers/decimals
+          return (
+            <MathJax key={index} inline>{`\\(${escapeLaTeX(mathContent)}\\)`}</MathJax>
+          );
+        }
+        return <span key={index}>{`$${mathContent}$`}</span>;
+      } else if (part.startsWith('\\') && part.includes('{')) {
+          return <MathJax key={index} inline>{`\\(${escapeLaTeX(part)}\\)`}</MathJax>;
+      } else if (part === '\\\\') {
+        return <br key={index} />;
+      } else {
+        return <span key={index}>{part}</span>;
       }
-      return <span key={index}>{part}</span>;
     });
   };
 
