@@ -157,4 +157,19 @@ router.get('/amc_problems', async (req, res) => {
   }
 });
 
+router.post('/tutor-chat', async (req, res) => {
+  try {
+    const { messages, problemId, currentQuestion } = req.body;
+    
+    // For now, return a simple response
+    // You can enhance this with actual AI/LLM integration later
+    const response = "Let me help you with this AMC problem. What specific part would you like me to explain?";
+    
+    res.json({ response });
+  } catch (error) {
+    console.error('Error in tutor chat:', error);
+    res.status(500).json({ error: 'Failed to process tutor chat request' });
+  }
+});
+
 export default router;
