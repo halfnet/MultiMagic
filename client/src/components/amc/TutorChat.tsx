@@ -60,16 +60,10 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
   const escapeLaTeX = (text: string) => {
     let result = text;
 
-    // Replace \(...\) with $...$ for inline math (MathJax supports this natively)
-    result = result.replace(/\\\((.*?)\\\)/g, '$$$1$$');
-
     // Handle currency notation ($X.XX)
     result = result.replace(/\$\d+(?:\.\d{2})?/g, (match) => {
       return `\\text{${match}}`;
     });
-
-    // Handle LaTeX commands (MathJax handles \underline natively, no need for extra escaping here)
-    result = result.replace(/\\underline\{([^}]+)\}/g, '\\underline{$1}');
 
     // Handle newlines
     result = result.replace(/\n/g, '\\\\');
