@@ -60,26 +60,27 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
   };
 
   const escapeLaTeX = (text: string) => {
-    // Escape special LaTeX characters, but preserve $ as plain text when used as currency
     let result = text;
 
-    // Detect and preserve $ followed by a number or decimal (e.g., "$10", "$2.40") as plain text
-    result = result.replace(/(\W)\$(\d+\.?\d*)/g, '$1\\$ $2'); // Escape $ before numbers/decimals
-    result = result.replace(/(\d+\.?\d*)\$(\W)/g, '$1\\$ $2'); // Escape $ after numbers/decimals
+    // Handle currency notation ($X.XX)
+    result = result.replace(/\$\d+(?:\.\d{2})?/g, (match) => {
+      return `\\text{${match}}`;
+    });
 
-    // Escape standalone $ symbols that aren’t part of math
-    result = result.replace(/([^\\])\$/g, '$1\\$'); // Escape $ unless preceded by \
+    // Handle LaTeX commands
+    result = result.replace(/\\underline\{([^}]+)\}/g, (_, content) => {
+      return `\\underline{\\text{${content}}}`;
+    });
 
-    // Handle underlines and newlines
-    result = result.replace(/\\underline\{([^}]+)\}/g, '\\underline{$1}'); // Ensure underlines are properly formatted
-    result = result.replace(/\n/g, '\\\\'); // Replace newlines with LaTeX line breaks
+    // Handle newlines
+    result = result.replace(/\n/g, '\\\\');
 
     return result;
   };
 
   const renderMessageContent = (content: string) => {
-    // Split content into parts: math ($...$), LaTeX commands, and plain text
-    const parts = content.split(/(\$(?:[^$]+)\$|\\\w+\{[^}]+\})/);
+    // Split on math expressions while preserving currency
+    const parts = content.split(/(\$(?!\d+(?:\.\d{2})?)[^$]+\$)/);
 
     return parts.map((part, index) => {
       if (part.startsWith('$') && part.endsWith('$')) {
