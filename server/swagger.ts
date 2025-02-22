@@ -31,7 +31,7 @@ const options = {
       },
     ],
   },
-  apis: ['./server/routes.ts'],
+  apis: ['./server/routes/*.ts'], // Updated to include all route files
 };
 
 export const specs = swaggerJsdoc(options);

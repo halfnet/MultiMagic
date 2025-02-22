@@ -30,9 +30,9 @@ export default function AMCPage() {
   const [tutorMode, setTutorMode] = useState(false);
   const [gameCompleted, setGameCompleted] = useState(false);
 
-  useEffect(() => {
-    console.info("gameCompleted updated to:", gameCompleted);
-  }, [gameCompleted]);
+  //useEffect(() => {
+  //  console.info("gameCompleted updated to:", gameCompleted);
+  //}, [gameCompleted]);
 
   const fetchCsrfToken = async () => {
     const response = await fetch('/api/csrf-token');
@@ -76,9 +76,9 @@ export default function AMCPage() {
 
       const csrfToken = await fetchCsrfToken();
       const problems = isTutor 
-        //? [await fetchProblem('fixed-AMC 8-2011-10', competitionType, [], csrfToken)]
+        ? [await fetchProblem('fixed-AMC 8-2014-14', competitionType, [], csrfToken)]
         //? [await fetchProblem('fixed-AMC 8-2022-4', competitionType, [], csrfToken)]
-        ? [await fetchProblem('fixed-AMC 8-2010-21', competitionType, [], csrfToken)]
+        //? [await fetchProblem('fixed-AMC 8-2010-21', competitionType, [], csrfToken)]
         //? [await fetchProblem('1-25', competitionType, [], csrfToken)]
         : await fetchProblems(competitionType, csrfToken);
 
