@@ -776,8 +776,10 @@ export function registerRoutes(app: Express): Server {
           problemRangeQuery = 'AND problem_number BETWEEN 11 AND 20';
         } else if (problemRange === '21-25') {
           problemRangeQuery = 'AND problem_number BETWEEN 21 AND 25';
-        } else if (problemRange === 'fixed') {
-          problemRangeQuery = 'AND problem_number = 9 AND year = 2007';
+        } else if (problemRange.startsWith('fixed')) {
+          // Parse fixed-AMC 8-2011-10 format
+          const [_, compType, year, problemNum] = problemRange.split('-');
+          problemRangeQuery = `AND problem_number = ${problemNum} AND year = ${year}`;
         }
       }
 
