@@ -77,7 +77,7 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
               <Button
                 key={i}
                 variant="outline"
-                className="mr-2"
+                className="mr-2 text-sm font-normal"
                 onClick={() => sendMessage(q)}
                 disabled={isLoading}
               >
@@ -94,7 +94,9 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
                   msg.role === 'user' ? 'bg-blue-100 ml-8' : 'bg-gray-100 mr-8'
                 }`}
               >
-                <BlockMath math={msg.content} />
+                <div className="text-sm font-normal leading-normal whitespace-pre-wrap">
+                  {msg.content}
+                </div>
               </div>
             ))}
           </div>
