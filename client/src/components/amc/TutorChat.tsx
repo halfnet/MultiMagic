@@ -90,13 +90,20 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
             {messages.map((msg, i) => (
               <div
                 key={i}
-                className={`p-2 rounded ${
+                className={`p-3 rounded-lg ${
                   msg.role === 'user' ? 'bg-blue-100 ml-8' : 'bg-gray-100 mr-8'
                 }`}
               >
-                <div className="text-sm font-normal leading-normal whitespace-pre-wrap">
-                  {msg.content}
-                </div>
+                {msg.content.includes('$') ? (
+                  msg.content.split(/(\$.*?\$)/).map((part, index) => {
+                    if (part.startsWith('$') && part.endsWith('$')) {
+                      return <InlineMath key={index} math={part.slice(1, -1)} />;
+                    }
+                    return <span key={index}>{part}</span>;
+                  })
+                ) : (
+                  <span>{msg.content}</span>
+                )}
               </div>
             ))}
           </div>
@@ -107,9 +114,15 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask a question..."
               className="flex-1"
-              disabled={isLoading}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  sendMessage(input);
+                }
+              }}
             />
             <Button
+              size="icon"
               onClick={() => sendMessage(input)}
               disabled={isLoading || !input.trim()}
             >
