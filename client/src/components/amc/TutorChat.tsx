@@ -62,6 +62,9 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
   const escapeLaTeX = (text: string) => {
     let result = text;
 
+    // Replace \(...\) with $...$ for inline math
+    result = result.replace(/\\\((.*?)\\\)/g, '$$$1$$');
+
     // Handle currency notation ($X.XX)
     result = result.replace(/\$\d+(?:\.\d{2})?/g, (match) => {
       return `\\text{${match}}`;
