@@ -51,6 +51,6 @@
 
   /* Ensure underlines and other text formatting look consistent */
   .katex .underline {
-    @apply border-b border-foreground/50; /* Customize underline style to match your design */
+    @apply border-b border-foreground/30; /* Thinner underline for better readability */
   }
 }
