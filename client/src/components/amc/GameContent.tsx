@@ -43,9 +43,9 @@ export function GameContent({
   tutorMode,
 }: GameContentProps) {
   return (
-    <div className="space-y-3">
-      <div className="space-y-2">
-        <div className="flex justify-between items-center w-full mb-2">
+    <div className="space-y-2">
+      <div className="space-y-1">
+        <div className="flex justify-between items-center w-full mb-1">
           <div className="text-sm text-grey-500">
             <div>
               Year {currentProblem?.year} - Problem {currentProblem?.problem_number}
@@ -76,7 +76,7 @@ export function GameContent({
             />
           )}
         </div>
-        <div className="space-y-4">
+        <div className="space-y-2">
           <div
             className="[&_img]:inline-block [&_img]:align-middle [&_img]:mx-1"
             dangerouslySetInnerHTML={{ __html: currentProblem?.question_html || '' }}
