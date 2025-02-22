@@ -74,7 +74,12 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
   };
 
   return (
-    <MathJaxContext>
+    <MathJaxContext config={{
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    }}>
       <div className={`
         fixed lg:static lg:w-full lg:rounded-lg lg:mt-6
         md:bottom-0 md:right-4 md:w-96 
