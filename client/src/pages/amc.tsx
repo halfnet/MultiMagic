@@ -1,4 +1,4 @@
-// AMCPage.tsx
+// amc.tsx
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { Card } from '@/components/ui/card';
@@ -76,7 +76,7 @@ export default function AMCPage() {
 
       const csrfToken = await fetchCsrfToken();
       const problems = isTutor 
-        ? [await fetchProblem('fixed', competitionType, [], csrfToken)]
+        ? [await fetchProblem('1-25', competitionType, [], csrfToken)]
         : await fetchProblems(competitionType, csrfToken);
 
       setSelectedProblems(problems);
