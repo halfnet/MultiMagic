@@ -35,8 +35,8 @@ interface Problem {
 
 const TOTAL_PROBLEMS = 5;
 
-export default function AMC() {
-  const [_, setLocation] = useLocation();
+export default function AMCPage() {
+  const [location, setLocation] = useLocation();
   const { user } = useCookieAuth();
   const { toast } = useToast();
   const [showProblem, setShowProblem] = useState(false);
@@ -49,20 +49,18 @@ export default function AMC() {
   const [startTime, setStartTime] = useState<number>(0);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [currentCompetitionType, setCurrentCompetitionType] = useState<string>('AMC 8');
-  const [tutorMode, setTutorMode] = useState(false); // Added tutorMode state
-  const [gameCompleted, setGameCompleted] = useState(false); // Added gameCompleted state
+  const [tutorMode, setTutorMode] = useState(false);
+  const [gameCompleted, setGameCompleted] = useState(false);
   useEffect(() => {
     console.info("gameCompleted updated to:", gameCompleted);
-  }, [gameCompleted]); // Runs whenever gameCompleted changes
-  //console.log("New key:", `${user.id}-${gameCompleted}`);
-  
+  }, [gameCompleted]);
+
   const startGame = async (competitionType: string = 'AMC 8', isTutor: boolean = false) => {
     try {
       setCurrentCompetitionType(competitionType);
       setGameStatus('inProgress');
-      setTutorMode(isTutor); // Set tutorMode based on button click
-      setGameCompleted(false); // Reset gameCompleted flag on new game start
-      //console.info(gameCompleted)
+      setTutorMode(isTutor);
+      setGameCompleted(false);
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
 
@@ -103,21 +101,18 @@ export default function AMC() {
     const problems = [];
     const selectedProblemIds: string[] = [];
 
-    // Fetch first two problems (1-10)
     for (let i = 0; i < 2; i++) {
       const problem = await fetchProblem('1-10', competitionType, selectedProblemIds, csrfToken);
       problems.push(problem);
       selectedProblemIds.push(problem.id);
     }
 
-    // Fetch next two problems (11-20)
     for (let i = 0; i < 2; i++) {
       const problem = await fetchProblem('11-20', competitionType, selectedProblemIds, csrfToken);
       problems.push(problem);
       selectedProblemIds.push(problem.id);
     }
 
-    // Fetch last problem (21-25)
     const problem = await fetchProblem('21-25', competitionType, selectedProblemIds, csrfToken);
     problems.push(problem);
 
@@ -161,8 +156,7 @@ export default function AMC() {
       setShowResults(true);
       setGameStatus('complete');
       setElapsedTime(Date.now() - startTime);
-      setGameCompleted(true); // Set gameCompleted flag to true after submission
-      //console.info(gameCompleted)
+      setGameCompleted(true);
     } catch (error) {
       console.error('Error saving game results:', error);
       toast({
@@ -211,7 +205,7 @@ export default function AMC() {
         questionsCount: TOTAL_PROBLEMS,
         ...results,
         timeTakenInMs: Date.now() - startTime,
-        tutorMode: tutorMode, // Added tutorMode to the request body
+        tutorMode: tutorMode,
       }),
     });
 
@@ -245,7 +239,6 @@ export default function AMC() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex flex-col items-center justify-center p-4">
       <Card className="p-8 max-w-4xl w-full">
-        {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-primary">AMC Challenges</h1>
           <div className="flex gap-2">
@@ -263,7 +256,6 @@ export default function AMC() {
         </div>
         <Separator className="my-4" />
 
-        {/* Main Content */}
         {!showProblem ? (
           <div className="space-y-4">
             {user && (
@@ -286,7 +278,7 @@ export default function AMC() {
                     <Button size="lg" onClick={() => startGame(type)} className="w-48">
                       {type}
                     </Button>
-                    <AmcGamesPlayed userId={user.id} competitionType={type} excludeTutorMode={true} /> {/* Added excludeTutorMode prop */}
+                    <AmcGamesPlayed userId={user.id} competitionType={type} excludeTutorMode={true} />
                   </div>
                 ))}
               </div>
@@ -457,8 +449,7 @@ function GameContent({
               </div>
             )}
           </div>
-            {gameStatus === 'inProgress' && <SubmitButton onSubmit={onSubmit} answeredCount={answeredCount} totalProblems={selectedProblems.length} selectedProblems={selectedProblems} />}
-          </div>
+          {gameStatus === 'inProgress' && <SubmitButton onSubmit={onSubmit} answeredCount={answeredCount} totalProblems={selectedProblems.length} selectedProblems={selectedProblems} />}
         </div>
         <div className="space-y-4">
           <div
