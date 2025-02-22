@@ -16,6 +16,8 @@ router.get('/amc-games-played', async (req, res) => {
       SELECT competition_type, COUNT(*) as count
       FROM amc_game_results 
       WHERE user_id = ${userId}
+      AND created_at::timestamp >= TIMEZONE(${timezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${timezone} + INTERVAL '1 day') - INTERVAL '1 day')
+      AND created_at::timestamp < TIMEZONE(${timezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${timezone} + INTERVAL '1 day') + INTERVAL '1 week' - INTERVAL '1 day')
     `;
 
     if (excludeTutorMode) {
