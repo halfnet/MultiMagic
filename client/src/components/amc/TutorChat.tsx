@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ChevronDown, ChevronUp, Send } from 'lucide-react';
-import MathJax from 'react-mathjax';
+import { MathJax, MathJaxContext } from 'better-react-mathjax';
 
 interface TutorChatProps {
   problemId: number;
@@ -87,7 +87,7 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
         const mathContent = part.slice(1, -1).trim();
         if (mathContent && !/^\d+\.?\d*$/.test(mathContent)) { // Skip numbers/decimals
           return (
-            <MathJax.Node key={index} inline formula={escapeLaTeX(mathContent)} />
+            <MathJax key={index} inline>{`\\(${escapeLaTeX(mathContent)}\\)`}</MathJax>
           );
         }
         return <span key={index}>{`$${mathContent}$`}</span>;
@@ -107,7 +107,7 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
   };
 
   return (
-    <MathJax.Provider>
+    <MathJaxContext>
       <div className={`
         fixed lg:static lg:w-full lg:rounded-lg lg:mt-6
         md:bottom-0 md:right-4 md:w-96 
@@ -174,6 +174,6 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
           </div>
         )}
       </div>
-    </MathJax.Provider>
+    </MathJaxContext>
   );
 }
