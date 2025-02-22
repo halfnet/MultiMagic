@@ -439,21 +439,24 @@ function GameContent({
           <div className="text-sm text-grey-500">
             <div>
               Year {currentProblem?.year} - Problem {currentProblem?.problem_number}
-              {!tutorMode && ` (${currentIndex + 1} of ${totalProblems})`}
             </div>
             {!tutorMode && (
               <div className="mt-1">
+                Problem {currentIndex + 1} of {totalProblems}
+              </div>
+            )}
+          </div>
+          <div className="flex flex-col items-end gap-1">
+            <div className="text-sm text-grey-500 flex items-center gap-2">
+              <Clock className="w-4 h-4 shrink-0" />
+              {gameStatus === 'inProgress' && <Timer startTime={startTime} />}
+            </div>
+            {!tutorMode && (
+              <div className="text-sm text-grey-500">
                 Answered: {answeredCount} of {totalProblems}
               </div>
             )}
           </div>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-grey-500">
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 shrink-0" />
-                {gameStatus === 'inProgress' && <Timer startTime={startTime} />}
-              </div>
-            </div>
             {gameStatus === 'inProgress' && <SubmitButton onSubmit={onSubmit} answeredCount={answeredCount} totalProblems={selectedProblems.length} selectedProblems={selectedProblems} />}
           </div>
         </div>
