@@ -5,6 +5,7 @@ import { Timer } from '@/components/amc/Timer';
 import { SubmitButton } from './SubmitButton';
 import { ExitButton } from './ExitButton';
 import { Problem } from './types';
+import { TutorChat } from './TutorChat';
 
 interface GameContentProps {
   currentProblem: Problem;
@@ -43,6 +44,7 @@ export function GameContent({
 }: GameContentProps) {
   return (
     <div className="space-y-6">
+      {tutorMode && <TutorChat />}
       <div className="space-y-4">
         <div className="flex justify-between items-center w-full mb-4">
           <div className="text-sm text-grey-500">
