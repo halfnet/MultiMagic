@@ -1,13 +1,13 @@
-
 import { useQuery } from '@tanstack/react-query';
 
 interface AmcScreenTimeProps {
   userId: number;
+  gameCompleted: boolean; // Add this to react to game completion
 }
 
-export function AmcScreenTime({ userId }: AmcScreenTimeProps) {
+export function AmcScreenTime({ userId, gameCompleted }: AmcScreenTimeProps) {
   const { data, isLoading, error } = useQuery({
-    queryKey: ['amc-screen-time', userId],
+    queryKey: ['amc-screen-time', userId, gameCompleted], // Include gameCompleted in queryKey
     queryFn: async () => {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const response = await fetch(`/api/amc-screen-time?userId=${userId}&timezone=${timezone}`);

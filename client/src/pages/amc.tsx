@@ -51,13 +51,18 @@ export default function AMC() {
   const [currentCompetitionType, setCurrentCompetitionType] = useState<string>('AMC 8');
   const [tutorMode, setTutorMode] = useState(false); // Added tutorMode state
   const [gameCompleted, setGameCompleted] = useState(false); // Added gameCompleted state
-
+  useEffect(() => {
+    console.info("gameCompleted updated to:", gameCompleted);
+  }, [gameCompleted]); // Runs whenever gameCompleted changes
+  //console.log("New key:", `${user.id}-${gameCompleted}`);
+  
   const startGame = async (competitionType: string = 'AMC 8', isTutor: boolean = false) => {
     try {
       setCurrentCompetitionType(competitionType);
       setGameStatus('inProgress');
       setTutorMode(isTutor); // Set tutorMode based on button click
       setGameCompleted(false); // Reset gameCompleted flag on new game start
+      //console.info(gameCompleted)
       const csrfResponse = await fetch('/api/csrf-token');
       const { csrfToken } = await csrfResponse.json();
 
@@ -157,6 +162,7 @@ export default function AMC() {
       setGameStatus('complete');
       setElapsedTime(Date.now() - startTime);
       setGameCompleted(true); // Set gameCompleted flag to true after submission
+      //console.info(gameCompleted)
     } catch (error) {
       console.error('Error saving game results:', error);
       toast({
@@ -268,7 +274,7 @@ export default function AMC() {
                     <div className="absolute -top-1 -right-1 w-2 h-2 bg-purple-500 rounded-full animate-ping" />
                   </div>
                   <div className="text-lg font-semibold bg-gradient-to-r from-purple-700 to-purple-500 bg-clip-text text-transparent">
-                    <AmcScreenTime userId={user.id} key={`${user.id}-${gameCompleted}`} />
+                    <AmcScreenTime userId={user.id} gameCompleted={gameCompleted}/>
                   </div>
                 </div>
               </div>
@@ -304,7 +310,7 @@ export default function AMC() {
             />
             <div className="flex justify-center gap-4">
               <Button onClick={() => setShowProblem(false)}>Exit Game</Button>
-              <Button onClick={() => startGame(currentCompetitionType, true)}>Play Again</Button>
+              <Button onClick={() => startGame(currentCompetitionType, tutorMode)}>Play Again</Button>
             </div>
           </div>
         ) : (
