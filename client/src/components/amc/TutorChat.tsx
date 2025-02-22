@@ -60,14 +60,16 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
   
 
   const renderMessageContent = (content: string) => {
-    // Split on math expressions
-    const parts = content.split(/(\$[^$]+\$)/);
+    // Split on math expressions and LaTeX commands
+    const parts = content.split(/(\$[^$]+\$|\\\([^)]+\\\)|\\\[[^\]]+\\\])/);
 
     return parts.map((part, index) => {
       if (part.startsWith('$') && part.endsWith('$')) {
-        return (
-          <MathJax key={index} inline>{`\\(${part.slice(1, -1)}\\)`}</MathJax>
-        );
+        return <MathJax key={index}>{part}</MathJax>;
+      } else if (part.startsWith('\\(') && part.endsWith('\\)')) {
+        return <MathJax key={index}>{part}</MathJax>;
+      } else if (part.startsWith('\\[') && part.endsWith('\\]')) {
+        return <MathJax key={index} display>{part}</MathJax>;
       }
       return <span key={index}>{part}</span>;
     });
