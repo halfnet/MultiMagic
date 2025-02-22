@@ -329,6 +329,7 @@ export default function AMC() {
             onExit={() => setShowProblem(false)}
             onShowResults={() => setShowResults(true)}
             selectedProblems={selectedProblems}
+            tutorMode={tutorMode}
           />
         )}
       </Card>
@@ -413,6 +414,7 @@ function GameContent({
   onExit,
   onShowResults,
   selectedProblems,
+  tutorMode,
 }: {
   currentProblem: Problem;
   currentIndex: number;
@@ -428,6 +430,7 @@ function GameContent({
   onExit: () => void;
   onShowResults: () => void;
   selectedProblems: Problem[];
+  tutorMode: boolean;
 }) {
   return (
     <div className="space-y-6">
@@ -436,7 +439,13 @@ function GameContent({
           <div className="text-sm text-grey-500">
             <div>
               Year {currentProblem?.year} - Problem {currentProblem?.problem_number}
+              {!tutorMode && ` (${currentIndex + 1} of ${totalProblems})`}
             </div>
+            {!tutorMode && (
+              <div className="mt-1">
+                Answered: {answeredCount} of {totalProblems}
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-4">
             <div className="text-sm text-grey-500">
@@ -478,7 +487,25 @@ function GameContent({
             </div>
           </div>
         </div>
-        <div className="flex justify-end items-center">
+        <div className="flex justify-between items-center">
+          {!tutorMode && (
+            <div className="flex gap-2">
+              <Button
+                onClick={onPrevious}
+                disabled={currentIndex === 0}
+                className="bg-primary/90 hover:bg-primary text-primary-foreground"
+              >
+                Previous
+              </Button>
+              <Button
+                onClick={onNext}
+                disabled={currentIndex === totalProblems - 1}
+                className="bg-primary/90 hover:bg-primary text-primary-foreground"
+              >
+                Next
+              </Button>
+            </div>
+          )}
           <div className="flex gap-2">
             <div className="flex items-center gap-4">
               {gameStatus === 'complete' && (
