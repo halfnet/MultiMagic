@@ -43,9 +43,9 @@ export function GameContent({
   tutorMode,
 }: GameContentProps) {
   return (
-    <div className="space-y-6">
-      <div className="space-y-4">
-        <div className="flex justify-between items-center w-full mb-4">
+    <div className="space-y-3">
+      <div className="space-y-2">
+        <div className="flex justify-between items-center w-full mb-2">
           <div className="text-sm text-grey-500">
             <div>
               Year {currentProblem?.year} - Problem {currentProblem?.problem_number}

@@ -136,7 +136,7 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
             ))}
           </div>
 
-          <div className="h-64 overflow-y-auto mb-4 space-y-4">
+          <div className="h-48 overflow-y-auto mb-2 space-y-3">
             {messages.map((msg, i) => (
               <div
                 key={i}
