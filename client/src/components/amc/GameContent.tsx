@@ -43,8 +43,7 @@ export function GameContent({
   tutorMode,
 }: GameContentProps) {
   return (
-    <div className="space-y-6 lg:flex lg:gap-6 lg:space-y-0">
-      <div className="lg:flex-1">
+    <div className="space-y-6">
       <div className="space-y-4">
         <div className="flex justify-between items-center w-full mb-4">
           <div className="text-sm text-grey-500">
@@ -136,14 +135,13 @@ export function GameContent({
                   Go to Results
                 </Button>
               )}
+              <ExitButton gameStatus={gameStatus} onExit={onExit} />
             </div>
-            <ExitButton gameStatus={gameStatus} onExit={onExit} />
           </div>
         </div>
       </div>
-      </div>
       {tutorMode && (
-        <div className="lg:w-1/3">
+        <div className="w-full mt-6">
           <TutorChat
             problemId={currentProblem.id}
             currentQuestion={currentProblem.question_html}
