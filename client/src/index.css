@@ -39,18 +39,18 @@
     @apply text-primary;
   }
 
-  /* KaTeX Custom Styling */
-  .katex {
-    @apply font-sans; /* Use your application’s font (e.g., Arial or your preferred font) */
+  /* MathJax Custom Styling */
+  .mjx-chtml {
+    @apply font-sans; /* Use your application’s font */
   }
 
-  .katex-html .base {
+  .mjx-chtml .mjx-math {
     @apply text-foreground; /* Ensure text color matches your theme */
-    font-size: 1em; /* Ensure base font size matches your design */
+    font-size: 1em; /* Match base font size */
   }
 
-  /* Ensure underlines and other text formatting look consistent */
-  .katex .underline {
-    @apply border-b border-foreground/30; /* Thinner underline for better readability */
+  /* Underline styling for MathJax */
+  .mjx-chtml .mjx-munder > .mjx-under {
+    @apply border-b border-foreground/30; /* Consistent underline */
   }
 }
