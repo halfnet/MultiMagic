@@ -6,6 +6,41 @@ import fetch from 'node-fetch';
 
 const router = Router();
 
+router.get('/amc-games-played', async (req, res) => {
+  try {
+    const userId = parseInt(req.query.userId as string);
+    const timezone = (req.query.timezone as string) || 'UTC';
+    const excludeTutorMode = req.query.excludeTutorMode === 'true';
+
+    let query = sql`
+      SELECT competition_type, COUNT(*) as count
+      FROM amc_game_results 
+      WHERE user_id = ${userId}
+    `;
+
+    if (excludeTutorMode) {
+      query = sql`${query} AND (tutor_mode = false OR tutor_mode IS NULL)`;
+    }
+
+    query = sql`${query} 
+      GROUP BY competition_type
+    `;
+
+    const result = await db.execute(query);
+    const gamesByType = Object.fromEntries(
+      result.rows.map(row => [
+        row.competition_type,
+        parseInt(row.count)
+      ])
+    );
+
+    res.json(gamesByType);
+  } catch (error) {
+    console.error('Error fetching AMC games played:', error);
+    res.status(500).json({ error: 'Failed to fetch AMC games played' });
+  }
+});
+
 router.post('/amc-game-results', async (req, res) => {
   try {
     let screenTimeEarned = req.body.correctAnswers * 0.5;
