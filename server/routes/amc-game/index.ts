@@ -1,4 +1,3 @@
-
 import { Router } from 'express';
 import { db } from '../../../db';
 import { amcGameResults, amcGameQuestionResults } from '../../../db/schema';
@@ -65,6 +64,46 @@ router.get('/amc-screen-time', async (req, res) => {
   } catch (error) {
     console.error('Error fetching AMC screen time:', error);
     res.status(500).json({ error: 'Failed to fetch AMC screen time' });
+  }
+});
+
+router.get('/amc_problems', async (req, res) => {
+  try {
+    const userId = parseInt(req.query.userId as string);
+    const competitionType = req.query.competitionType as string;
+    const problemRange = req.query.problemRange as string;
+    const excludeIds = (req.query.excludeIds as string || '').split(',').filter(Boolean);
+
+    if (!competitionType) {
+      res.status(400).json({ error: 'Competition type is required' });
+      return;
+    }
+
+    let query = sql`
+      SELECT * FROM problems 
+      WHERE competition_type = ${competitionType}
+    `;
+
+    if (excludeIds.length > 0) {
+      query = sql`${query} AND id NOT IN (${sql.join(excludeIds, sql`, `)})`;
+    }
+
+    query = sql`${query} ORDER BY RANDOM() LIMIT 1`;
+
+    const result = await db.execute(query);
+
+    if (result.rows.length === 0) {
+      res.status(404).json({ error: 'No problems found for this competition type' });
+      return;
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error fetching AMC problem:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch AMC problem',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 });
 
