@@ -60,8 +60,49 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
   };
 
   const escapeLaTeX = (text: string) => {
-    //Escape special characters in LaTeX
-    return text.replace(/[\\$]/g, '\\$&');
+    // Escape special LaTeX characters, but preserve $ as plain text when used as currency
+    let result = text;
+
+    // Detect and preserve $ followed by a number or decimal (e.g., "$10", "$2.40") as plain text
+    result = result.replace(/(\W)\$(\d+\.?\d*)/g, '$1\\$ $2'); // Escape $ before numbers/decimals
+    result = result.replace(/(\d+\.?\d*)\$(\W)/g, '$1\\$ $2'); // Escape $ after numbers/decimals
+
+    // Escape standalone $ symbols that aren’t part of math
+    result = result.replace(/([^\\])\$/g, '$1\\$'); // Escape $ unless preceded by \
+
+    // Handle underlines and newlines
+    result = result.replace(/\\underline\{([^}]+)\}/g, '\\underline{$1}'); // Ensure underlines are properly formatted
+    result = result.replace(/\n/g, '\\\\'); // Replace newlines with LaTeX line breaks
+
+    return result;
+  };
+
+  const renderMessageContent = (content: string) => {
+    // Split content into parts: math ($...$), LaTeX commands, and plain text
+    const parts = content.split(/(\$(?:[^$]+)\$|\\\w+\{[^}]+\})/);
+
+    return parts.map((part, index) => {
+      if (part.startsWith('$') && part.endsWith('$')) {
+        // Render inline math, but only if it’s a valid math expression (not just numbers with $)
+        const mathContent = part.slice(1, -1).trim();
+        if (mathContent && !/^\d+\.?\d*$/.test(mathContent)) { // Skip numbers/decimals like "10" or "2.40"
+          return <InlineMath key={index} math={escapeLaTeX(mathContent)} />;
+        }
+        return <span key={index}>{`$${mathContent}$`}</span>; // Render as plain text with $ symbols
+      } else if (part.startsWith('\\') && part.includes('{')) {
+        // Handle LaTeX commands like \underline{}
+        try {
+          return <InlineMath key={index} math={escapeLaTeX(part)} />;
+        } catch (error) {
+          console.warn('Failed to render LaTeX command:', part, error);
+          return <span key={index}>{part}</span>; // Fallback to plain text
+        }
+      } else if (part === '\\\\') {
+        return <br key={index} />;
+      } else {
+        return <span key={index}>{part}</span>;
+      }
+    });
   };
 
   return (
@@ -102,14 +143,7 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
                   msg.role === 'user' ? 'bg-blue-100 ml-8' : 'bg-gray-100 mr-8'
                 }`}
               >
-                {msg.content.split(/(\$[^$]+\$|\n)/).map((part, index) => {
-                  if (part.startsWith('$') && part.endsWith('$')) {
-                    return <InlineMath key={index} math={escapeLaTeX(part.slice(1, -1))} />;
-                  } else if (part === '\n') {
-                    return <br key={index} />;
-                  }
-                  return <span key={index}>{part}</span>;
-                })}
+                {renderMessageContent(msg.content)}
               </div>
             ))}
           </div>

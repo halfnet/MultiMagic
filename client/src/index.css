@@ -38,4 +38,19 @@
   .question-display {
     @apply text-primary;
   }
+
+  /* KaTeX Custom Styling */
+  .katex {
+    @apply font-sans; /* Use your application’s font (e.g., Arial or your preferred font) */
+  }
+
+  .katex-html .base {
+    @apply text-foreground; /* Ensure text color matches your theme */
+    font-size: 1em; /* Ensure base font size matches your design */
+  }
+
+  /* Ensure underlines and other text formatting look consistent */
+  .katex .underline {
+    @apply border-b border-foreground/50; /* Customize underline style to match your design */
+  }
 }
