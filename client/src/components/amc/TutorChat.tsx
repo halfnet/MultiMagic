@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ChevronDown, ChevronUp, Send } from 'lucide-react';
-import MathJax from 'react-mathjax'; // Replace react-katex imports
-import 'katex/dist/katex.min.css'; // You can remove this if no other KaTeX usage exists
+import MathJax from 'react-mathjax';
 
 interface TutorChatProps {
   problemId: number;
@@ -108,14 +107,7 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
   };
 
   return (
-    <MathJax.Provider
-      url="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" // Use CDN or local script
-      options={{
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']],
-        },
-      }}
-    >
+    <MathJax.Provider>
       <div className={`
         fixed lg:static lg:w-full lg:rounded-lg lg:mt-6
         md:bottom-0 md:right-4 md:w-96 
