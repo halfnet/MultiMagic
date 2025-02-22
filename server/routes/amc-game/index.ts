@@ -116,16 +116,29 @@ router.get('/amc_problems', async (req, res) => {
       return;
     }
 
-    let query = sql`
-      SELECT * FROM problems 
-      WHERE competition_type = ${competitionType}
-    `;
+    let query;
+    
+    if (problemRange.startsWith('fixed-')) {
+      // Extract the actual problem identifier after 'fixed-'
+      const [_, compType, year, number] = problemRange.match(/fixed-(AMC \d+)-(\d+)-(\d+)/) || [];
+      query = sql`
+        SELECT * FROM problems 
+        WHERE competition_type = ${compType}
+        AND year = ${parseInt(year)}
+        AND problem_number = ${parseInt(number)}
+      `;
+    } else {
+      query = sql`
+        SELECT * FROM problems 
+        WHERE competition_type = ${competitionType}
+      `;
 
-    if (excludeIds.length > 0) {
-      query = sql`${query} AND id NOT IN (${sql.join(excludeIds, sql`, `)})`;
+      if (excludeIds.length > 0) {
+        query = sql`${query} AND id NOT IN (${sql.join(excludeIds, sql`, `)})`;
+      }
+
+      query = sql`${query} ORDER BY RANDOM() LIMIT 1`;
     }
-
-    query = sql`${query} ORDER BY RANDOM() LIMIT 1`;
 
     const result = await db.execute(query);
 
