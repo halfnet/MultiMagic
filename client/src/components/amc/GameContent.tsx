@@ -125,7 +125,7 @@ export function GameContent({
               </Button>
             </div>
           )}
-          <div className="flex gap-2">
+          <div className="flex gap-2 justify-between">
             <div className="flex items-center gap-4">
               {gameStatus === 'complete' && (
                 <Button
@@ -135,8 +135,8 @@ export function GameContent({
                   Go to Results
                 </Button>
               )}
-              <ExitButton gameStatus={gameStatus} onExit={onExit} />
             </div>
+            <ExitButton gameStatus={gameStatus} onExit={onExit} />
           </div>
         </div>
       </div>
