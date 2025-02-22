@@ -47,5 +47,25 @@ router.post('/amc-game-results', async (req, res) => {
   }
 });
 
-// Add other AMC game related routes here...
+router.get('/amc-screen-time', async (req, res) => {
+  try {
+    const userId = parseInt(req.query.userId as string);
+    const userTimezone = (req.query.timezone as string) || 'UTC';
+
+    const result = await db.execute(sql`
+      SELECT COALESCE(SUM(screen_time_earned), 0) as screen_time
+      FROM amc_game_results 
+      WHERE user_id = ${userId}
+      AND created_at::timestamp >= TIMEZONE(${userTimezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone} + INTERVAL '1 day') - INTERVAL '1 day')
+      AND created_at::timestamp < TIMEZONE(${userTimezone}, date_trunc('week', CURRENT_TIMESTAMP AT TIME ZONE ${userTimezone} + INTERVAL '1 day') + INTERVAL '1 week' - INTERVAL '1 day')
+    `);
+
+    const screenTime = Number(result.rows[0].screen_time);
+    res.json({ screenTime });
+  } catch (error) {
+    console.error('Error fetching AMC screen time:', error);
+    res.status(500).json({ error: 'Failed to fetch AMC screen time' });
+  }
+});
+
 export default router;
