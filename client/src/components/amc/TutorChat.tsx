@@ -61,7 +61,11 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
   };
 
   return (
-    <div className="fixed bottom-0 right-4 w-96 bg-white rounded-t-lg shadow-lg border border-gray-200">
+    <div className={`
+      fixed lg:static lg:w-full lg:rounded-lg lg:mt-6
+      md:bottom-0 md:right-4 md:w-96 
+      bg-white rounded-t-lg shadow-lg border border-gray-200
+    `}>
       <div 
         className="p-3 border-b cursor-pointer flex justify-between items-center"
         onClick={() => setIsExpanded(!isExpanded)}
