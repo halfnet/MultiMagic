@@ -76,7 +76,8 @@ export default function AMCPage() {
 
       const csrfToken = await fetchCsrfToken();
       const problems = isTutor 
-        ? [await fetchProblem('fixed-AMC 8-2011-10', competitionType, [], csrfToken)]
+        //? [await fetchProblem('fixed-AMC 8-2011-10', competitionType, [], csrfToken)]
+        ? [await fetchProblem('1-25', competitionType, [], csrfToken)]
         : await fetchProblems(competitionType, csrfToken);
 
       setSelectedProblems(problems);
