@@ -12,7 +12,7 @@ interface TutorChatProps {
   userId: number;
 }
 
-export function TutorChat({ problemId, currentQuestion, currentAnswer, currentSolution}: TutorChatProps) {
+export function TutorChat({ problemId, currentQuestion, currentAnswer, currentSolution, userId}: TutorChatProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string }>>([]);
