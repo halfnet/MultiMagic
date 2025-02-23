@@ -39,6 +39,8 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
           messages: newMessages,
           problemId,
           currentQuestion,
+          answer: currentProblem?.answer,
+          solution_html: currentProblem?.solution_html,
         }),
       });
 

@@ -3,7 +3,21 @@ import type { Express } from 'express';
 export function registerTutorChatRoutes(app: Express): void {
   app.post('/api/tutor-chat', async (req, res) => {
     try {
-      const { messages, problemId, currentQuestion } = req.body;
+      const { messages, problemId, currentQuestion, answer, solution_html } = req.body;
+
+      let systemContext = `You are a helpful math tutor assisting with AMC math problems. 
+      Your role is to guide students through mathematical reasoning without giving away solutions.
+      Use Socratic questioning to help students discover answers themselves.
+      Format mathematical expressions using LaTeX notation.
+      Never provide direct answers or solutions.
+      Focus on explaining concepts and problem-solving strategies.`;
+
+      if (answer) {
+        systemContext += `\nThe correct answer is: ${answer}`;
+      }
+      if (solution_html) {
+        systemContext += `\nThe solution approach is: ${solution_html}`;
+      }
 
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -16,12 +30,7 @@ export function registerTutorChatRoutes(app: Express): void {
           messages: [
             {
               role: 'system',
-              content: `You are a helpful math tutor assisting with AMC math problems. 
-              Your role is to guide students through mathematical reasoning without giving away solutions.
-              Use Socratic questioning to help students discover answers themselves.
-              Format mathematical expressions using LaTeX notation.
-              Never provide direct answers or solutions.
-              Focus on explaining concepts and problem-solving strategies.`,
+              content: systemContext,
             },
             {
               role: 'system',
