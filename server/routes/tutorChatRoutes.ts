@@ -1,3 +1,4 @@
+
 import type { Express } from 'express';
 
 export function registerTutorChatRoutes(app: Express): void {
@@ -20,8 +21,6 @@ export function registerTutorChatRoutes(app: Express): void {
           .returning();
         currentSession[userKey] = session.sessionId;
       }
-    try {
-      const { messages, problemId, currentQuestion, answer, solution_html } = req.body;
 
       let systemContext = `You are a helpful math tutor assisting with AMC math problems. 
       Your role is to guide students through mathematical reasoning without giving away solutions.
