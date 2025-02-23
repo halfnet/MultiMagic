@@ -24,21 +24,21 @@ interface GamePlayProps {
 export function GamePlay(props: GamePlayProps) {
   return (
     <GameContent
-      currentProblem={props.currentProblem}
-      currentIndex={props.currentIndex}
-      totalProblems={props.totalProblems}
-      gameStatus={props.gameStatus}
-      startTime={props.startTime}
-      answeredCount={props.answeredCount}
-      onPrevious={props.onPrevious}
-      onNext={props.onNext}
-      onAnswer={props.onAnswer}
-      userAnswers={props.userAnswers}
-      onSubmit={props.onSubmit}
-      onExit={props.onExit}
-      onShowResults={props.onShowResults}
-      selectedProblems={props.selectedProblems}
-      tutorMode={props.tutorMode}
-    />
+          currentProblem={props.currentProblem}
+          currentIndex={props.currentIndex}
+          totalProblems={props.totalProblems}
+          gameStatus={props.gameStatus}
+          startTime={props.startTime}
+          answeredCount={props.answeredCount}
+          onPrevious={props.onPrevious}
+          onNext={props.onNext}
+          onAnswer={props.onAnswer}
+          userAnswers={props.userAnswers}
+          onSubmit={props.onSubmit}
+          onExit={props.onExit}
+          onShowResults={props.onShowResults}
+          selectedProblems={props.selectedProblems}
+          tutorMode={props.tutorMode} 
+          userId={props.userId}    />
   );
 }
