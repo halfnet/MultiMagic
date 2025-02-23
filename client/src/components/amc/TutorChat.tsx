@@ -101,15 +101,19 @@ export function TutorChat({ problemId, currentQuestion, currentAnswer, currentSo
               onClick={(e) => { e.stopPropagation(); setIsFullScreen(!isFullScreen); }}
               className="hover:bg-gray-100 p-1 rounded"
             >
-              {isFullScreen ? (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20L4 15m0 0l5-5M4 15h12M15 4l5 5m0 0l-5 5M20 9H8" />
-                </svg>
-              ) : (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 15l5 5m0 0l5-5m-5 5V4m6 1l5 5m0 0l-5 5m5-5H4" />
-                </svg>
-              )}
+            {isFullScreen ? (
+              // Exit Full-Screen Icon (Shrink)
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                  d="M16 4h4m0 0v4m0-4l-5 5M8 20H4m0 0v-4m0 4l5-5M16 20h4m0 0v-4m0 4l-5-5M8 4H4m0 0v4m0-4l5 5" />
+              </svg>
+            ) : (
+              // Enter Full-Screen Icon (Expand)
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                  d="M4 4h6m-6 0v6m0-6l6 6M20 20h-6m6 0v-6m0 6l-6-6M4 20h6m-6 0v-6m0 6l6-6M20 4h-6m6 0v6m0-6l-6 6" />
+              </svg>
+            )}
             </button>
             {isExpanded ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
           </div>
