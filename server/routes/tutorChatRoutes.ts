@@ -1,5 +1,8 @@
 
 import type { Express } from 'express';
+import { db } from '../../db';
+import { amcTutorSession, amcTutorSessionInteractions } from '../../db/schema';
+import { sql } from 'drizzle-orm';
 
 export function registerTutorChatRoutes(app: Express): void {
   let currentSession: { [key: string]: number } = {};

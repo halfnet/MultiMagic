@@ -65,6 +65,7 @@ export function TutorChat({ problemId, currentQuestion, currentAnswer, currentSo
   
 
   const renderMessageContent = (content: string) => {
+    if (!content) return null;
     // Split on math expressions and LaTeX commands
     const parts = content.split(/(\$[^$]+\$|\\\([^)]+\\\)|\\\[[^\]]+\\\])/);
     
