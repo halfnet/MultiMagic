@@ -7,9 +7,11 @@ import { MathJax, MathJaxContext } from 'better-react-mathjax';
 interface TutorChatProps {
   problemId: number;
   currentQuestion: string;
+  currentAnswer: string;
+  currentSolution: string;
 }
 
-export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
+export function TutorChat({ problemId, currentQuestion, currentAnswer, currentSolution}: TutorChatProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string }>>([]);
   const [input, setInput] = useState('');
@@ -39,8 +41,8 @@ export function TutorChat({ problemId, currentQuestion }: TutorChatProps) {
           messages: newMessages,
           problemId,
           currentQuestion,
-          answer: currentProblem?.answer,
-          solution_html: currentProblem?.solution_html,
+          currentAnswer,
+          currentSolution,
         }),
       });
 

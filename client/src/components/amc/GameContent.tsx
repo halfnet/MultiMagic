@@ -147,6 +147,8 @@ export function GameContent({
           <TutorChat
             problemId={currentProblem.id}
             currentQuestion={currentProblem.question_html}
+            currentAsnwer={currentProblem.answer}
+            currentSolution={currentProblem.solution_html}
           />
         </div>
       )}
