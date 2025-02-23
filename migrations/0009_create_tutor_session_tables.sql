@@ -14,6 +14,6 @@ CREATE TABLE amc_tutor_session_interactions (
   session_id INTEGER REFERENCES amc_tutor_session(session_id),
   user_question TEXT NOT NULL,
   tutor_response TEXT NOT NULL,
-  question_created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  response_created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  question_created_at TIMESTAMP,
+  response_created_at TIMESTAMP
 );

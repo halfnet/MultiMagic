@@ -135,8 +135,8 @@ export const amcTutorSessionInteractions = pgTable('amc_tutor_session_interactio
   sessionId: integer('session_id').references(() => amcTutorSession.sessionId),
   userQuestion: text('user_question').notNull(),
   tutorResponse: text('tutor_response').notNull(),
-  questionCreatedAt: text('question_created_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
-  responseCreatedAt: text('response_created_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
+  questionCreatedAt: text('question_created_at'),
+  responseCreatedAt: text('response_created_at'),
 });
 
 export const insertAmcTutorSessionSchema = createInsertSchema(amcTutorSession);
