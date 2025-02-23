@@ -97,15 +97,19 @@ export function TutorChat({ problemId, currentQuestion, currentAnswer, currentSo
         >
           <h3 className="font-semibold">AI Math Tutor</h3>
           <div className="flex gap-2">
-            <button onClick={(e) => { e.stopPropagation(); setIsFullScreen(!isFullScreen); }}>
-              {isFullScreen ? 
+            <button 
+              onClick={(e) => { e.stopPropagation(); setIsFullScreen(!isFullScreen); }}
+              className="hover:bg-gray-100 p-1 rounded"
+            >
+              {isFullScreen ? (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9L4 4m0 0l5-5M4 4L4 9M15 9l5-5m0 0l-5-5M20 4l-5 5M9 15l-5 5m0 0l5 5M4 20l5-5M15 15l5 5m0 0l-5 5M20 20l-5-5" />
-                </svg> :
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-9v4m0-4h-4m4 4l-5 5M4 16v4m0-4H8m-4 4h4m-4-4l5 5m11-9v4m0-4h-4m4 4l-5 5m-16-3l5-5m0 0l5 5m-5-5v12" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20L4 15m0 0l5-5M4 15h12M15 4l5 5m0 0l-5 5M20 9H8" />
                 </svg>
-              }
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 15l5 5m0 0l5-5m-5 5V4m6 1l5 5m0 0l-5 5m5-5H4" />
+                </svg>
+              )}
             </button>
             {isExpanded ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
           </div>
