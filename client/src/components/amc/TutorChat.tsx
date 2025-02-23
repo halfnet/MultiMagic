@@ -9,6 +9,7 @@ interface TutorChatProps {
   currentQuestion: string;
   currentAnswer: string;
   currentSolution: string;
+  userId: number;
 }
 
 export function TutorChat({ problemId, currentQuestion, currentAnswer, currentSolution}: TutorChatProps) {
@@ -44,6 +45,7 @@ export function TutorChat({ problemId, currentQuestion, currentAnswer, currentSo
           currentQuestion,
           currentAnswer,
           currentSolution,
+          userId,
         }),
       });
 

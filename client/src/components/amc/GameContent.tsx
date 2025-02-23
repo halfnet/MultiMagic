@@ -149,6 +149,7 @@ export function GameContent({
             currentQuestion={currentProblem.question_html}
             currentAsnwer={currentProblem.answer}
             currentSolution={currentProblem.solution_html}
+            userId=userId
           />
         </div>
       )}
