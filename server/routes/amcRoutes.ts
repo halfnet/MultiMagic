@@ -6,6 +6,17 @@ import { sql } from 'drizzle-orm';
 export function registerAMCRoutes(app: Express): void {
   app.post('/api/amc-game-results', async (req, res) => {
     try {
+      // End tutor session if exists
+      if (req.body.problemId && req.body.userId) {
+        const userKey = `${req.body.userId}-${req.body.problemId}`;
+        if (currentSession[userKey]) {
+          await db
+            .update(amcTutorSession)
+            .set({ endedAt: sql`CURRENT_TIMESTAMP` })
+            .where(sql`session_id = ${currentSession[userKey]}`);
+          delete currentSession[userKey];
+        }
+      }
       const screenTimeEarned = calculateAMCScreenTime(req.body);
       const [result] = await db
         .insert(amcGameResults)

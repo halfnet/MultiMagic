@@ -1,7 +1,25 @@
 import type { Express } from 'express';
 
 export function registerTutorChatRoutes(app: Express): void {
+  let currentSession: { [key: string]: number } = {};
+
   app.post('/api/tutor-chat', async (req, res) => {
+    try {
+      const { messages, problemId, currentQuestion, answer, solution_html, userId } = req.body;
+      const userKey = `${userId}-${problemId}`;
+
+      // Start new session if this is the first message
+      if (!currentSession[userKey] && messages.length === 1) {
+        const [session] = await db
+          .insert(amcTutorSession)
+          .values({
+            userId,
+            problemId,
+            startedAt: sql`CURRENT_TIMESTAMP`,
+          })
+          .returning();
+        currentSession[userKey] = session.sessionId;
+      }
     try {
       const { messages, problemId, currentQuestion, answer, solution_html } = req.body;
 
@@ -43,7 +61,22 @@ export function registerTutorChatRoutes(app: Express): void {
       });
 
       const data = await response.json();
-      res.json({ response: data.choices[0].message.content });
+      const tutorResponse = data.choices[0].message.content;
+
+      // Record the interaction if session exists
+      if (currentSession[userKey]) {
+        await db
+          .insert(amcTutorSessionInteractions)
+          .values({
+            sessionId: currentSession[userKey],
+            userQuestion: messages[messages.length - 1].content,
+            tutorResponse,
+            questionCreatedAt: sql`CURRENT_TIMESTAMP`,
+            responseCreatedAt: sql`CURRENT_TIMESTAMP`,
+          });
+      }
+
+      res.json({ response: tutorResponse });
     } catch (error) {
       console.error('Error in tutor chat:', error);
       res.status(500).json({ error: 'Failed to process chat' });

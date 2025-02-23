@@ -121,3 +121,30 @@ export const insertAmcGameQuestionResultSchema = createInsertSchema(amcGameQuest
 export const selectAmcGameQuestionResultSchema = createSelectSchema(amcGameQuestionResults);
 export type InsertAmcGameQuestionResult = typeof amcGameQuestionResults.$inferInsert;
 export type SelectAmcGameQuestionResult = typeof amcGameQuestionResults.$inferSelect;
+
+export const amcTutorSession = pgTable('amc_tutor_session', {
+  sessionId: serial('session_id').primaryKey(),
+  userId: integer('user_id').references(() => users.id),
+  problemId: integer('problem_id').references(() => problems.id),
+  startedAt: text('started_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
+  endedAt: text('ended_at'),
+});
+
+export const amcTutorSessionInteractions = pgTable('amc_tutor_session_interactions', {
+  sessionInteractionId: serial('session_interaction_id').primaryKey(),
+  sessionId: integer('session_id').references(() => amcTutorSession.sessionId),
+  userQuestion: text('user_question').notNull(),
+  tutorResponse: text('tutor_response').notNull(),
+  questionCreatedAt: text('question_created_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
+  responseCreatedAt: text('response_created_at').default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
+export const insertAmcTutorSessionSchema = createInsertSchema(amcTutorSession);
+export const selectAmcTutorSessionSchema = createSelectSchema(amcTutorSession);
+export const insertAmcTutorSessionInteractionSchema = createInsertSchema(amcTutorSessionInteractions);
+export const selectAmcTutorSessionInteractionSchema = createSelectSchema(amcTutorSessionInteractions);
+
+export type InsertAmcTutorSession = typeof amcTutorSession.$inferInsert;
+export type SelectAmcTutorSession = typeof amcTutorSession.$inferSelect;
+export type InsertAmcTutorSessionInteraction = typeof amcTutorSessionInteractions.$inferInsert;
+export type SelectAmcTutorSessionInteraction = typeof amcTutorSessionInteractions.$inferSelect;
