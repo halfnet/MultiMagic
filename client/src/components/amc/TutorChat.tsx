@@ -67,16 +67,20 @@ export function TutorChat({ problemId, currentQuestion, currentAnswer, currentSo
   const renderMessageContent = (content: string) => {
     // Split on math expressions and LaTeX commands
     const parts = content.split(/(\$[^$]+\$|\\\([^)]+\\\)|\\\[[^\]]+\\\])/);
-
+    
     return parts.map((part, index) => {
       if (part.startsWith('$') && part.endsWith('$')) {
-        return <MathJax key={index}>{part}</MathJax>;
+        return <MathJax key={index} className="mx-1">{part}</MathJax>;
       } else if (part.startsWith('\\(') && part.endsWith('\\)')) {
-        return <MathJax key={index}>{part}</MathJax>;
+        return <MathJax key={index} className="mx-1">{part}</MathJax>;
       } else if (part.startsWith('\\[') && part.endsWith('\\]')) {
-        return <MathJax key={index} display>{part}</MathJax>;
+        return <MathJax key={index} display className="my-2">{part}</MathJax>;
       }
-      return <span key={index}>{part}</span>;
+      // Trim whitespace only around math expressions
+      const prevIsMath = index > 0 && /[\$\\]/.test(parts[index - 1]);
+      const nextIsMath = index < parts.length - 1 && /[\$\\]/.test(parts[index + 1]);
+      const text = (prevIsMath || nextIsMath) ? part.trim() : part;
+      return <span key={index}>{text}</span>;
     });
   };
 
