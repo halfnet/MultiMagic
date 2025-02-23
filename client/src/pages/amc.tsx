@@ -224,6 +224,7 @@ export default function AMCPage() {
         onSubmit={submitGame}
         onExit={() => setShowProblem(false)}
         onShowResults={() => setShowResults(true)}
+        userId={user?.id || 0}
       />
     );
   };

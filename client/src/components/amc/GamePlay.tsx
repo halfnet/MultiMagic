@@ -18,6 +18,7 @@ interface GamePlayProps {
   onSubmit: () => void;
   onExit: () => void;
   onShowResults: () => void;
+  userId: number;
 }
 
 export function GamePlay(props: GamePlayProps) {

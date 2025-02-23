@@ -23,6 +23,7 @@ interface GameContentProps {
   onShowResults: () => void;
   selectedProblems: Problem[];
   tutorMode: boolean;
+  userId: number; // Added userId prop
 }
 
 export function GameContent({
@@ -41,6 +42,7 @@ export function GameContent({
   onShowResults,
   selectedProblems,
   tutorMode,
+  userId, // Added userId prop
 }: GameContentProps) {
   return (
     <div className="space-y-2">
@@ -149,7 +151,7 @@ export function GameContent({
             currentQuestion={currentProblem.question_html}
             currentAsnwer={currentProblem.answer}
             currentSolution={currentProblem.solution_html}
-            userId=userId
+            userId={userId} // Passed userId prop
           />
         </div>
       )}
