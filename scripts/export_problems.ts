@@ -1,3 +1,4 @@
+//npx tsx scripts/export_problems.ts
 
 import { createWriteStream } from 'fs';
 import { db } from '../db';
@@ -26,8 +27,10 @@ async function exportProblems() {
   }
   
   writer.end();
-  console.log('Export complete: scripts/amc_problems_exported.csv');
-  process.exit(0);
+  writer.on('finish', () => {
+    console.log('Export complete: scripts/amc_problems_exported.csv');
+    process.exit(0);
+  });
 }
 
 exportProblems();
