@@ -13,6 +13,7 @@ interface TutorChatProps {
 
 export function TutorChat({ problemId, currentQuestion, currentAnswer, currentSolution}: TutorChatProps) {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string }>>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -87,8 +88,7 @@ export function TutorChat({ problemId, currentQuestion, currentAnswer, currentSo
       }
     }}>
       <div className={`
-        fixed lg:static lg:w-full lg:rounded-lg lg:mt-6
-        md:bottom-0 md:right-4 md:w-96 
+        ${isFullScreen ? 'fixed inset-0 z-50' : 'fixed lg:static lg:w-full lg:rounded-lg lg:mt-6 md:bottom-0 md:right-4 md:w-96'}
         bg-white rounded-t-lg shadow-lg border border-gray-200
       `}>
         <div 
@@ -96,7 +96,19 @@ export function TutorChat({ problemId, currentQuestion, currentAnswer, currentSo
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <h3 className="font-semibold">AI Math Tutor</h3>
-          {isExpanded ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
+          <div className="flex gap-2">
+            <button onClick={(e) => { e.stopPropagation(); setIsFullScreen(!isFullScreen); }}>
+              {isFullScreen ? 
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9L4 4m0 0l5-5M4 4L4 9M15 9l5-5m0 0l-5-5M20 4l-5 5M9 15l-5 5m0 0l5 5M4 20l5-5M15 15l5 5m0 0l-5 5M20 20l-5-5" />
+                </svg> :
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-9v4m0-4h-4m4 4l-5 5M4 16v4m0-4H8m-4 4h4m-4-4l5 5m11-9v4m0-4h-4m4 4l-5 5m-16-3l5-5m0 0l5 5m-5-5v12" />
+                </svg>
+              }
+            </button>
+            {isExpanded ? <ChevronDown className="w-5 h-5" /> : <ChevronUp className="w-5 h-5" />}
+          </div>
         </div>
 
         {isExpanded && (
@@ -115,7 +127,7 @@ export function TutorChat({ problemId, currentQuestion, currentAnswer, currentSo
               ))}
             </div>
 
-            <div className="h-48 overflow-y-auto mb-2 space-y-3">
+            <div className={`${isFullScreen ? 'h-[calc(100vh-200px)]' : 'h-48'} overflow-y-auto mb-2 space-y-3`}>
               {messages.map((msg, i) => (
                 <div
                   key={i}
