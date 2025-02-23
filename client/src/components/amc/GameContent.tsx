@@ -7,6 +7,25 @@ import { ExitButton } from './ExitButton';
 import { Problem } from './types';
 import {TutorChat} from './TutorChat'; // Assuming TutorChat.tsx exists in the same directory
 
+
+async function endTutorSession(userId: number, problemId: number) {
+  try {
+    const response = await fetch('/api/csrf-token');
+    const { csrfToken } = await response.json();
+    
+    await fetch('/api/tutor-chat/end-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'CSRF-Token': csrfToken,
+      },
+      body: JSON.stringify({ userId, problemId }),
+    });
+  } catch (error) {
+    console.error('Error ending tutor session:', error);
+  }
+}
+
 interface GameContentProps {
   currentProblem: Problem;
   currentIndex: number;
@@ -72,13 +91,26 @@ export function GameContent({
               </div>
               {gameStatus === 'inProgress' && (
                 <SubmitButton
-                  onSubmit={onSubmit}
+                  onSubmit={() => {
+                    if (tutorMode) {
+                      endTutorSession(userId, currentProblem.id);
+                    }
+                    onSubmit();
+                  }}
                   answeredCount={answeredCount}
                   totalProblems={selectedProblems.length}
                   selectedProblems={selectedProblems}
                 />
               )}
-              <ExitButton gameStatus={gameStatus} onExit={onExit} />
+              <ExitButton 
+                gameStatus={gameStatus} 
+                onExit={() => {
+                  if (tutorMode) {
+                    endTutorSession(userId, currentProblem.id);
+                  }
+                  onExit();
+                }} 
+              />
             </div>
           </div>
         <div className="space-y-2">

@@ -16,6 +16,29 @@ export function TutorChat({ problemId, currentQuestion, currentAnswer, currentSo
   const [isExpanded, setIsExpanded] = useState(true);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant', content: string }>>([]);
+
+  const endSession = async () => {
+    try {
+      await fetch('/api/tutor-chat/end-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'CSRF-Token': await getCsrfToken(),
+        },
+        body: JSON.stringify({ userId, problemId }),
+      });
+    } catch (error) {
+      console.error('Error ending session:', error);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', endSession);
+    return () => {
+      window.removeEventListener('beforeunload', endSession);
+      endSession();
+    };
+  }, [userId, problemId]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 

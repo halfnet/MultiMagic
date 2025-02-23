@@ -84,4 +84,28 @@ export function registerTutorChatRoutes(app: Express): void {
       res.status(500).json({ error: 'Failed to process chat' });
     }
   });
+
+  app.post('/api/tutor-chat/end-session', async (req, res) => {
+    try {
+      const { userId, problemId } = req.body;
+      const userKey = `${userId}-${problemId}`;
+      const sessionId = currentSession[userKey];
+      
+      if (sessionId) {
+        await db
+          .update(amcTutorSession)
+          .set({
+            endedAt: sql`CURRENT_TIMESTAMP`,
+          })
+          .where(sql`session_id = ${sessionId}`);
+        
+        delete currentSession[userKey];
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error ending tutor session:', error);
+      res.status(500).json({ error: 'Failed to end session' });
+    }
+  });
 }
